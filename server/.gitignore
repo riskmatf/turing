@@ -1,0 +1,3 @@
+node_modules
+src/db/mysqlConf.ts
+package-lock.json
