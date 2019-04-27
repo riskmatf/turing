@@ -5,15 +5,12 @@ type Props =
     Readonly<{
         url: string;
         numOfEl: number;
+        onLoad: (errorToggle: Array<(value: boolean)=>void>)=>void;
+        onClick: (id_comp: number)=>void;
     }>
 
 export function SvgShema(props: Props): React.ReactElement
 {
-    const handleClick = useCallback((id: number)=>
-    {
-        console.log(`You have clicked ${id}`);
-    }, []);
-
     const onLoad = useCallback(()=>
     {
         const el = document.querySelector('object');
@@ -28,21 +25,28 @@ export function SvgShema(props: Props): React.ReactElement
             return;
         }
 
+        const res: Array<(value: boolean)=>void> = [];
         for(let i = 1; i <= props.numOfEl; ++i)
         {
-            const el = doc.querySelector(`#comp_${i}`);
-            console.log(el);
+            const comp_el = doc.querySelector(`#comp_${i}`);
+            const err_el = doc.querySelector(`#err_${i}`);
 
-            if(el !== null)
+            if(comp_el !== null)
             {
-                el.addEventListener('click', ()=>
+                comp_el.addEventListener('click', ()=>
                 {
-                    handleClick(i);
+                    props.onClick(i);
                 });
             }
 
+            if(err_el !== null)
+            {
+                res.push(value=>err_el.setAttribute('visibility', value ? '' : 'hidden'));
+            }
         }
-    }, [props.numOfEl, handleClick]);
+
+        props.onLoad(res);
+    }, [props.numOfEl, props.onLoad, props.onClick]);
 
     return (
         <object data={props.url} onLoad={onLoad} style={{width:'100%'}}/>
