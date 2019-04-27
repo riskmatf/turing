@@ -34,13 +34,13 @@ arguments_parse()
 display_help()
 {
     echo 'bash auto.sh'
-    echo 'Program made for automatic building(server, client) starting development server and deploying of truing project'
+    echo 'Program made for automatic building(server, client), starting development server and deploying of turing project'
     echo 'Arguments:'
     echo '-h | --help - displays this help message'
-    echo '--build-client - Builds client react app can take a while(few minutes)'
-    echo '--build-server - Builds nodejs server(compiles ts->js) usually fast'
+    echo '--build-client - Building client react app. This can take a few minutes'
+    echo '--build-server - Building nodejs server(compiles ts->js). This is usually fast'
     echo '--serve - starts dev server default localhost:8888 this is a blocking operation and it will execute last'
-    echo '--deploy - deploy project to server. This dose not compile project it deploys last compiled version of
+    echo '--deploy - deploy project to server. This does not compile project it deploys last compiled version of
     server and client'
 
     exit 0
@@ -53,14 +53,14 @@ build_server()
 
     if [ ! -e './server' ];
     then
-        echo './server directory dose not exist'
+        echo './server directory does not exist'
         echo 'Run script from root of the project'
         exit 1
     fi
 
     if [ ! -e './deploy' ];
     then
-        echo './deploy directory dose not exist'
+        echo './deploy directory does not exist'
         echo 'Run script from root of the project'
         exit 1
     fi
@@ -82,14 +82,14 @@ build_client()
 
     if [ ! -e './client' ];
     then
-        echo './client directory dose not exist'
+        echo './client directory does not exist'
         echo 'Run script from root of the project'
         exit 1
     fi
 
     if [ ! -e './deploy' ];
     then
-        echo './deploy directory dose not exist'
+        echo './deploy directory does not exist'
         echo 'Run script from root of the project'
         exit 1
     fi
@@ -115,7 +115,7 @@ serve()
 
     if [ ! -e './deploy' ];
     then
-        echo './deploy directory dose not exist'
+        echo './deploy directory does not exist'
         echo 'Run script from root of the project'
         exit 1
     fi
