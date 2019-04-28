@@ -48,7 +48,8 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
     return (
         <Grid container  justify={'center'} style={{paddingTop: '10px'}}>
             <Grid item xs={12} md={6}>
-                <SvgShema url={classroom.classroom.schemaUrl} numOfEl={classroom.classroom.computerCount}/>
+                <SvgShema url={classroom.classroom.schemaUrl} numOfEl={classroom.classroom.computerCount} onClick={()=>{}}
+                onLoad={()=>{}}/>
             </Grid>
         </Grid>
     );
