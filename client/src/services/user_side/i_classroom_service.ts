@@ -17,7 +17,7 @@ export function useClassroom(classroomName: string, forceRender: ForceRenderType
     {
         classroom: Classroom | undefined;
         fetchClassroom: (force?:boolean)=>Promise<void>;
-    }{
+    } {
     const service: IClassroomService = ServiceLocator.getClassroomService();
 
     useEffect(()=>

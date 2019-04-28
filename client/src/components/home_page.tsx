@@ -10,5 +10,10 @@ type Props = Readonly<{
 export function HomePage(props: Props): React.ReactElement
 {
     // TODO Create some basic layout with the logo and welcome info...
-    return <h1>Hello from HomePage</h1>
+    return (
+        <React.Fragment>
+            <h1>Hello from HomePage</h1>
+            <img src='/turing/assets/img/logo.png' alt='Logo' />
+        </React.Fragment>
+    );
 }
