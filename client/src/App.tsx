@@ -3,7 +3,7 @@ import {ServiceLocator} from "./services/user_side/serviceLocator";
 import {LocalClassroomService} from "./services/user_side/local_classroom_service";
 import {BrowserRouter, Link, Route, Switch} from "react-router-dom";
 
-import {MainLayout, RenderFunctionProps} from './components/mainLayout';
+import {MainLayout, RenderFunctionProps} from './components/main_layout/main_layout';
 import {AppBarPart as MainAppBar, BodyPart as MainBodyPart} from './components/main_page';
 import {HomePage} from './components/home_page';
 import {AppBarPart as SchemaAppBar, BodyPart as SchemaBodyPart} from './components/shema_page';
@@ -12,6 +12,7 @@ import {Home as HomeIcon,
     Menu as MenuIcon,
     EventSeat as EventSeatIcon,
     Help as HelpIcon} from '@material-ui/icons';
+import {LocalReportService} from "./services/user_side/local_report_service";
 
 /**
  * Here register all services that you need for program
@@ -19,6 +20,7 @@ import {Home as HomeIcon,
  */
 
 ServiceLocator.registerClassroomService(new LocalClassroomService());
+ServiceLocator.registerReportService(new LocalReportService());
 
 type Props = {};
 
@@ -98,8 +100,8 @@ function renderDrawer(props: RenderFunctionProps): React.ReactElement {
 export function App(props: Props): React.ReactElement {
     return (
         <BrowserRouter basename={'turing'}>
-            <MainLayout drawerVariant={'responsive'} appBarVariant={"fixed"}
-                        drawerClipped renderAppBar={renderAppBar}
+            <MainLayout drawerClipped
+                        renderAppBar={renderAppBar}
                         renderBody={renderBody}
                         renderDrawer={renderDrawer}
             />
