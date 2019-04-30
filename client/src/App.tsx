@@ -1,18 +1,14 @@
 import React, {useCallback} from 'react';
 import {ServiceLocator} from "./services/user_side/serviceLocator";
+import {LocalReportService} from "./services/user_side/local_report_service";
 import {LocalClassroomService} from "./services/user_side/local_classroom_service";
 import {BrowserRouter, Link, Route, Switch} from "react-router-dom";
 
-import {MainLayout, RenderFunctionProps} from './components/main_layout/main_layout';
-import {AppBarPart as MainAppBar, BodyPart as MainBodyPart} from './components/main_page';
+import {MainLayout, RenderFunctionProps} from './components/main_layout';
+/*import {AppBarPart as ClassroomPageAppBar, BodyPart as ClassroomPageBodyPart} from './components/classroom_page';
 import {HomePage} from './components/home_page';
-import {AppBarPart as SchemaAppBar, BodyPart as SchemaBodyPart} from './components/shema_page';
-import {Button, IconButton, Grid, ListItem, List, ListItemText, ListItemIcon} from "@material-ui/core";
-import {Home as HomeIcon,
-    Menu as MenuIcon,
-    EventSeat as EventSeatIcon,
-    Help as HelpIcon} from '@material-ui/icons';
-import {LocalReportService} from "./services/user_side/local_report_service";
+import {AppBarPart as SchemaAppBar, BodyPart as SchemaBodyPart} from './components/shema_page';*/
+
 
 /**
  * Here register all services that you need for program
@@ -24,6 +20,7 @@ ServiceLocator.registerReportService(new LocalReportService());
 
 type Props = {};
 
+/*
 function renderAppBar(props: RenderFunctionProps): React.ReactElement {
     // Hash the callback function and give it dependencies
     // on which to update.
@@ -96,15 +93,21 @@ function renderDrawer(props: RenderFunctionProps): React.ReactElement {
         </List>
     );
 }
+ */
+
+function Body(props: {}): React.ReactElement
+{
+    return (
+        <React.Fragment>
+            <h1>hi</h1>
+        </React.Fragment>
+    );
+}
 
 export function App(props: Props): React.ReactElement {
     return (
         <BrowserRouter basename={'turing'}>
-            <MainLayout drawerClipped
-                        renderAppBar={renderAppBar}
-                        renderBody={renderBody}
-                        renderDrawer={renderDrawer}
-            />
+            <MainLayout body={Body}/>
         </BrowserRouter>
     );
 }
