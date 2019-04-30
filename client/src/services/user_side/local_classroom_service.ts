@@ -8,7 +8,7 @@ function schemaUrl(name: string)
 }
 
 const data:Array<[string, string, number]> = [
-    ['704','Trg', 5],
+    ['704','Trg', 15],
     ['718', 'Trg', 10],
     ['bim','Jagiceva', 8],
     ['rlab', 'Jagiceva', 4]
