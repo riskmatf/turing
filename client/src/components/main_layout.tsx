@@ -9,20 +9,10 @@ import {faHome, faQuestionCircle, faChalkboardTeacher} from '@fortawesome/free-s
 import {Link} from "react-router-dom";
 
 
-
-export type RenderFunctionProps =
-    {
-        toggleDrawer: () => void,
-        isDrawerOpen: boolean
-    };
 type Props<T> =
     Readonly<{
         body: React.ComponentType<T>
     }>;
-
-
-
-
 
 export function MainLayout(props: Props<{}>): React.ReactElement {
 
@@ -79,5 +69,3 @@ export function MainLayout(props: Props<{}>): React.ReactElement {
 
     )
 }
-
-
