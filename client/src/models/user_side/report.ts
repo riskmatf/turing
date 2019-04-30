@@ -2,7 +2,7 @@ export class Report
 {
     public constructor(public readonly idReport: number, public readonly classroomName: string,
                        public readonly idComputer: number, public description: string, public fixed: boolean,
-                       private idAdmin_: number | undefined, private adminComment_: string | undefined)
+                       private idAdmin_?: number | undefined, private adminComment_?: string | undefined)
     {
         if(idReport < 0)
         {

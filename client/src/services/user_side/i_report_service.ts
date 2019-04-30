@@ -1,13 +1,15 @@
 import {Report} from "../../models/user_side/report";
 import {EventSubscription} from "fbemitter";
-import {ForceRenderType} from "../../utils/force_render";
 import {ServiceLocator} from "./serviceLocator";
 import {useCallback, useEffect} from "react";
 
-export type ReportCollection =
+/*export type ReportCollection =
     {
         [classroomName: string]: Array<Report>;
     }
+*/
+
+export type ReportCollection = Map<string, Array<Report>>;
 
 export type ReportData =
     {
@@ -28,7 +30,7 @@ export interface IReportService
     onReportChange(handler: ()=>void): EventSubscription;
 }
 
-export function useReports(forceRender: ForceRenderType):
+export function useReports(forceRender: ()=>void):
     {
         reports: ReportCollection;
         fetchReports: (force?: boolean)=>Promise<void>;
@@ -65,7 +67,7 @@ export function useReports(forceRender: ForceRenderType):
     );
 }
 
-export function useReportsForClassroom(classroomName: string, forceRender: ForceRenderType):
+export function useReportsForClassroom(classroomName: string, forceRender: ()=>void):
     {
         reports: Array<Report>;
         fetchReportsForClassroom: (force?: boolean)=>Promise<void>;
@@ -102,7 +104,7 @@ export function useReportsForClassroom(classroomName: string, forceRender: Force
     );
 }
 
-export function useReport(id: number, forceRender: ForceRenderType):
+export function useReport(id: number, forceRender: ()=>void):
     {
         report: Report| undefined;
         fetchReport: (force?: boolean)=>Promise<void>;

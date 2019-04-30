@@ -2,7 +2,6 @@ import {Classroom} from "../../models/user_side/classroom";
 import {EventSubscription} from 'fbemitter';
 import {ServiceLocator} from "./serviceLocator";
 import {useCallback, useEffect} from "react";
-import {ForceRenderType} from "../../utils/force_render";
 
 export interface IClassroomService
 {
@@ -13,7 +12,7 @@ export interface IClassroomService
     onClassroomChange(handler: ()=>void): EventSubscription;
 }
 
-export function useClassroom(classroomName: string, forceRender: ForceRenderType):
+export function useClassroom(classroomName: string, forceRender: ()=>void):
     {
         classroom: Classroom | undefined;
         fetchClassroom: (force?:boolean)=>Promise<void>;
@@ -37,7 +36,7 @@ export function useClassroom(classroomName: string, forceRender: ForceRenderType
     return {classroom: service.getClassroom(classroomName), fetchClassroom: fetchclassroom};
 }
 
-export function useClassrooms(forceRender: ForceRenderType):
+export function useClassrooms(forceRender: ()=>void):
     {
         classrooms: Array<Classroom>;
         fetchClassrooms: (force?: boolean)=>Promise<void>;

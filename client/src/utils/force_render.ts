@@ -1,15 +1,15 @@
 import {useCallback, useState} from "react";
 
-export type ForceRenderType = ()=>void;
+export type ForceRenderType = [boolean, ()=>void];
 
 export function useForceRender(): ForceRenderType
 {
-    const [, setValue] = useState(false);
+    const [value, setValue] = useState(false);
 
     const forceRender = useCallback(()=>
     {
         setValue(prevValue=>!prevValue);
     }, [setValue]);
 
-    return forceRender;
+    return [value, forceRender];
 }
