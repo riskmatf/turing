@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {RouteComponentProps} from "react-router";
-import {Grid, Paper, Typography} from "@material-ui/core";
+import {Card, CardBody, CardHeader, Col, Row} from "reactstrap";
 
 // Create a union of props we need and add
 // the information given by Route from React.
@@ -12,39 +12,38 @@ export function HomePage(props: Props): React.ReactElement
 {
     return (
         <React.Fragment>
-            <Grid container direction={'column'} justify={'center'}>
+            <Row>
             {/*TODO - set new logo*/}
-                <Grid item>
+                <Col>
                     <div className='hv-center-container'>
                         <img src='/turing/assets/img/logo.png' alt='Turing Logo' />
                     </div>
-                </Grid>
+                </Col>
+            </Row>
 
-                <Grid container item justify={'center'}>
-                    <Grid item xs={6}>
+            <Row>
+                <Col>
                         {/*TODO - fix the layout etc...*/}
-                        <Paper style={{width: '100%', padding: '10px'}} elevation={1}>
-                            <Typography variant="h4" component="h3">
+                        <Card>
+                            <CardHeader>
                                 Turing
-                            </Typography>
-                            <Typography component="p">
-                               Projekat Turing je platforma namenjena prikazivanju informacija o računarskoj
-                               opremi u okviru Matematičkog fakulteta. Platforma u realnom vremenu omogućava
-                               administratorima i korisnicima da prate i ažuriraju stanje računarske opreme.
-                            </Typography>
-                            <Typography component="p">
-                            </Typography>
-                            <Typography component="p">
-                                Projekat je izveden u okviru
-                                organizacije <a target='_blank'href='http://risk.matf.bg.ac.rs/'>RISK</a>
-                                { ' ' } sa ciljem da unapredi funkcionisanje Računarske laboratorije
-                                i olakša održavanje računarske opreme.
-                            </Typography>
-                        </Paper>
-                    </Grid>
-                </Grid>
-
-            </Grid>
+                            </CardHeader>
+                            <CardBody>
+                                <p>
+                                   Projekat Turing je platforma namenjena prikazivanju informacija o računarskoj
+                                   opremi u okviru Matematičkog fakulteta. Platforma u realnom vremenu omogućava
+                                   administratorima i korisnicima da prate i ažuriraju stanje računarske opreme.
+                                </p>
+                                <p>
+                                    Projekat je izveden u okviru
+                                    organizacije <a target='_blank'href='http://risk.matf.bg.ac.rs/'>RISK</a>
+                                    { ' ' } sa ciljem da unapredi funkcionisanje Računarske laboratorije
+                                    i olakša održavanje računarske opreme.
+                                </p>
+                            </CardBody>
+                        </Card>
+                </Col>
+            </Row>
         </React.Fragment>
     );
 }
