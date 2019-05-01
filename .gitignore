@@ -1,3 +1,5 @@
 test
 */.idea
 deploy/
+node_modules
+package-lock.json
