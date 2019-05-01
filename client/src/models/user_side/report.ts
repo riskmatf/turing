@@ -1,7 +1,11 @@
+export type ReportType = 1 | 2 | 3;
+
 export class Report
 {
     public constructor(public readonly idReport: number, public readonly classroomName: string,
-                       public readonly idComputer: number, public description: string, public fixed: boolean,
+                       public readonly date: number, public description: string, public fixed: boolean,
+                       public readonly type: ReportType,
+                       public readonly idComputer?: number | undefined,
                        private idAdmin_?: number | undefined, private adminComment_?: string | undefined)
     {
         if(idReport < 0)
@@ -14,7 +18,17 @@ export class Report
             throw new Error('Can not create Report where idAdmin is not valid');
         }
 
-        if(idComputer < 0)
+        if(type === Report.TYPE_COMPUTER_REPORT && idComputer === undefined)
+        {
+            throw new Error('Can not create computer report with no computer id');
+        }
+
+        if(type !== Report.TYPE_COMPUTER_REPORT && idComputer !== undefined)
+        {
+            throw new Error('Non computer report does not take computer id');
+        }
+
+        if(idComputer !== undefined && idComputer < 0)
         {
             throw new Error('Can not create Report where idComputer is not valid');
         }
@@ -76,4 +90,10 @@ export class Report
 
         throw new Error('Admin comment is not set');
     }
+
+
+
+    public static readonly TYPE_COMPUTER_REPORT  = 1;
+    public static readonly TYPE_PROJECTOR_REPORT = 2;
+    public static readonly TYPE_OTHER_REPORT = 3;
 }

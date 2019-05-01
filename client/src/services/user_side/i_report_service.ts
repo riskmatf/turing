@@ -1,4 +1,4 @@
-import {Report} from "../../models/user_side/report";
+import {Report, ReportType} from "../../models/user_side/report";
 import {EventSubscription} from "fbemitter";
 import {ServiceLocator} from "./serviceLocator";
 import {useCallback, useEffect} from "react";
@@ -14,8 +14,10 @@ export type ReportCollection = Map<string, Array<Report>>;
 export type ReportData =
     {
         classroomName: string;
-        idComputer: number;
+        idComputer?: number;
         description: string;
+        date: number;
+        type: ReportType;
     }
 
 export interface IReportService
