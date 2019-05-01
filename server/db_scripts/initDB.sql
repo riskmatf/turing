@@ -23,6 +23,7 @@ create table if not exists reports(
 	fixed tinyint(1) default 0 not null,
 	adminComment varchar(1000) default null,
 	adminUsername varchar(20) default null,
+	timestamp integer not null,
 	
 	foreign key (classroomName) references classrooms(name),
 	foreign key (adminUsername) references admins(username)
@@ -33,13 +34,14 @@ drop trigger if exists computerOrProjectorOrOther $$
 create trigger computerOrProjectorOrOther before insert on reports
 	for each row
 	begin
-		if new.reportType not in (1,2,3)
+		if new.reportType not in (1,2)
 		then 
-			SIGNAL SQLSTATE '45000' SET message_text = "ERROR! Report type must be in (1,2,3)";
-		elseif new.reportType = 1 and computerID is null
+			SIGNAL SQLSTATE '45000' SET message_text = "ERROR! Report type must be in (1,2)";
+		elseif new.reportType = 1 and new.computerID is null
 		then
 			SIGNAL SQLSTATE '45000' SET message_text = "ERROR! Report type is 1 but computerID is null";
 		end if;
+		set new.timestamp = UNIX_TIMESTAMP();
 	END;$$
 
 delimiter ;
