@@ -122,7 +122,14 @@ serve()
 
    pushd "$PWD"
    cd ./deploy
-   node main.js
+   while [ true ];
+   do
+   	node main.js&
+	inotifywait -r ./api > /dev/null 2>/dev/null
+	echo 'Change detected restarting server...'
+	kill %1 >/dev/null 2>/dev/null
+	clear
+   done
    popd
 }
 
