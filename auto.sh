@@ -125,10 +125,11 @@ serve()
    while [ true ];
    do
    	node main.js&
-	inotifywait -r ./api > /dev/null 2>/dev/null
+	   inotifywait -r ./api -e create -e modify > /dev/null 2>/dev/null
 	echo 'Change detected restarting server...'
 	kill %1 >/dev/null 2>/dev/null
-	clear
+	sleep 1
+	
    done
    popd
 }
