@@ -83,6 +83,7 @@ export class LocalReportService implements IReportService
                 this.reportClassroomView_.set(newRep.classroomName, [newRep]);
             }
 
+            this.emitter_.emit(LocalReportService.ON_REPORT_CHANGE);
             return newRep;
         })();
     }
