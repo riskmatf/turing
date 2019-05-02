@@ -24,24 +24,48 @@ create table if not exists reports(
 	adminComment varchar(1000) default null,
 	adminUsername varchar(20) default null,
 	timestamp integer not null,
+	urgent tinyint(1) default 0 not null,
 	
 	foreign key (classroomName) references classrooms(name),
 	foreign key (adminUsername) references admins(username)
 );
 
 delimiter $$
-drop trigger if exists computerOrProjectorOrOther $$
-create trigger computerOrProjectorOrOther before insert on reports
+drop trigger if exists reportsBI $$
+create trigger reportsBI before insert on reports
 	for each row
 	begin
-		if new.reportType not in (1,2)
+		if new.reportType not in (1,2,3)
 		then 
-			SIGNAL SQLSTATE '45000' SET message_text = "ERROR! Report type must be in (1,2)";
+			SIGNAL SQLSTATE '45000' SET message_text = "ERROR! Report type must be in (1,2,3)";
 		elseif new.reportType = 1 and new.computerID is null
 		then
 			SIGNAL SQLSTATE '45000' SET message_text = "ERROR! Report type is 1 but computerID is null";
+		elseif new.fixed not in (0,1)
+		then
+			SIGNAL SQLSTATE '45000' SET message_text = "ERROR! Fixed must be either 1 or 0!";
+		elseif new.urgent not in (0,1)
+		then
+			SIGNAL SQLSTATE '45000' SET message_text = "ERROR! Urgent must be either 1 or 0!";
 		end if;
 		set new.timestamp = UNIX_TIMESTAMP();
 	END;$$
-
+	
+create trigger reportsBU before update on reports
+	for each row
+	begin
+		if new.reportType not in (1,2,3)
+		then 
+			SIGNAL SQLSTATE '45000' SET message_text = "ERROR! Report type must be in (1,2,3)";
+		elseif new.reportType = 1 and new.computerID is null
+		then
+			SIGNAL SQLSTATE '45000' SET message_text = "ERROR! Report type is 1 but computerID is null";
+		elseif new.fixed not in (0,1)
+		then
+			SIGNAL SQLSTATE '45000' SET message_text = "ERROR! Fixed must be either 1 or 0!";
+		elseif new.urgent not in (0,1)
+		then
+			SIGNAL SQLSTATE '45000' SET message_text = "ERROR! Urgent must be either 1 or 0!";
+		end if;
+	end;$$
 delimiter ;
