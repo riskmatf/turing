@@ -1,0 +1,52 @@
+syntax : reqType route[params]
+			response
+
+GET /classrooms
+	resp:{
+			classrooms: [classroom] #array of classrooms
+	}
+GET /classrooms?location="location":
+	resp:{
+			classrooms: [classroom] #array of classrooms
+	}
+
+GET /classrooms/:name
+	resp:{
+		classroom: null | classroom
+	}
+
+POST /classrooms
+	params:{
+		"name"
+		"location"
+		"numOfComputers"
+	}
+	resp:
+		CODE = 400, if any of ^ fields are missing or numOfComputers < 0
+		CODE = 409, DUPLICATE ENTRY
+		CODE = 200, ALL OK!
+
+GET /reports
+	queryParams:{
+		classroomName? : string,
+		fixed? : 0 | 1,
+		urgent? : 0 | 1,
+		offset? : number default = 0,
+		limit? : number default = 42
+	}
+	returns:{
+		CODE = 200, resp:{
+			reports : [report]
+			next : {
+				itemsRemaining : number,
+				nextPageUrl : string
+			} | null(null if there is no next page)
+		}
+		CODE = 400, any of params not valid(fixed and urgent not 1 or 0, offset and limit NaN)
+	}
+GET /reports/:id
+	resp:{
+		report : report | null
+	}
+	CODE = 200, ALL OK
+	CODE = 400, ID <= 0
