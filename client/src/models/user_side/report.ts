@@ -55,7 +55,6 @@ export class Report
         this.adminComment_ = adminComment;
     }
 
-
     public changeAdminComment(comment: string): void
     {
         if(this.idAdmin_ === undefined)
