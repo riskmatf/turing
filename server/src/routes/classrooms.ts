@@ -1,6 +1,6 @@
 import {Router} from 'express';
-import {classroom} from "../types/types"
-import {json} from 'body-parser'
+import {classroom} from "../types/types";
+import {json} from 'body-parser';
 import { addClassroom, getClassroomsByLocation, getClassroomByName, getAllClassrooms }
 																from '../db/functions/classroomsDB';
 const router = Router();
@@ -33,7 +33,6 @@ router.get('/classrooms', (req, res) =>
 			})
 		})
 	}
-	
 });
 
 router.use(json());
@@ -51,11 +50,18 @@ router.post('/classrooms', (req, res)=>{
 		res.status(400).send("number of computer must be >= 0");
 	}
 
-	addClassroom(body['name'], body.location, body.numOfComputers,
+		addClassroom(body['name'], body.location, body.numOfComputers,
 		(msg = "All OK!", httpCode = 200)=>{
 			res.status(httpCode).send(msg);
-		});});
+		});
+	});
 
+	/**
+	 * Admin ima CRUD za ucionice i reportove i admine
+	 * CUD ide na poseban endpoint /admin/endpoint
+	 * R ide na ovaj koji vec imam
+	 * 
+	 */
 
 export default router;
 

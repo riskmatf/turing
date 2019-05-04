@@ -13,12 +13,8 @@ function getAllClassrooms(finalCallback : ((allClassrooms : classroom[]) => void
 			console.error(err.message);
 			throw(err);
 		}
-		results.forEach((e : classroom)=> {
-			finalRes.push({...e})
-		});
-		finalCallback(finalRes);
+		finalCallback(results);
 	});
-
 }
 /**
  * 
@@ -34,7 +30,6 @@ function getClassroomByName(name : string,
 {
 	//NOTE: This "cast" in query callback DOES NOT GARANTIE that results will be array of classrooms
 	//and there is no way to garantie that(maybe orm but its too late now), so BEWARE!!!!!
-	console.log(name.toLowerCase());
 	dbCon.query('select * from classrooms where name = ? limit 1', [name.toLowerCase()],
 	(err, results : classroom[], _fields)=>{
 		if(err){
@@ -42,7 +37,6 @@ function getClassroomByName(name : string,
 			throw(err);
 		}
 		finalCallback(results);
-
 	});
 }
 /**
