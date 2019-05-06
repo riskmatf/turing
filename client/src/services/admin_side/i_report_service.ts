@@ -1,7 +1,6 @@
 import {Report, ReportType} from "../../models/admin_side/report";
 import {EventSubscription} from "fbemitter";
-import {ChangeDataSetter} from "../../utils/help_types";
-import {useCallback, useEffect} from "react";
+import {SetStateAction, useCallback, useEffect} from "react";
 import {ServiceLocator} from "./service_locator";
 
 export type ReportCollection = Map<string, Array<Report>>;
@@ -21,6 +20,13 @@ export type ChangeReportData =
         adminComment?: string;
     };
 
+export interface ReportUpdateBuilder
+{
+    executeUpdate(): Promise<void>;
+    removeComment(): ReportUpdateBuilder;
+    addAdminComment(comment: SetStateAction<string>): ReportUpdateBuilder;
+    setFix(value: SetStateAction<boolean>): ReportUpdateBuilder;
+}
 
 export interface IReportService
 {
@@ -32,7 +38,7 @@ export interface IReportService
     fetchReportsForClassroom(classroom: string, force?: boolean): Promise<void>;
     addReport(data: ReportData): Promise<Report>;
     removeReport(id: number): Promise<void>;
-    changeReportData(id: number, data: ChangeDataSetter<ChangeReportData>): Promise<void>;
+    updateReport(id: number): ReportUpdateBuilder;
     removeAdminComment(id: number): Promise<void>;
     onReportsChanged(handler: ()=>void): EventSubscription;
 }
@@ -104,9 +110,8 @@ export function useReport(id: number, forceRender: ()=>void):
     {
         report: Report | undefined;
         fetchReport: (force?: boolean)=>Promise<void>;
-        changeData: (setter: ChangeDataSetter<ChangeReportData>)=>Promise<void>;
-        removeReport: ()=>Promise<void>;
-        removeAdminComment: ()=>Promise<void>;
+        updateReport: ()=>ReportUpdateBuilder;
+        removeReport: ()=>Promise<void>
     }
 {
 
@@ -129,9 +134,9 @@ export function useReport(id: number, forceRender: ()=>void):
         return service.fetchReport(id, force);
     }, [service, id]);
 
-    const changeData = useCallback((setter: ChangeDataSetter<ChangeReportData>)=>
+    const changeData = useCallback(()=>
     {
-        return service.changeReportData(id, setter);
+        return service.updateReport(id);
     }, [service, id]);
 
     const removeReport = useCallback(()=>
@@ -147,8 +152,7 @@ export function useReport(id: number, forceRender: ()=>void):
     return {
         report: service.getReport(id),
         fetchReport: fetchReport,
-        changeData: changeData,
-        removeAdminComment: removeAdminComment,
+        updateReport: changeData,
         removeReport: removeReport
     };
 }
