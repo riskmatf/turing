@@ -1,18 +1,18 @@
 import * as React from 'react';
 import {match, RouteComponentProps} from "react-router";
-import {useClassroom } from "../services/user_side/i_classroom_service";
-import {useForceRender} from "../utils/force_render";
-import {SvgShema} from "./svg_shema";
+import {useClassroom } from "../../services/user_side/i_classroom_service";
+import {useForceRender} from "../../utils/force_render";
+import {SvgShema} from "../svg_shema";
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {ReportData, useReportsForClassroom} from "../services/user_side/i_report_service";
+import {ReportData, useReportsForClassroom} from "../../services/user_side/i_report_service";
 import {Col, Row, Card, CardHeader, CardBody, Button, Modal, ModalHeader, ModalBody, ListGroup} from "reactstrap";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
-import {Report, ReportType} from "../models/user_side/report";
-import {Hook} from "../utils/hook";
+import {Report, ReportType} from "../../models/user_side/report";
+import {Hook} from "../../utils/hook";
 import {ReportView} from "./report_view";
 import {ReportEditor} from "./report_editor";
-import {ServiceLocator} from "../services/user_side/serviceLocator";
+import {ServiceLocator} from "../../services/user_side/serviceLocator";
 
 type BodyProps =
     Readonly<{

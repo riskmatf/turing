@@ -1,9 +1,9 @@
 import * as React from 'react';
-import {useClassrooms} from "../services/user_side/i_classroom_service";
-import {useForceRender} from "../utils/force_render";
+import {useClassrooms} from "../../services/user_side/i_classroom_service";
+import {useForceRender} from "../../utils/force_render";
 import {Link, match} from 'react-router-dom';
 import {useMemo, useState} from "react";
-import {Classroom} from "../models/user_side/classroom";
+import {Classroom} from "../../models/user_side/classroom";
 import {Card, CardBody, CardHeader, CardImg, Col, Row, UncontrolledCollapse} from "reactstrap";
 import {ClassroomDisplay} from "./classroom_display";
 
