@@ -3,7 +3,7 @@ import {EventEmitter, EventSubscription} from "fbemitter";
 import {Classroom} from "../../models/admin_side/classroom";
 import {SetStateAction} from "react";
 
-class LocalClassroomService implements IClassroomService
+export class LocalClassroomService implements IClassroomService
 {
 
     private static ON_CLASSROOMS_CHANGE = 'on_classrooms_change';

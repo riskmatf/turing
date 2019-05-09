@@ -1,11 +1,7 @@
-import {ChangeReportData, IReportService, ReportData, ReportUpdateBuilder} from "./i_report_service";
+import {IReportService, ReportData, ReportUpdateBuilder} from "./i_report_service";
 import {EventEmitter, EventSubscription} from "fbemitter";
 import {Report} from "../../models/admin_side/report";
-import {ChangeDataSetter} from "../../utils/help_types";
 import {SetStateAction} from "react";
-import {Simulate} from "react-dom/test-utils";
-import compositionEnd = Simulate.compositionEnd;
-import {ServiceLocator} from "./service_locator";
 
 export class LocalReportService implements IReportService
 {
