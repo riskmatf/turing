@@ -13,9 +13,50 @@ export class LocalReportService implements IReportService
 
     constructor()
     {
-        this.reports_ = new Map<number, Report>();
+        this.reports_ = new Map<number, Report>([
+            [0, new Report(0, '704', 1, 'Some error', false,
+                Report.TYPE_COMPUTER_REPORT, 1)],
+            [1, new Report(1, '704', 3, 'Some error also', false,
+                Report.TYPE_COMPUTER_REPORT, 3)],
+            [2, new Report(2, '704', 5, 'Some error hey', false,
+                Report.TYPE_COMPUTER_REPORT, 5)],
+
+            [3, new Report(3, '718', 1, 'Some error', false,
+                Report.TYPE_COMPUTER_REPORT, 1)],
+            [4, new Report(4, '718', 5, 'Some erro asr', false,
+                Report.TYPE_COMPUTER_REPORT, 5)],
+            [5, new Report(5, '718', 7, 'Some errora ', false,
+                Report.TYPE_COMPUTER_REPORT, 7)],
+
+            [6, new Report(6, 'rlab', 1, 'Some error', false,
+                Report.TYPE_COMPUTER_REPORT, 1)],
+            [7, new Report(7, 'rlab', 2, 'Some error', false,
+                Report.TYPE_COMPUTER_REPORT, 2)],
+            [8, new Report(8, 'rlab', 3, 'Some error', false,
+                Report.TYPE_COMPUTER_REPORT, 3)],
+        ]);
+
         this.classroomReportView_ = new Map<string, Array<Report>>();
+
         this.emitter_ = new EventEmitter();
+
+        this.reports_.forEach(value =>
+        {
+            if(this.classroomReportView_.has(value.classroomName))
+            {
+                const arr = this.classroomReportView_.get(value.classroomName);
+
+                if(arr !== undefined)
+                {
+                    arr.push(value);
+                }
+            }
+            else
+            {
+                this.classroomReportView_.set(value.classroomName, [value]);
+            }
+        });
+
     }
 
     addReport(data: ReportData): Promise<Report>
