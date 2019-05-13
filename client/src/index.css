@@ -32,29 +32,42 @@ code {
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px)
 {
-  .full-screen-modal
-  {
-      margin: 0px;
-      max-width: 100vw;
-      max-height: 100vh;
-      width: 100vw;
-      height: 100vh;
-      border-radius: 0px;
-  }
+
+    .full-screen-modal
+    {
+        margin: 0px;
+        max-width: 100vw;
+        max-height: 100vh;
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0px;
+    }
+
+    .admin-main-layout
+    {
+        width: 100%;
+        transition: width 224ms;
+    }
 }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px)
 {
-  .full-screen-modal
-  {
-      margin: 0px;
-      max-width: 100vw;
-      max-height: 100vh;
-      width: 100vw;
-      height: 100vh;
-      border-radius: 0px;
-  }
+    .full-screen-modal
+    {
+        margin: 0px;
+        max-width: 100vw;
+        max-height: 100vh;
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0px;
+    }
+
+    .admin-main-layout
+    {
+        width: 100%;
+        transition: width 224ms;
+    }
 }
 
 /* Medium devices (landscape tablets, 768px and up) */
@@ -71,6 +84,12 @@ code {
         max-height:50vh;
         border-radius: 0.3rem;
     }
+
+    .admin-main-layout
+    {
+        width: auto;
+        transition: none;
+    }
 }
 
 /* Large devices (laptops/desktops, 992px and up) */
@@ -85,6 +104,12 @@ code {
         max-height:50vh;
         border-radius: 0.3rem;
     }
+
+    .admin-main-layout
+    {
+        width: auto;
+        transition: none;
+    }
 }
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
@@ -98,5 +123,11 @@ code {
         max-width: 50vw;
         max-height:50vh;
         border-radius: 0.3rem;
+    }
+
+    .admin-main-layout
+    {
+        width: auto;
+        transition: none;
     }
 }
