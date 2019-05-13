@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {ServiceLocator as UserServiceLocator} from "./services/user_side/serviceLocator";
 import {LocalReportService as UserLocalReportService} from "./services/user_side/local_report_service";
 import {LocalClassroomService as UserLocalClassroomService} from "./services/user_side/local_classroom_service";
@@ -17,6 +17,9 @@ import {ReportsPage} from "./components/admin_side/reports_page";
 import {ClassroomsPage} from "./components/admin_side/classrooms_page";
 import {ClassroomPage} from "./components/admin_side/classroom_page";
 import {FeedPage} from "./components/admin_side/feed_page";
+import {LocalAuthService} from "./services/admin_side/local_auth_service";
+import {scryRenderedComponentsWithType} from "react-dom/test-utils";
+import {useForceRender} from "./utils/force_render";
 
 /**
  * Here register all services that you need for program
@@ -28,6 +31,7 @@ UserServiceLocator.registerReportService(new UserLocalReportService());
 
 AdminServiceLocator.registerReportService(new AdminLocalReportService());
 AdminServiceLocator.registerClassroomService(new AdminLocalClassroomService());
+AdminServiceLocator.registerAuthService(new LocalAuthService());
 
 
 type Props = {};
@@ -39,8 +43,38 @@ function ErrorPage(props: {}): React.ReactElement
     );
 }
 
-function AdminRoutes(props: RouteComponentProps): React.ReactElement
+function AdminRoutes(props: RouteComponentProps): React.ReactElement | null
 {
+    const service = AdminServiceLocator.getAuthService();
+    const [, forceRender] = useForceRender();
+
+    useEffect(()=>
+    {
+        const sub = service.onLogedInChange(forceRender);
+
+        return ()=>
+        {
+            sub.remove();
+        }
+    }, [service, forceRender]);
+
+    if(service.isLogedIn() === undefined)
+    {
+        return null;
+    }
+
+    if(service.isLogedIn() === false)
+    {
+        return (
+            <React.Fragment>
+                <Switch>
+                    <Route exact path={'/admin'} component={LoginPage}/>
+                    <Redirect to={'/admin'}/>
+                </Switch>
+            </React.Fragment>
+        )
+    }
+
     return (
         <React.Fragment>
             <Switch>
@@ -48,7 +82,7 @@ function AdminRoutes(props: RouteComponentProps): React.ReactElement
                 <Route path={'/admin/reports'} component={ReportsPage}/>
                 <Route path={'/admin/classrooms/:id'} component={ClassroomPage}/>
                 <Route path={'/admin/classrooms'} component={ClassroomsPage}/>
-                <Route exact path={'/admin'} component={LoginPage}/>
+                <Route exact path={'/admin'} render={(props)=>{props.history.replace('/admin/feed'); return null;}}/>
                 <Redirect to={'/error'}/>
             </Switch>
         </React.Fragment>

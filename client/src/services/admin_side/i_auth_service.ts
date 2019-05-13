@@ -1,9 +1,15 @@
+import {EventSubscription} from 'fbemitter';
+import {User} from "../../models/admin_side/user";
+
 export interface IAuthService
 {
-    login(username: string, password: string): Promise<void>;
+    login(username: string, password: string): Promise<boolean>;
     logout(): Promise<void>;
-    isLogedIn(): boolean;
+
+    isLogedIn(): boolean | undefined;
     /*Returns username for current logged in admin*/
-    whoIsLogedIn(): string;
-    jwt(): string;
+    whoIsLogedIn(): User | undefined;
+
+    onLogedInChange(handler: ()=>void): EventSubscription;
+
 }
