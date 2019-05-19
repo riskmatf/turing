@@ -13,10 +13,10 @@ export class Report
             throw new Error('Can not create Report where idReport is not valid');
         }
 
-        if(idAdmin_ !== undefined)
+        /*if(idAdmin_ !== undefined)
         {
             throw new Error('Can not create Report where idAdmin is not valid');
-        }
+        }*/
 
         if(type === Report.TYPE_COMPUTER_REPORT && idComputer === undefined)
         {
