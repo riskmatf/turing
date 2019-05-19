@@ -23,7 +23,7 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
 {
     const [reportsDidChange, forceRender] = useForceRender();
     const classroom = useClassroom(props.match.params.id, forceRender);
-    const [toggleErrors, setToggleErrors]: Hook<Array<(t: boolean)=>void> | undefined> = useState();
+    const [toggleErrors, setToggleErrors]: Hook<{fn?: (id:number)=>void}> = useState({});
     const reports = useReportsForClassroom(props.match.params.id, forceRender);
 
     const [isModalOpen, setModalOpen] = useState(false);
@@ -58,6 +58,7 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
         return res;
 
     }, [reportsDidChange]);
+
     const otherReportsNotFixed = useMemo(()=>
     {
         return reports.reports.filter(value=>
@@ -86,25 +87,21 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
      */
     useEffect(()=>
     {
-        if(toggleErrors === undefined)
+        if(toggleErrors.fn === undefined)
         {
             return ;
         }
 
-        for(const f of toggleErrors)
-        {
-            f(false);
-        }
 
         for(let it = computerNotFixedReports.keys(), curr = it.next(); !curr.done; curr = it.next())
         {
-            toggleErrors[curr.value-1](true);
+            toggleErrors.fn(curr.value);
         }
     }, [reportsDidChange, toggleErrors]);
 
-    const onLoad = useCallback((arr: Array<(value: boolean)=>void>)=>
+    const onLoad = useCallback((fn: (id: number)=>void)=>
     {
-        setToggleErrors(arr);
+        setToggleErrors({fn: fn});
     }, [setToggleErrors]);
 
     const onToggleModal = useCallback(()=>
