@@ -6,7 +6,10 @@ import {User} from "../../models/admin_side/user";
 export class LocalAuthService implements IAuthService
 {
     private static ON_LOGIN_CHANGED = 'ON_LOGIN_CHANGED';
-    private static users = [{displayName: 'admin', userName: 'admin', password: 'admin'}];
+    private static users = [
+        {displayName: 'admin', userName: 'admin', password: 'admin'},
+        {displayName: 'admin1', userName: 'admin1', password: 'admin1'}
+    ];
     private emitter_: EventEmitter;
     private user_: User | undefined;
     private isLogedIn_: boolean | undefined;

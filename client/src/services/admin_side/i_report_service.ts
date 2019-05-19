@@ -39,7 +39,6 @@ export interface IReportService
     addReport(data: ReportData): Promise<Report>;
     removeReport(id: number): Promise<void>;
     updateReport(id: number): ReportUpdateBuilder;
-    removeAdminComment(id: number): Promise<void>;
     onReportsChanged(handler: ()=>void): EventSubscription;
 }
 
@@ -142,11 +141,6 @@ export function useReport(id: number, forceRender: ()=>void):
     const removeReport = useCallback(()=>
     {
         return service.removeReport(id);
-    }, [service, id]);
-
-    const removeAdminComment = useCallback(()=>
-    {
-        return service.removeAdminComment(id);
     }, [service, id]);
 
     return {

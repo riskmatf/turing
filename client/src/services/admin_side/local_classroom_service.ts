@@ -3,6 +3,17 @@ import {EventEmitter, EventSubscription} from "fbemitter";
 import {Classroom} from "../../models/admin_side/classroom";
 import {SetStateAction} from "react";
 
+function schemaUrl(name: string)
+{
+    return `/turing/assets/schemas/${name}.svg`;
+}
+
+const data:Array<[string, string, number]> = [
+    ['704','Trg', 15], ['718', 'Trg', 10],
+    ['bim','Jagiceva', 8],
+    ['rlab', 'Jagiceva', 4]
+];
+
 export class LocalClassroomService implements IClassroomService
 {
 
@@ -14,7 +25,9 @@ export class LocalClassroomService implements IClassroomService
     constructor()
     {
         this.emitter_ = new EventEmitter();
-        this.classrooms_ = new Map<string, Classroom>();
+        this.classrooms_ = new Map<string, Classroom>(
+            data.map(([a, b, c])=> [a, new Classroom(a, b, schemaUrl(a), c)])
+            );
     }
 
 

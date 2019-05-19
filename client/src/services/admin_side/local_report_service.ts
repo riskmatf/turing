@@ -2,6 +2,7 @@ import {IReportService, ReportData, ReportUpdateBuilder} from "./i_report_servic
 import {EventEmitter, EventSubscription} from "fbemitter";
 import {Report} from "../../models/admin_side/report";
 import {SetStateAction} from "react";
+import {ServiceLocator} from "./service_locator";
 
 export class LocalReportService implements IReportService
 {
@@ -15,9 +16,9 @@ export class LocalReportService implements IReportService
     {
         this.reports_ = new Map<number, Report>([
             [0, new Report(0, '704', 1, 'Some error', false,
-                Report.TYPE_COMPUTER_REPORT, 1)],
+                Report.TYPE_COMPUTER_REPORT, 1, 'admin', 'cao')],
             [1, new Report(1, '704', 3, 'Some error also', false,
-                Report.TYPE_COMPUTER_REPORT, 3)],
+                Report.TYPE_COMPUTER_REPORT, 3, 'admin1', 'cao1')],
             [2, new Report(2, '704', 5, 'Some error hey', false,
                 Report.TYPE_COMPUTER_REPORT, 5)],
 
@@ -81,6 +82,7 @@ export class LocalReportService implements IReportService
             }
 
 
+            this.emitter_.emit(LocalReportService.ON_REPORTS_CHANGED);
             return report;
         })();
     }
@@ -142,11 +144,6 @@ export class LocalReportService implements IReportService
         return this.emitter_.addListener(LocalReportService.ON_REPORTS_CHANGED, handler);
     }
 
-    /*TODO: implement this in model first*/
-    removeAdminComment(id: number): Promise<void>
-    {
-        return new Promise(()=>{});
-    }
 
     removeReport(id: number): Promise<void>
     {
@@ -164,9 +161,10 @@ export class LocalReportService implements IReportService
               const index = value.findIndex(value1 => value1.idReport === id) ;
               if(index !== -1)
               {
-                  delete value[index]
+                  value.splice(index, 1);
               }
             });
+            this.emitter_.emit(LocalReportService.ON_REPORTS_CHANGED);
         })();
 
     }
@@ -231,26 +229,38 @@ export class LocalReportService implements IReportService
                                 throw new Error('Action addAdminComment does not contain comment argument');
                             }
 
+                        {
+                            const admin = ServiceLocator.getAuthService().whoIsLogedIn();
+                            if(admin === undefined)
                             {
-                                const idAdmin = '';
-                                //const idAdmin = ServiceLocator.getAuthService().
-                                if(typeof(action.value.comment) === 'function')
-                                {
-                                    const comment = model.isAdminCommentSet() ? model.adminComment : undefined;
-                                    model.addAdminComment(idAdmin, action.value.comment(comment));
-                                }
-                                else
-                                {
-                                    model.addAdminComment(idAdmin, action.value.comment);
-                                }
+                                throw new Error('You dont have permission to do this');
+
                             }
+                            const idAdmin = admin.userName
+
+                            if(typeof(action.value.comment) === 'function')
+                            {
+                                const comment = model.isAdminCommentSet() ? model.adminComment : undefined;
+                                model.addAdminComment(idAdmin, action.value.comment(comment));
+                            }
+                            else
+                            {
+                                model.addAdminComment(idAdmin, action.value.comment);
+                            }
+                        }
                             break;
 
                         case this.ACTION_REMOVE_ADMIN_COMMENT:
                             if(model.isAdminCommentSet())
                             {
-                                const idAdmin = '';
-                                //const idAdmin = ServiceLocator.getAuthService().
+                                const admin = ServiceLocator.getAuthService().whoIsLogedIn();
+                                if(admin === undefined)
+                                {
+                                    throw new Error('You dont have permission to do this');
+
+                                }
+                                const idAdmin = admin.userName;
+
                                 model.removeAdminComment(idAdmin);
                             }
                             break;
