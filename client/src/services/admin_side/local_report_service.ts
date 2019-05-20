@@ -22,11 +22,11 @@ export class LocalReportService implements IReportService
             [2, new Report(2, '704', 5, 'Some error hey', false,
                 Report.TYPE_COMPUTER_REPORT, 5)],
 
-            [3, new Report(3, '718', 1, 'Some error', false,
+            [3, new Report(3, '718', 1, 'Some error', true,
                 Report.TYPE_COMPUTER_REPORT, 1)],
             [4, new Report(4, '718', 5, 'Some erro asr', false,
                 Report.TYPE_COMPUTER_REPORT, 5)],
-            [5, new Report(5, '718', 7, 'Some errora ', false,
+            [5, new Report(5, '718', 7, 'Some errora ', true,
                 Report.TYPE_COMPUTER_REPORT, 7)],
 
             [6, new Report(6, 'rlab', 1, 'Some error', false,

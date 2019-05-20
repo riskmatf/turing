@@ -52,6 +52,7 @@ export function ReportView(props: Props): React.ReactElement
 
 function ExtendedReportView(props: Props): React.ReactElement
 {
+    //<editor-fold desc="State">
     const [confirmDialogData, setConfirmDialogData] = useState(
         {
             body: 'Ova operacija ne moze da se ponisti da li ste sigurni da zelite da uradite?',
@@ -177,6 +178,7 @@ function ExtendedReportView(props: Props): React.ReactElement
     {
         reportType = 'Projector report';
     }
+    //</editor-fold>
 
     return (
         <React.Fragment>
@@ -195,11 +197,18 @@ function ExtendedReportView(props: Props): React.ReactElement
 
 
                     {
-                        props.soleReport !== undefined &&
+                        props.soleReport !== undefined && !props.report.fixed &&
                         <Col xs='auto'>
                             <Button color='success' onClick={onReporortSolved}>
                                 Solve
                             </Button>
+                        </Col>
+                    }
+
+                    {
+                        props.report.fixed &&
+                        <Col xs='auto' className='text-success'>
+                            Solved
                         </Col>
                     }
 
@@ -307,12 +316,14 @@ function ExtendedReportView(props: Props): React.ReactElement
 
 function inlineReportViewJSX(props: Props): React.ReactElement
 {
+    /*TODO: when report is solved or urgent this will not display well*/
     const envelopeColor = props.report.isAdminCommentSet() ? 'green' : 'gray';
     /*Possible optimization to remember this value instead of creating new every render*/
     const date = new Date(props.report.date);
+    const colorClasses = props.report.fixed ? 'bg-success text-white' : '';
 
     return (
-        <ListGroupItem action onClick={props.onClick}>
+        <ListGroupItem action onClick={props.onClick} className={`${colorClasses}`}>
             <Row className='justify-content-between'>
                 <Col xs='auto'>
                     Report #{props.report.idReport}

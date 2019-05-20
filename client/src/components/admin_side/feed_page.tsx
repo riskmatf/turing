@@ -44,7 +44,7 @@ function FeedPage_(props: Props): React.ReactElement
         console.log('Regenerating report data...');
         let res: Array<Report> = [];
 
-        const reports = ServiceLocator.getReportService().getReports();
+        const reports = reportApi.reports;
         for(let it = reports.values(), curr = it.next(); !curr.done; curr = it.next())
         {
             res.push(...curr.value);
