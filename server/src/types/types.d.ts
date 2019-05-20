@@ -21,4 +21,9 @@ type nextObject = {
 	itemsRemaining : number,
 	nextPageUrl : string
 }
-export {classroom, report, nextObject}
+type user = {
+	username : string, 
+	displayName : string
+}
+
+export {classroom, report, nextObject, user}
