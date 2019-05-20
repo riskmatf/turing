@@ -3,7 +3,9 @@ import {classroom} from "../types/types";
 import {json} from 'body-parser';
 import { addClassroom, getClassroomsByLocation, getClassroomByName, getAllClassrooms }
 																from '../db/functions/classroomsDB';
+
 const router = Router();
+router.use(json());
 
 router.get('/classrooms/:name', (req, res)=>{
 	getClassroomByName(req.params.name, (classroomArr : classroom[])=>{
@@ -16,6 +18,7 @@ router.get('/classrooms/:name', (req, res)=>{
 		})
 	})
 })
+
 
 router.get('/classrooms', (req, res) =>
 {
@@ -35,7 +38,7 @@ router.get('/classrooms', (req, res) =>
 	}
 });
 
-router.use(json());
+
 router.post('/classrooms', (req, res)=>{
 	let body = req.body;
 	
