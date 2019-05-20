@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {ReportData} from "../services/user_side/i_report_service";
+import {ReportData} from "../../services/user_side/i_report_service";
 import {useCallback, useState} from "react";
 import {Button, Col, Input, Row} from "reactstrap";
-import {Report} from "../models/user_side/report";
+import {Report} from "../../models/user_side/report";
 
 type Props =
     Readonly<{

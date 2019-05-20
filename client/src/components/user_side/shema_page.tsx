@@ -1,18 +1,18 @@
 import * as React from 'react';
 import {match, RouteComponentProps} from "react-router";
-import {useClassroom } from "../services/user_side/i_classroom_service";
-import {useForceRender} from "../utils/force_render";
-import {SvgShema} from "./svg_shema";
+import {useClassroom } from "../../services/user_side/i_classroom_service";
+import {useForceRender} from "../../utils/force_render";
+import {SvgShema} from "../svg_shema";
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {ReportData, useReportsForClassroom} from "../services/user_side/i_report_service";
+import {ReportData, useReportsForClassroom} from "../../services/user_side/i_report_service";
 import {Col, Row, Card, CardHeader, CardBody, Button, Modal, ModalHeader, ModalBody, ListGroup} from "reactstrap";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
-import {Report, ReportType} from "../models/user_side/report";
-import {Hook} from "../utils/hook";
+import {Report, ReportType} from "../../models/user_side/report";
+import {Hook} from "../../utils/hook";
 import {ReportView} from "./report_view";
 import {ReportEditor} from "./report_editor";
-import {ServiceLocator} from "../services/user_side/serviceLocator";
+import {ServiceLocator} from "../../services/user_side/serviceLocator";
 
 type BodyProps =
     Readonly<{
@@ -23,7 +23,7 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
 {
     const [reportsDidChange, forceRender] = useForceRender();
     const classroom = useClassroom(props.match.params.id, forceRender);
-    const [toggleErrors, setToggleErrors]: Hook<Array<(t: boolean)=>void> | undefined> = useState();
+    const [toggleErrors, setToggleErrors]: Hook<{fn?: (id:number)=>void}> = useState({});
     const reports = useReportsForClassroom(props.match.params.id, forceRender);
 
     const [isModalOpen, setModalOpen] = useState(false);
@@ -58,6 +58,7 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
         return res;
 
     }, [reportsDidChange]);
+
     const otherReportsNotFixed = useMemo(()=>
     {
         return reports.reports.filter(value=>
@@ -86,25 +87,21 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
      */
     useEffect(()=>
     {
-        if(toggleErrors === undefined)
+        if(toggleErrors.fn === undefined)
         {
             return ;
         }
 
-        for(const f of toggleErrors)
-        {
-            f(false);
-        }
 
         for(let it = computerNotFixedReports.keys(), curr = it.next(); !curr.done; curr = it.next())
         {
-            toggleErrors[curr.value-1](true);
+            toggleErrors.fn(curr.value);
         }
     }, [reportsDidChange, toggleErrors]);
 
-    const onLoad = useCallback((arr: Array<(value: boolean)=>void>)=>
+    const onLoad = useCallback((fn: (id: number)=>void)=>
     {
-        setToggleErrors(arr);
+        setToggleErrors({fn: fn});
     }, [setToggleErrors]);
 
     const onToggleModal = useCallback(()=>

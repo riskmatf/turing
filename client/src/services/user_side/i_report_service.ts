@@ -32,6 +32,7 @@ export interface IReportService
     onReportChange(handler: ()=>void): EventSubscription;
 }
 
+/*TODO: chagne api remove add report*/
 export function useReports(forceRender: ()=>void):
     {
         reports: ReportCollection;
@@ -69,6 +70,7 @@ export function useReports(forceRender: ()=>void):
     );
 }
 
+/*TODO: chagne api remove add report*/
 export function useReportsForClassroom(classroomName: string, forceRender: ()=>void):
     {
         reports: Array<Report>;

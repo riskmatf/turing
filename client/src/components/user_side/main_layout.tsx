@@ -11,13 +11,12 @@ import {Link} from "react-router-dom";
 
 type Props<T> =
     Readonly<{
-        body: React.ComponentType<T>
+        children: React.ReactNode
     }>;
 
 export function MainLayout(props: Props<{}>): React.ReactElement {
 
     let [isDrawerOpen, setDrawerOpen] = useState(false);
-
     const toggleDrawer = useCallback(() => {
         setDrawerOpen((prevState) => {
             return !prevState;
@@ -59,7 +58,7 @@ export function MainLayout(props: Props<{}>): React.ReactElement {
             <Container style={{flexGrow:1, overflowY:'auto'}}>
                 <Row>
                     <Col>
-                        <props.body/>
+                        {props.children}
                     </Col>
                 </Row>
             </Container>

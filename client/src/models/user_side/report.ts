@@ -6,17 +6,17 @@ export class Report
                        public readonly date: number, public description: string, public fixed: boolean,
                        public readonly type: ReportType,
                        public readonly idComputer?: number | undefined,
-                       private idAdmin_?: number | undefined, private adminComment_?: string | undefined)
+                       private idAdmin_?: string| undefined, private adminComment_?: string | undefined)
     {
         if(idReport < 0)
         {
             throw new Error('Can not create Report where idReport is not valid');
         }
 
-        if(idAdmin_ !== undefined && idAdmin_ < 0)
+        /*if(idAdmin_ !== undefined)
         {
             throw new Error('Can not create Report where idAdmin is not valid');
-        }
+        }*/
 
         if(type === Report.TYPE_COMPUTER_REPORT && idComputer === undefined)
         {
@@ -44,26 +44,26 @@ export class Report
         }
     }
 
-    public addAdminComment(id: number, adminComment: string): void
+    public addAdminComment(id: string, adminComment: string): void
     {
-        if(id < 0)
+        if(this.idAdmin_ !== undefined && this.idAdmin_ !== id)
         {
-            throw new Error('Can not add comment for invalid idAdmin');
+            throw new Error('Comment can be changed only by the same admin that placed it');
         }
 
         this.idAdmin_ = id;
         this.adminComment_ = adminComment;
     }
 
-
-    public changeAdminComment(comment: string): void
+    public removeAdminComment(id: string): void
     {
         if(this.idAdmin_ === undefined)
         {
-            throw new Error('Can not change admin comment when it was not originally set');
+            throw new Error('Can not remove not set comment');
         }
 
-        this.adminComment_ = comment;
+        this.idAdmin_ = undefined;
+        this.adminComment_ = undefined;
     }
 
     public isAdminCommentSet(): boolean
@@ -71,7 +71,7 @@ export class Report
         return this.idAdmin_ !== undefined && this.adminComment_ !== undefined;
     }
 
-    public get idAdmin(): number
+    public get idAdmin(): string
     {
         if(this.idAdmin_ !== undefined)
         {

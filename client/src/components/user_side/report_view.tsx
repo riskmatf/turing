@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Report} from "../models/user_side/report";
+import {Report} from "../../models/user_side/report";
 import {Card, CardBody, CardHeader, Col, ListGroupItem, Row} from "reactstrap";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faEnvelope} from '@fortawesome/free-regular-svg-icons';

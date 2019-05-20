@@ -1,21 +1,38 @@
-import React, {useCallback} from 'react';
-import {ServiceLocator} from "./services/user_side/serviceLocator";
-import {LocalReportService} from "./services/user_side/local_report_service";
-import {LocalClassroomService} from "./services/user_side/local_classroom_service";
-import {BrowserRouter, Link, Redirect, Route, Switch} from "react-router-dom";
+import React, {useEffect} from 'react';
+import {ServiceLocator as UserServiceLocator} from "./services/user_side/serviceLocator";
+import {LocalReportService as UserLocalReportService} from "./services/user_side/local_report_service";
+import {LocalClassroomService as UserLocalClassroomService} from "./services/user_side/local_classroom_service";
+import {ServiceLocator as AdminServiceLocator} from './services/admin_side/service_locator';
+import {LocalReportService as AdminLocalReportService} from './services/admin_side/local_report_service';
+import {LocalClassroomService as AdminLocalClassroomService} from './services/admin_side/local_classroom_service';
 
-import {MainLayout} from './components/main_layout';
-import {BodyPart as ClassroomPageBodyPart} from './components/classroom_page';
-import {HomePage} from './components/home_page';
-import {BodyPart as SchemaBodyPart} from './components/shema_page';
+import {BrowserRouter, Redirect, Route, RouteComponentProps, Switch} from "react-router-dom";
+import {BodyPart as ClassroomPageBodyPart} from './components/user_side/classroom_page';
+import {HomePage} from './components/user_side/home_page';
+import {BodyPart as SchemaBodyPart} from './components/user_side/shema_page';
+import {MainLayout as UserMainLayout} from "./components/user_side/main_layout";
+
+import {LoginPage} from "./components/admin_side/login_page";
+import {ReportsPage} from "./components/admin_side/reports_page";
+import {ClassroomsPage} from "./components/admin_side/classrooms_page";
+import {ClassroomPage} from "./components/admin_side/classroom_page";
+import {FeedPage} from "./components/admin_side/feed_page";
+import {LocalAuthService} from "./services/admin_side/local_auth_service";
+import {scryRenderedComponentsWithType} from "react-dom/test-utils";
+import {useForceRender} from "./utils/force_render";
 
 /**
  * Here register all services that you need for program
  * ServiceLocator.registerAudioService(new AudioServiceImpl())
  */
 
-ServiceLocator.registerClassroomService(new LocalClassroomService());
-ServiceLocator.registerReportService(new LocalReportService());
+UserServiceLocator.registerClassroomService(new UserLocalClassroomService());
+UserServiceLocator.registerReportService(new UserLocalReportService());
+
+AdminServiceLocator.registerReportService(new AdminLocalReportService());
+AdminServiceLocator.registerClassroomService(new AdminLocalClassroomService());
+AdminServiceLocator.registerAuthService(new LocalAuthService());
+
 
 type Props = {};
 
@@ -26,10 +43,56 @@ function ErrorPage(props: {}): React.ReactElement
     );
 }
 
-function Body(props: Props): React.ReactElement
+function AdminRoutes(props: RouteComponentProps): React.ReactElement | null
 {
+    const service = AdminServiceLocator.getAuthService();
+    const [, forceRender] = useForceRender();
+
+    useEffect(()=>
+    {
+        const sub = service.onLogedInChange(forceRender);
+
+        return ()=>
+        {
+            sub.remove();
+        }
+    }, [service, forceRender]);
+
+    if(service.isLogedIn() === undefined)
+    {
+        return null;
+    }
+
+    if(service.isLogedIn() === false)
+    {
+        return (
+            <React.Fragment>
+                <Switch>
+                    <Route exact path={'/admin'} component={LoginPage}/>
+                    <Redirect to={'/admin'}/>
+                </Switch>
+            </React.Fragment>
+        )
+    }
+
     return (
         <React.Fragment>
+            <Switch>
+                <Route path={'/admin/feed'} component={FeedPage}/>
+                <Route path={'/admin/reports'} component={ReportsPage}/>
+                <Route path={'/admin/classrooms/:id'} component={ClassroomPage}/>
+                <Route path={'/admin/classrooms'} component={ClassroomsPage}/>
+                <Route exact path={'/admin'} render={(props)=>{props.history.replace('/admin/feed'); return null;}}/>
+                <Redirect to={'/error'}/>
+            </Switch>
+        </React.Fragment>
+    );
+}
+
+function ClientRoutes(props: RouteComponentProps): React.ReactElement
+{
+    return (
+        <UserMainLayout>
             <Switch>
                 <Route path={'/classrooms/:id'} component={SchemaBodyPart}/>
                 <Route path={'/classrooms'} component={ClassroomPageBodyPart} />
@@ -37,14 +100,21 @@ function Body(props: Props): React.ReactElement
                 <Route exact path={'/'} component={HomePage}/>
                 <Redirect to={'/error'}/>
             </Switch>
-        </React.Fragment>
+        </UserMainLayout>
     );
 }
 
 export function App(props: Props): React.ReactElement {
     return (
         <BrowserRouter basename={'turing'}>
-            <MainLayout body={Body}/>
+            <Switch>
+
+                {/*Admin routes*/}
+                <Route path={'/admin'} component={AdminRoutes}/>
+                {/*Client routes*/}
+                <Route path={'/'} component={ClientRoutes}/>
+            </Switch>
+
         </BrowserRouter>
     );
 }

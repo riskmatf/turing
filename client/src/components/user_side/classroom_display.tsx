@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Classroom} from "../models/user_side/classroom";
+import {Classroom} from "../../models/user_side/classroom";
 import {CardBody, Card, CardHeader, CardImg} from "reactstrap";
 import {Link} from "react-router-dom";
 
