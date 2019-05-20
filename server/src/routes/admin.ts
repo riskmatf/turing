@@ -18,12 +18,8 @@ let tokenBlacklist : string[] = []; //used for tokens that are logged out
 
 //reference:
 //https://youtu.be/VvUsFQbWZFs?t=26
-function canYouPlayBass(token : string) : boolean{
+function canYouPlayBass(token : string) : boolean{//checks if token is in black list
 	return !(tokenBlacklist.indexOf(token) == -1);
-	// if(tokenBlacklist.indexOf(token) == -1){//not black, cant play bass
-	// 	return false;
-	// }
-	// return true;//token, you are black, you can play bass!
 }
 
 
@@ -58,8 +54,6 @@ router.post('/login', (req, res)=>{
 						expiresIn: authConf.jwtExpire["jwt"]
 					}
 				);
-				//console.log(`user = ${user} allready logged in`);
-				//console.log(token);
 				loggedUsers.push(user.username);
 
 				res.cookie('jwt', token,
@@ -75,12 +69,10 @@ router.post('/login', (req, res)=>{
 			}
 		})
 	})(req, res);
-	//res.send("idk, lol");
+
 })
 //TODO: nacin da proveri da li je ulogovan i da vrati ko je ulogovan
-// router.post('/signup', passport.authenticate('local-signup'), (req, res)=>{
-// 	res.send("valjda je ok?!");
-// })
+
 
 router.post("/signup", (req, res)=>{
 	passport.authenticate('local-signup',(err, user, info)=>{

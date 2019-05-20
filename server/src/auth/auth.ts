@@ -43,19 +43,12 @@ function initPassport(passport : Passport){
 					//create new
 					dbCon.query("insert into admins (username, password, displayName) values(?,?,?)",
 								[username, Md5.hashStr(password) , req.body["displayName"]], 
-								(err, res, _fields)=>{
+								(err, _res, _fields)=>{
 									if(err){
 										console.log(err.message);
 										done(err);
 									}
-									console.log("inID: ");
-									console.log(res.insertID);//always undef!
-									//TODO: why is this returned at all?
-									return done(undefined, {
-										username : username, 
-										password : password, 
-										id : res.insertID
-									});
+									return done(undefined, {message: "signup successfull"});
 								});
 				}
 			})
@@ -81,7 +74,6 @@ function initPassport(passport : Passport){
 							}
 							else{
 								if(res[0].password == Md5.hashStr(password)){
-									//console.log(`res[0] = ${res[0]}`);
 									return done(
 										undefined,
 										{
@@ -90,7 +82,7 @@ function initPassport(passport : Passport){
 										});
 								}
 								else{
-									console.log("no good passs");
+									//console.log("Bad password");
 									return done(undefined, false, {message : "auth failed"});
 								};
 							}
@@ -117,8 +109,8 @@ function initJWTPassport(passport : Passport){
 			if(req && req.cookies){
 				let token = cookieExtractor(req);//extracting cookie 2nd time, can it be fixed?
 				if(canYouPlayBass(token)){//you can play bass => you are black
-					console.log("token is black");
-					return done(null, false, null);//null as info bcs user does not need to know why is he 401
+					
+					return done(null, false, null);//null as info bcs user does not need to know why is he 401(unauth)
 				}
 			}
 			return done(null, payload);
