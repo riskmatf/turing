@@ -57,8 +57,8 @@ function getReports(	reportsParameters : Map<string, string | number>, offset : 
 	{
 		const URL_START = "http://localhost:8888/api/turing"; //TODO: CHANGE THIS WHEN DEPLOYING
 		let whereClause = createWhereClause(reportsParameters);
-		let reportsQuery : string = "select * from reports " + whereClause + "limit " +
-									dbCon.escape(limit) + " offset " + dbCon.escape(offset);
+		let reportsQuery : string = "select r.*, a.displayName from reports r left join admins a on r.adminUsername = a.username " + 
+		whereClause + "limit " + dbCon.escape(limit) + " offset " + dbCon.escape(offset);
 		let countQuery : string = "select count(*) as numOfCols from reports " + whereClause;
 		dbCon.query(reportsQuery + ";" + countQuery, (err, res, _fields)=>{
 			if(err){
