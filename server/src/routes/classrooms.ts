@@ -51,12 +51,13 @@ router.post('/classrooms', (req, res)=>{
 	}
 	if(body.numOfComputers < 0){
 		res.status(400).send("number of computer must be >= 0");
+		return;
 	}
 
-		addClassroom(body['name'], body.location, body.numOfComputers,
-		(msg = "All OK!", httpCode = 200)=>{
-			res.status(httpCode).send(msg);
-		});
+	addClassroom(body['name'], body.location, body.numOfComputers,
+				(msg = "All OK!", httpCode = 200)=>{
+					res.status(httpCode).send(msg);
+				});
 	});
 
 	/**
