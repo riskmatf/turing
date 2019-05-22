@@ -93,7 +93,7 @@ router.use('/admin', passport.authenticate('jwt', {session : false}));
 
 //this is /admin/logout because validaton is required even for logout
 //and user can logout only if it has a valid jwt token
-router.get('/admin/logout', (req, res)=>{
+router.post('/admin/logout', (req, res)=>{
 	let token : string = req.cookies['jwt'];
 	tokenBlacklist.push(token);
 	let userInfo : string | {[key:string] : string} | null = jwt.decode(token);
