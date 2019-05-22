@@ -16,7 +16,22 @@ function createWhereClause(whereClauseParams : Map<string, string | number>){
 	if(whereClauseParams.size > 0){
 		whereClause += "where ";
 		whereClauseParams.forEach((val : string | number, key : string)=>{
-			whereClauseConidtions.push(key + "=" + dbCon.escape(val) + " ");
+			//if given queryParam is array of values, like classrooms = [718, jag1, 704]
+			if(typeof(val) == "string" && val.startsWith("[") && val.length > 2){
+				let vals = val.slice(1, val.length-1).split(",");
+				let tmp : string[] = [];
+				vals.forEach(v => {
+					tmp.push(key + "=" + dbCon.escape(v.trim().toLowerCase()) + " ");
+				});
+				whereClauseConidtions.push("(" + tmp.join(" or ") + ")");
+			}
+			//reportComment is NULL or NOT NULL so it has to go like this
+			else if(key == "reportComment"){
+				whereClauseConidtions.push(key + " IS " + ((val == 1) ? " NOT " : "") + " NULL ")
+			}
+			else{
+				whereClauseConidtions.push(key + "=" + dbCon.escape(val) + " ");
+			}
 		})
 		whereClause += whereClauseConidtions.join(" and ");
 	}
@@ -57,8 +72,10 @@ function getReports(	reportsParameters : Map<string, string | number>, offset : 
 	{
 		const URL_START = "http://localhost:8888/api/turing"; //TODO: CHANGE THIS WHEN DEPLOYING
 		let whereClause = createWhereClause(reportsParameters);
-		let reportsQuery : string = "select r.*, a.displayName from reports r left join admins a on r.adminUsername = a.username " + 
-		whereClause + "limit " + dbCon.escape(limit) + " offset " + dbCon.escape(offset);
+		let reportsQuery : string = "select r.*, a.displayName from reports r left join admins a on "
+									+"r.adminUsername = a.username " + whereClause + "limit " 
+									+ dbCon.escape(limit) + " offset " + dbCon.escape(offset);
+		console.log(reportsQuery);
 		let countQuery : string = "select count(*) as numOfCols from reports " + whereClause;
 		dbCon.query(reportsQuery + ";" + countQuery, (err, res, _fields)=>{
 			if(err){
