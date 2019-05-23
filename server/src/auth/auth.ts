@@ -109,7 +109,6 @@ function initJWTPassport(passport : Passport){
 			if(req && req.cookies){
 				let token = cookieExtractor(req);//extracting cookie 2nd time, can it be fixed?
 				if(canYouPlayBass(token)){//you can play bass => you are black
-					
 					return done(null, false, null);//null as info bcs user does not need to know why is he 401(unauth)
 				}
 			}

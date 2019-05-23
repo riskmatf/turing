@@ -6,6 +6,7 @@ import { json } from 'body-parser';
 import { user } from '../types/types';
 import CookieParser from 'cookie-parser';
 import authConf from '../auth/authConfig';
+import { solveReport, updateReport, deleteReport } from '../db/functions/reportsDB';
 
 initPassport(passport);
 initJWTPassport(passport);
@@ -90,6 +91,44 @@ router.post("/signup", (req, res)=>{
 
 router.use('/admin', passport.authenticate('jwt', {session : false}));
 
+router.put("/admin/reports/:id", (req, res)=>{
+	let token : string = req.cookies['jwt'];
+	let userInfo : string | {[key:string] : string} | null = jwt.decode(token);
+	let body = req.body;
+	let comment = body["adminComment"] != undefined ? body["adminComment"] : null;
+	if(userInfo != null && typeof(userInfo) != "string" && userInfo["username"] != null){
+		solveReport(req.params.id, userInfo["username"], comment,
+			(msg = "All ok", code = 200)=>{
+				res.status(code).send(msg);
+		});
+	}
+})
+
+router.delete("/admin/reports/:id",(req, res)=>{
+	const repID = req.params.id;
+	if(repID <= 0){
+		res.status(400).send('INVALID ID!');
+		return;
+	}
+	else{
+		deleteReport(repID,()=>{
+			res.send("report is no more");
+		})
+	}
+})
+
+router.put("/admin/reports/update/:id", (req, res)=>{
+	let token : string = req.cookies['jwt'];
+	let userInfo : string | {[key:string] : string} | null = jwt.decode(token);
+	let body = req.body;
+	let comment = body["adminComment"] != undefined ? body["adminComment"] : null;
+	if(userInfo != null && typeof(userInfo) != "string" && userInfo["username"] != null){
+		updateReport(req.params.id, userInfo["username"], comment,
+			(msg = "All ok", code = 200)=>{
+				res.status(code).send(msg);
+		});
+	}
+})
 
 //this is /admin/logout because validaton is required even for logout
 //and user can logout only if it has a valid jwt token

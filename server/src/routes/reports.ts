@@ -1,7 +1,7 @@
 import {Router, Response} from 'express';
 import {report, nextObject} from "../types/types";
 import {json} from 'body-parser';
-import { getReportById, getReports } from '../db/functions/reportsDB';
+import { getReportById, getReports, deleteReport, createReport, solveReport } from '../db/functions/reportsDB';
 
 function parseQueryParams(query : any, res : Response) : Map<string, string | number> | undefined
 {
@@ -53,6 +53,38 @@ const router = Router();
 
 router.use(json());
 
+router.post("/reports",(req,res)=>{
+	let body = req.body;
+	const requiredFields : string[] = ["classroomName", "reportType"];
+	const optionalFields : string[] = ["computerID", "reportComment"];
+	let reportColumns : Map<string, string | number> = new Map();
+	for(let field of requiredFields){
+		if(body[field] == null){
+			res.status(400).send(`${field} is not provided or is null!`);
+			return;
+		}
+		else{
+			reportColumns.set(field, body[field]);
+		}
+	}
+	for(let field of optionalFields){
+		if(body[field] != null){
+			reportColumns.set(field, body[field]);
+		}
+	}
+
+/* 	(msg = "All OK!", httpCode = 200)=>{
+		res.status(httpCode).send(msg);
+	} */
+	createReport(reportColumns, (msg="All OK!", httpCode = 200, id?)=>{
+		if(httpCode == 200){
+			res.status(httpCode).send({id:id});
+		}
+		else{
+			res.status(httpCode).send({msg:msg});
+		}
+	})
+})
 
 router.get('/reports', (req, res)=>{
 
@@ -93,8 +125,5 @@ router.get('/reports/:id',
 		}
 	}
 )
-
-
-
 
 export default router;
