@@ -1,5 +1,6 @@
 import { report, nextObject } from "../../types/types";
 import { dbCon } from "../dbConnection";
+import config from "../../config";
 
 
 /**
@@ -70,7 +71,7 @@ function getReports(	reportsParameters : Map<string, string | number>, offset : 
 						limit : number,
 						finalCallback : ((reports : report[], next : nextObject | null)=>void))
 	{
-		const URL_START = "http://localhost:8888/api/turing"; //TODO: CHANGE THIS WHEN DEPLOYING
+		//const URL_START = "http://localhost:8888/api/turing"; //TODO: CHANGE THIS WHEN DEPLOYING
 		let whereClause = createWhereClause(reportsParameters);
 		let reportsQuery : string = "select r.*, a.displayName from reports r left join admins a on "
 									+"r.adminUsername = a.username " + whereClause + "limit " 
@@ -89,7 +90,7 @@ function getReports(	reportsParameters : Map<string, string | number>, offset : 
 			let next : nextObject | null = null;
 			if(itemsRemaining > 0){
 				let nextUrl : string = "";
-				nextUrl = URL_START + "/reports"
+				nextUrl = config.API_URL + "/reports"
 									+ createUrlQueryPart(reportsParameters, limit, offset);
 				next = {itemsRemaining : itemsRemaining, nextPageUrl : nextUrl}
 			}

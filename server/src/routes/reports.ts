@@ -1,7 +1,7 @@
 import {Router, Response} from 'express';
 import {report, nextObject} from "../types/types";
 import {json} from 'body-parser';
-import { getReportById, getReports, deleteReport, createReport, solveReport } from '../db/functions/reportsDB';
+import { getReportById, getReports, createReport } from '../db/functions/reportsDB';
 
 function parseQueryParams(query : any, res : Response) : Map<string, string | number> | undefined
 {
@@ -73,9 +73,6 @@ router.post("/reports",(req,res)=>{
 		}
 	}
 
-/* 	(msg = "All OK!", httpCode = 200)=>{
-		res.status(httpCode).send(msg);
-	} */
 	createReport(reportColumns, (msg="All OK!", httpCode = 200, id?)=>{
 		if(httpCode == 200){
 			res.status(httpCode).send({id:id});

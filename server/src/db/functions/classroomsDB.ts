@@ -2,6 +2,7 @@ import { classroom } from "../../types/types";
 import { dbCon } from "../dbConnection";
 import { Readable } from "stream";
 import fs from "fs";
+import config from "../../config";
 
 /**
  * @param finalCallback Callback for sending data
@@ -80,7 +81,7 @@ function addClassroom(name : string, location : string, numOfComputers : number,
 
 	s.push(svgBuffer);
 	s.push(null) 
-	s.pipe(fs.createWriteStream("./public/turing/schemas/" + name + ".svg"));//TODO create path
+	s.pipe(fs.createWriteStream(config.SCHEMAS_PATH + name + ".svg"));//TODO create path
 	dbCon.query('insert into classrooms values(?, ?, ?)', [name, location, numOfComputers],
 							(err, _res, _fields)=>{
 								if(err){
