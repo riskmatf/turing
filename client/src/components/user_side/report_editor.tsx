@@ -15,6 +15,7 @@ type Props =
 
 export function ReportEditor(props: Props): React.ReactElement
 {
+    const [urgent, setUrgent] = useState(false);
     const [descr, setDescr] = useState('');
     let type = '';
     let date = new Date(props.predefinedData.date);
@@ -24,9 +25,16 @@ export function ReportEditor(props: Props): React.ReactElement
         setDescr(e.target.value);
     }, [setDescr]);
 
+    const onUrgentChanged = useCallback((e)=>
+    {
+        const value = e.target.checked;
+
+        setUrgent(value);
+    }, [setUrgent]);
+
     const onAccept = useCallback(()=>
     {
-        props.onDone({...props.predefinedData, description: descr});
+        props.onDone({...props.predefinedData, description: descr, urgent: urgent});
     }, [props.onDone, descr]);
 
     const onDecline = useCallback(()=>
@@ -75,6 +83,15 @@ export function ReportEditor(props: Props): React.ReactElement
                         Computer #{props.predefinedData.idComputer}
                     </Col>
                 }
+            </Row>
+
+            <Row>
+                <Col xs='auto'>
+                    <Input type='checkbox' onChange={onUrgentChanged} checked={urgent} style={{marginLeft:0}}/>
+                </Col>
+                <Col xs='auto'>
+                    Urgent
+                </Col>
             </Row>
 
             <Row>

@@ -354,6 +354,7 @@ function FilterComponent(props: FilterComponentProps): React.ReactElement
     );
 }
 
+/*TODO: make this accept one object*/
 function radioButton(text: string, name: string, value: string, onChange: (e: any)=>void, filterData: FilterResult)
     : React.ReactElement
 {
@@ -374,6 +375,7 @@ function radioButton(text: string, name: string, value: string, onChange: (e: an
     )
 }
 
+/*TODO: make this accept one object*/
 function checkBox(text: string, value: string, onChange: (e: any)=>void, filterData: FilterResult)
 {
 

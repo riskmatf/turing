@@ -18,6 +18,7 @@ export type ReportData =
         description: string;
         date: number;
         type: ReportType;
+        urgent: boolean;
     }
 
 export interface IReportService

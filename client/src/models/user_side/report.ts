@@ -4,7 +4,7 @@ export class Report
 {
     public constructor(public readonly idReport: number, public readonly classroomName: string,
                        public readonly date: number, public description: string, public fixed: boolean,
-                       public readonly type: ReportType,
+                       public urgent: boolean, public readonly type: ReportType,
                        public readonly idComputer?: number | undefined,
                        private idAdmin_?: string| undefined, private adminComment_?: string | undefined)
     {

@@ -155,11 +155,11 @@ function ExtendedReportView(props: Props): React.ReactElement
         setComputerDialogOpen(prevState => !prevState);
     }, [setComputerDialogOpen]);
 
-    const onSchemaLoaded = useCallback((fn: (id: number)=>void)=>
+    const onSchemaLoaded = useCallback((fn: (id: number, visible: boolean)=>void)=>
     {
         if(props.report.idComputer !== undefined)
         {
-            fn(props.report.idComputer);
+            fn(props.report.idComputer, true);
         }
     }, []);
 
@@ -221,11 +221,18 @@ function ExtendedReportView(props: Props): React.ReactElement
                 <Col xs='auto'>
                     <h3>Report #{props.report.idReport}</h3>
                 </Col>
+
+                <Col xs='auto'>
+                    Urgent: {props.report.urgent ? 'true': 'false'}
+                </Col>
+
                 <Col xs='auto'>
                     {
                         `${date.getDate()}.${date.getMonth()+1}.${date.getFullYear()}.`
                     }
                 </Col>
+
+
             </Row>
 
             <hr/>
@@ -320,7 +327,8 @@ function inlineReportViewJSX(props: Props): React.ReactElement
     const envelopeColor = props.report.isAdminCommentSet() ? 'green' : 'gray';
     /*Possible optimization to remember this value instead of creating new every render*/
     const date = new Date(props.report.date);
-    const colorClasses = props.report.fixed ? 'bg-success text-white' : '';
+    const colorClasses =
+        props.report.fixed ? 'bg-success text-white' : (props.report.urgent ? 'bg-danger text-white' : '');
 
     return (
         <ListGroupItem action onClick={props.onClick} className={`${colorClasses}`}>
@@ -602,7 +610,7 @@ type ComputerModalProps =
         isOpen: boolean;
         report: Report;
         classroom: Classroom;
-        onSchemaLoaded: (fn:(id: number)=>void)=>void;
+        onSchemaLoaded: (fn:(id: number, visible: boolean)=>void)=>void;
     }>;
 
 function computerModal(props: ComputerModalProps): React.ReactElement

@@ -15,6 +15,7 @@ type Props =
 export function ReportView(props: Props): React.ReactElement
 {
     const envelopeColor = props.report.isAdminCommentSet() ? 'green' : 'gray';
+    const colorClasses = props.report.urgent ? 'bg-danger text-white' : '';
     /*Possible optimization to remember this value instead of creating new every render*/
     const date = new Date(props.report.date);
 
@@ -22,7 +23,7 @@ export function ReportView(props: Props): React.ReactElement
     if(props.inline)
     {
         return (
-            <ListGroupItem action onClick={props.onClick}>
+            <ListGroupItem action onClick={props.onClick} className={colorClasses}>
                 <Row className='justify-content-between'>
                     <Col xs='auto'>
                         Report #{props.report.idReport}
@@ -72,6 +73,11 @@ export function ReportView(props: Props): React.ReactElement
                     <Col xs='auto'>
                         <h3>Report #{props.report.idReport}</h3>
                     </Col>
+
+                    <Col xs='auto'>
+                        Urgent: {props.report.urgent ? 'true' : 'false'}
+                    </Col>
+
                     <Col xs='auto'>
                         {
                             `${date.getDate()}.${date.getMonth()+1}.${date.getFullYear()}.`
