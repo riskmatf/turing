@@ -35,8 +35,17 @@ function ClassroomPage_(props: Props): React.ReactElement | null
     const computerNotFixedReports = useMemo(()=>
     {
         let res = new Map<number, Array<Report>>();
+        if(reports.reports.isError())
+        {
+            throw reports.reports.error;
+        }
 
-        for(const rep of reports.reports)
+        if(reports.reports.value === undefined)
+        {
+            return new Map();
+        }
+
+        for(const rep of reports.reports.value)
         {
             /*In case of type = computer report idComputer should not be undefined but ts forces us to check*/
             if(rep.type === Report.TYPE_COMPUTER_REPORT && !rep.fixed && rep.idComputer !== undefined)
@@ -63,7 +72,17 @@ function ClassroomPage_(props: Props): React.ReactElement | null
 
     const otherReportsNotFixed = useMemo(()=>
     {
-        return reports.reports.filter(value=>
+        if(reports.reports.isError())
+        {
+            throw reports.reports.error;
+        }
+
+        if(reports.reports.value === undefined)
+        {
+            return [];
+        }
+
+        return reports.reports.value.filter(value=>
         {
             return value.type !== Report.TYPE_COMPUTER_REPORT && !value.fixed;
         });
@@ -257,7 +276,13 @@ function ModalComponetn(props: ModalProps): React.ReactElement
 
     const onReportSolved = useCallback((idReport: number)=>
     {
-        ServiceLocator.getReportService().updateReport(idReport).setFix(true).executeUpdate();
+        const updater = ServiceLocator.getReportService().updateReport(idReport);
+        if(updater.isError())
+        {
+            throw updater.error;
+        }
+
+        updater.value.setFix(true).executeUpdate();
         setModalPage(0);
     }, [setModalPage]);
 

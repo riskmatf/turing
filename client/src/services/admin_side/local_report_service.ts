@@ -1,8 +1,10 @@
-import {IReportService, ReportData, ReportUpdateBuilder} from "./i_report_service";
+import {FilterCriteria, IReportService, ReportData, ReportFilter, ReportUpdateBuilder} from "./i_report_service";
 import {EventEmitter, EventSubscription} from "fbemitter";
 import {Report} from "../../models/admin_side/report";
 import {SetStateAction} from "react";
 import {ServiceLocator} from "./service_locator";
+import {Result} from "../../utils/result";
+
 
 export class LocalReportService implements IReportService
 {
@@ -60,7 +62,7 @@ export class LocalReportService implements IReportService
 
     }
 
-    addReport(data: ReportData): Promise<Report>
+    addReport(data: ReportData): Promise<Result<Error, Report>>
     {
         return (async ()=>
         {
@@ -83,69 +85,30 @@ export class LocalReportService implements IReportService
 
 
             this.emitter_.emit(LocalReportService.ON_REPORTS_CHANGED);
-            return report;
+
+            return Result.value<Error, Report>(report);
         })();
     }
 
-    updateReport(id: number): ReportUpdateBuilder
+    updateReport(id: number): Result<Error, ReportUpdateBuilder>
     {
-        return new LocalReportService.ReportUpdateBuilder(id, this);
-    }
-
-    fetchReport(id: number, force?: boolean): Promise<void>
-    {
-        return (async ()=>
+        if(this.reports_.has(id))
         {
-
-        })();
-    }
-
-    fetchReports(force?: boolean): Promise<void>
-    {
-        return (async ()=>
-        {
-
-        })();
-    }
-
-    fetchReportsForClassroom(classroom: string, force?: boolean): Promise<void>
-    {
-        return (async ()=>
-        {
-
-        })();
-    }
-
-    getReport(id: number): Report | undefined
-    {
-        return this.reports_.get(id);
-    }
-
-    getReports(): Map<string, Array<Report>>
-    {
-        return this.classroomReportView_;
-    }
-
-    getReportsForClassroom(classroom: string): Array<Report>
-    {
-        if(this.classroomReportView_.has(classroom))
-        {
-            const arr = this.classroomReportView_.get(classroom);
-            if(arr !== undefined)
-            {
-                return arr;
-            }
+            return Result.value<Error, ReportUpdateBuilder>(new LocalReportService.ReportUpdateBuilder(id, this));
         }
-            return [];
+        else
+        {
+            return Result.error<Error, ReportUpdateBuilder>(new Error('No such element: ' + id));
+        }
     }
+
 
     onReportsChanged(handler: () => void): EventSubscription
     {
         return this.emitter_.addListener(LocalReportService.ON_REPORTS_CHANGED, handler);
     }
 
-
-    removeReport(id: number): Promise<void>
+    removeReport(id: number): Promise<Result<Error,void>>
     {
         return (async ()=>
         {
@@ -165,9 +128,116 @@ export class LocalReportService implements IReportService
               }
             });
             this.emitter_.emit(LocalReportService.ON_REPORTS_CHANGED);
+
+            return Result.success<Error>();
         })();
 
     }
+
+    fetchReport(id: number, force?: boolean): Promise<Result<Error, void>>
+    {
+        return (async ()=>
+        {
+            if(this.reports_.has(id))
+            {
+                return Result.success<Error>()
+            }
+            else
+            {
+                return Result.error<Error, void>(new Error('No such element'));
+            }
+        })();
+    }
+
+    fetchReports(ids: Array<number>, force?: boolean): Promise<Result<Error, void>>
+    {
+        return (async ()=>
+        {
+            for(const id of ids)
+            {
+                const res =  await this.fetchReport(id);
+                if(res.isError())
+                {
+                    return res;
+                }
+            }
+            return Result.success<Error>();
+        })();
+
+    }
+
+    fetchReportsForClassroom(classroom: string, force?: boolean): Promise<Result<Error, void>>
+    {
+        return (async ()=>
+        {
+            if(this.classroomReportView_.has(classroom))
+            {
+                return Result.success<Error>();
+            }
+            return Result.error<Error, void>(new Error('There is no such element'));
+        })();
+    }
+
+    filterReports(criteria: FilterCriteria): ReportFilter
+    {
+        return new LocalReportService.ReportFilter(this, criteria);
+    }
+
+    getReport(id: number): Result<Error, Report | undefined>
+    {
+        if(this.reports_.has(id))
+        {
+            const res = this.reports_.get(id);
+            if(res !== undefined)
+            {
+                return Result.value<Error, Report | undefined>(res);
+            }
+            else
+            {
+                return Result.error<Error, Report | undefined>(new Error('This should not happen'));
+            }
+        }
+        else
+        {
+            return Result.error<Error, Report | undefined>(new Error('There is no such element'));
+        }
+    }
+
+    getReports(ids: Array<number>): Result<Error, Array<Result<Error, Report | undefined>>>
+    {
+        const res: Array<Result<Error, Report | undefined>> = [];
+
+        for(const id of ids)
+        {
+            res.push(this.getReport(id));
+        }
+
+        return Result.value<Error, Array<Result<Error, Report | undefined>>>(res);
+    }
+
+    getReportsForClassroom(classroom: string): Result<Error, Array<Report> | undefined>
+    {
+        if(this.classroomReportView_.has(classroom))
+        {
+            const res = this.classroomReportView_.get(classroom);
+
+            if(res !== undefined)
+            {
+                return Result.value<Error, Array<Report> | undefined>(res);
+            }
+            else
+            {
+                return Result.error<Error, Array<Report> | undefined>(new Error('This should not happen'));
+            }
+        }
+        else
+        {
+            return Result.error<Error, Array<Report> | undefined>(new Error('There is not such element: ' + classroom));
+        }
+    }
+
+
+
 
     /**
      * Updates happend at fixed order not as they are wrote.
@@ -297,6 +367,104 @@ export class LocalReportService implements IReportService
         {
             this.actions_.push({type: this.ACTION_SET_FIX, value: {value: value}});
             return this;
+        }
+    }
+
+
+    private static readonly ReportFilter =
+    class implements ReportFilter
+    {
+        private service_: LocalReportService;
+        private data_: Array<Report>;
+        private pageSize_: number = 1;
+
+        constructor(service: LocalReportService, criteria: FilterCriteria)
+        {
+            this.service_ = service;
+            this.data_  = this.filterData(criteria);
+        }
+
+        fetchPage(page: number, force?: boolean): Promise<Result<Error, void>>
+        {
+            return (async ()=>
+            {
+                return Result.success<Error>();
+            })();
+        }
+
+        getPage(page: number): Result<Error, Array<Report> | undefined>
+        {
+            const index = page * this.pageSize_;
+            let end = index + this.pageSize_;
+
+            if(index >= this.data_.length)
+            {
+                return Result.error<Error, Array<Report> | undefined>(new Error('Index out of bound'));
+            }
+
+            if(end > this.data_.length)
+            {
+                end = this.data_.length;
+            }
+
+            return Result.value<Error, Array<Report> | undefined>(this.data_.slice(index, end));
+
+        }
+
+        hasNextPage(page: number): Result<Error, boolean>
+        {
+            const numOfPages = Math.floor(this.data_.length / this.pageSize_) + 1;
+            if(page + 1 >= numOfPages)
+            {
+                return Result.value<Error, boolean>(false);
+            }
+            else
+            {
+                return Result.value<Error, boolean>(true);
+            }
+        }
+
+        private filterData(filters: FilterCriteria): Array<Report>
+        {
+            const arr: Array<Report> = [];
+            for(let it = this.service_.reports_.values(), curr = it.next(); !curr.done; curr = it.next())
+            {
+                arr.push(curr.value);
+            }
+
+
+            return arr.filter(value =>
+            {
+                let allowClassroom = true;
+                let allowComment = true;
+                let allowFixed = true;
+
+                if(filters.classrooms.length !== 0)
+                {
+                    const index = filters.classrooms.findIndex(value1=>value1 === value.classroomName);
+                    allowClassroom = index !== -1;
+                }
+
+                if(filters.comments === 'has' && !value.isAdminCommentSet())
+                {
+                    allowComment = false;
+                }
+                else if(filters.comments === 'dontHave' && value.isAdminCommentSet())
+                {
+                    allowComment = false;
+                }
+
+                if(filters.fixed === 'fixed' && !value.fixed)
+                {
+                    allowFixed = false;
+                }
+                else if(filters.fixed === 'notFixed' && value.fixed)
+                {
+                    allowFixed = false;
+                }
+
+                return allowFixed && allowComment && allowClassroom;
+            });
         }
     }
 }

@@ -20,7 +20,7 @@ import {faCaretDown} from '@fortawesome/free-solid-svg-icons';
 import {useClassrooms} from "../../services/admin_side/i_classroom_service";
 import {useForceRender} from "../../utils/force_render";
 import {useCallback, useMemo, useState} from "react";
-import {useReports} from "../../services/admin_side/i_report_service";
+import {useFilterReports} from "../../services/admin_side/i_report_service";
 import {Report} from "../../models/admin_side/report";
 import {ReportView} from "./report_view";
 import {Hook} from "../../utils/hook";
@@ -34,10 +34,10 @@ type Props =
 function ReportsPage_(props: Props): React.ReactElement
 {
     const [reportsUpdated, forceRender] = useForceRender();
-    const reports = useReports(forceRender);
     const [currentSelectedReport, setCurrentSelectedReport]: Hook<Report | undefined> = useState();
     const [modalOpen, setModalOpen] = useState(false);
-    const [filters, setFilters]: Hook<FilterResult | undefined> = useState();
+    const [filters, setFilters]: Hook<FilterResult> = useState(filterDefault());
+    const reports = useFilterReports(filters, forceRender);
 
     const onToggleModalOpen = useCallback(()=>
     {
@@ -46,7 +46,12 @@ function ReportsPage_(props: Props): React.ReactElement
 
     const onReportSolved = useCallback((idReport: number)=>
     {
-        ServiceLocator.getReportService().updateReport(idReport).setFix(true).executeUpdate();
+        const updater = ServiceLocator.getReportService().updateReport(idReport);
+        if(updater.isError())
+        {
+            throw updater.error;
+        }
+        updater.value.setFix(true).executeUpdate();
         onToggleModalOpen();
     }, [onToggleModalOpen]);
 
@@ -62,57 +67,20 @@ function ReportsPage_(props: Props): React.ReactElement
         setFilters(filter);
     }, [setFilters]);
 
-    const reportsData =  useMemo(()=>
-    {
-        const arr: Array<Report> = [];
-        for(let it = reports.reports.values(), curr = it.next(); !curr.done; curr = it.next())
-        {
-            arr.push(...curr.value);
-        }
-
-
-        if(filters === undefined)
-        {
-            return arr;
-        }
-
-        return arr.filter(value =>
-        {
-            let allowClassroom = true;
-            let allowComment = true;
-            let allowFixed = true;
-
-            if(filters.classrooms.length !== 0)
-            {
-                const index = filters.classrooms.findIndex(value1=>value1 === value.classroomName);
-                allowClassroom = index !== -1;
-            }
-
-            if(filters.comments === 'has' && !value.isAdminCommentSet())
-            {
-                allowComment = false;
-            }
-            else if(filters.comments === 'dontHave' && value.isAdminCommentSet())
-            {
-                allowComment = false;
-            }
-
-            if(filters.fixed === 'fixed' && !value.fixed)
-            {
-                allowFixed = false;
-            }
-            else if(filters.fixed === 'notFixed' && value.fixed)
-            {
-                allowFixed = false;
-            }
-
-            return allowFixed && allowComment && allowClassroom;
-        });
-    }, [reportsUpdated, filters]);
 
     const reportJSX = useMemo(()=>
     {
-        return reportsData.map(value1 => <ReportView report={value1} inline idComputer classroom
+        if(reports.reports.isError())
+        {
+            throw reports.reports.error;
+        }
+
+        if(reports.reports.value === undefined)
+        {
+            return [];
+        }
+
+        return reports.reports.value.map(value1 => <ReportView report={value1} inline idComputer classroom
                                                      onClick={()=>
                                                      {
                                                          setCurrentSelectedReport(value1);
@@ -120,7 +88,7 @@ function ReportsPage_(props: Props): React.ReactElement
                                                      }}
         />);
 
-    }, [reportsData]);
+    }, [reports]);
 
     return (
         <React.Fragment>

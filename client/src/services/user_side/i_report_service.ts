@@ -60,8 +60,8 @@ export interface IReportService
 export function useReportsPage(initPage: number, forceRender: ()=>void):
     {
         reports: Result<Error, Array<Report> | undefined>
-        nextPage: ()=>void;
-        prevPage: ()=>void;
+        nextPage: ()=>Result<Error, void>;
+        prevPage: ()=>Result<Error, void>;
         hasNextPage: ()=>void;
         page: number;
         fetchPage: (force?: boolean)=>Promise<Result<Error, void>>;
@@ -75,6 +75,11 @@ export function useReportsPage(initPage: number, forceRender: ()=>void):
         if(service.hasNextPage(page))
         {
             setPage(prevState => prevState+1);
+            return Result.success<Error>();
+        }
+        else
+        {
+            return Result.error<Error, void>(new Error('There is no next page'));
         }
     }, [page, setPage, service]);
 
@@ -83,6 +88,11 @@ export function useReportsPage(initPage: number, forceRender: ()=>void):
         if(page !== 0)
         {
             setPage(prevState => prevState-1);
+            return Result.success<Error>();
+        }
+        else
+        {
+            return Result.error<Error, void>(new Error('There is no previous page'));
         }
     }, [page, setPage, service]);
 

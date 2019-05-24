@@ -1,7 +1,8 @@
 import {Report, ReportType} from "../../models/admin_side/report";
 import {EventSubscription} from "fbemitter";
-import {SetStateAction, useCallback, useEffect} from "react";
+import {SetStateAction, useCallback, useEffect, useRef, useState} from "react";
 import {ServiceLocator} from "./service_locator";
+import {Result} from "../../utils/result";
 
 export type ReportCollection = Map<string, Array<Report>>;
 
@@ -29,55 +30,94 @@ export interface ReportUpdateBuilder
     setFix(value: SetStateAction<boolean>): ReportUpdateBuilder;
 }
 
+export type FilterCriteria =
+    {
+        fixed: 'fixed' | 'notFixed' | 'all';
+        classrooms: Array<string>;
+        comments: 'has' | 'dontHave' | 'all';
+    };
+
+export interface ReportFilter
+{
+    getPage(page: number): Result<Error, Array<Report> | undefined>;
+    fetchPage(page:number, force?: boolean): Promise<Result<Error, void>>;
+    // getPages(pages: Array<number>): Result<Error, Array<Result<Error, Array<Report> | undefined>>>;
+    // fetchPages(pages: Array<number>): Promise<Result<Error, void>>;
+    hasNextPage(page: number): Result<Error, boolean>;
+}
+
 export interface IReportService
 {
-    getReport(id: number): Report | undefined;
-    fetchReport(id: number, force?: boolean): Promise<void>;
-    getReports(): ReportCollection;
-    fetchReports(force?: boolean): Promise<void>
-    getReportsForClassroom(classroom: string): Array<Report>;
-    fetchReportsForClassroom(classroom: string, force?: boolean): Promise<void>;
-    addReport(data: ReportData): Promise<Report>;
-    removeReport(id: number): Promise<void>;
-    updateReport(id: number): ReportUpdateBuilder;
+    // getReport(id: number): Report | undefined;
+    // fetchReport(id: number, force?: boolean): Promise<void>;
+    // getReports(): ReportCollection;
+    // fetchReports(force?: boolean): Promise<void>
+    // getReportsForClassroom(classroom: string): Array<Report>;
+    // fetchReportsForClassroom(classroom: string, force?: boolean): Promise<void>;
+
+    // TODO: implement
+    // getReportsPage(page: number): Result<Error, Array<Report> | undefined>;
+    // fetchReportsPage(page: number, force?: boolean): Promise<Result<Error, void>>;
+
+    // TODO: implement
+    // getReportsPages(pages: Array<number>): Result<Error, Array<Result<Error, Array<Report> | undefined>>>;
+    // fetchReportsPages(pages: Array<number>, force?: boolean): Promise<Result<Error, void>>;
+
+    getReport(id: number): Result<Error, Report | undefined>;
+    fetchReport(id: number, force?: boolean): Promise<Result<Error, void>>;
+
+    getReports(ids: Array<number>): Result<Error, Array<Result<Error, Report | undefined>>>;
+    fetchReports(ids: Array<number>, force?: boolean): Promise<Result<Error, void>>;
+
+    getReportsForClassroom(classroom: string): Result<Error, Array<Report> | undefined>;
+    fetchReportsForClassroom(classroom: string, force?: boolean): Promise<Result<Error, void>>;
+
+    filterReports(criteria: FilterCriteria): ReportFilter;
+
+    addReport(data: ReportData): Promise<Result<Error, Report>>;
+    removeReport(id: number): Promise<Result<Error, void>>;
+    updateReport(id: number): Result<Error, ReportUpdateBuilder>;
     onReportsChanged(handler: ()=>void): EventSubscription;
 }
 
-export function useReports(forceRender: ()=>void):
-    {
-        reports: ReportCollection;
-        fetchReports: (force?: boolean)=>Promise<void>;
-    }
-{
-    const service = ServiceLocator.getReportService();
-
-    useEffect(()=>
-    {
-        const sub = service.onReportsChanged(forceRender);
-
-        return ()=>
-        {
-            sub.remove();
-        }
-    }, [forceRender]);
-
-    const fetchReports = useCallback((force?: boolean)=>
-    {
-
-        return service.fetchReports(force);
-
-    }, [service]);
-
-    return {
-        reports: service.getReports(),
-        fetchReports: fetchReports
-    };
-}
+// export function useReportsPage(page: number, forceRender: ()=>void):
+//     {
+//         reports: Result<Error, Array<Report>>;
+//         hasNextPage: ()=>Result<Error, boolean>;
+//         nextPage: ()=>void;
+//         prevPage: ()=>void;
+//         fetchReports: (force?: boolean)=>Promise<void>;
+//         page: number;
+//     }
+// {
+//     const service = ServiceLocator.getReportService();
+//
+//     useEffect(()=>
+//     {
+//         const sub = service.onReportsChanged(forceRender);
+//
+//         return ()=>
+//         {
+//             sub.remove();
+//         }
+//     }, [forceRender]);
+//
+//     const fetchReports = useCallback((force?: boolean)=>
+//     {
+//         return service.fetchReports(force);
+//
+//     }, [service]);
+//
+//     return {
+//         reports: service.getReports(),
+//         fetchReports: fetchReports
+//     };
+// }
 
 export function useReportForClassroom(classroomName: string, forceRender: ()=>void):
     {
-        reports: Array<Report>;
-        fetchReports: (force?: boolean)=>Promise<void>;
+        reports: Result<Error, Array<Report> | undefined>;
+        fetchReports: (force?: boolean)=>Promise<Result<Error, void>>;
     }
 {
 
@@ -108,10 +148,10 @@ export function useReportForClassroom(classroomName: string, forceRender: ()=>vo
 
 export function useReport(id: number, forceRender: ()=>void):
     {
-        report: Report | undefined;
-        fetchReport: (force?: boolean)=>Promise<void>;
-        updateReport: ()=>ReportUpdateBuilder;
-        removeReport: ()=>Promise<void>
+        report: Result<Error, Report | undefined>;
+        fetchReport: (force?: boolean)=>Promise<Result<Error, void>>;
+        updateReport: ()=>Result<Error, ReportUpdateBuilder>;
+        removeReport: ()=>Promise<Result<Error, void>>
     }
 {
 
@@ -152,3 +192,113 @@ export function useReport(id: number, forceRender: ()=>void):
     };
 }
 
+
+export function useFilterReports(criteria: FilterCriteria, forceRender: ()=>void):
+    {
+        reports: Result<Error, Array<Report> | undefined>;
+        fetchReports: (force?: boolean)=> Promise<Result<Error, void>>;
+        hasNextPage: ()=>Result<Error, boolean>;
+        nextPage: ()=>Result<Error, void>;
+        prevPage: ()=>Result<Error, void>;
+
+    }
+{
+    const service = ServiceLocator.getReportService();
+
+    const ref = useRef<ReportFilter>();
+    const [page, setPage] = useState(0);
+
+    useEffect(()=>
+    {
+        const sub = service.onReportsChanged(forceRender);
+
+        return ()=>
+        {
+            sub.remove();
+        };
+    }, [service]);
+
+    useEffect(()=>
+    {
+        ref.current = service.filterReports(criteria);
+        setPage(0);
+        forceRender();
+
+    }, [criteria, service, setPage, forceRender]);
+
+    const fetchReport = useCallback((force?: boolean)=>
+    {
+        return (async ()=>
+        {
+            if(ref.current === undefined)
+            {
+                return Result.error<Error, void>(new Error('This should not happen'));
+            }
+
+            return await ref.current.fetchPage(page, force);
+        })();
+
+    }, [page, ref.current]);
+
+    const hasNextPage = useCallback(()=>
+    {
+        if(ref.current === undefined)
+        {
+            return Result.error<Error, boolean>(new Error('This should not happen'));
+        }
+
+        return ref.current.hasNextPage(page);
+    }, [page, ref.current]);
+
+    const nextPage = useCallback(()=>
+    {
+        if(ref.current === undefined)
+        {
+            return Result.error<Error, void>(new Error('This should not happen'));
+        }
+
+        if(!ref.current.hasNextPage(page))
+        {
+            return Result.error<Error, void>(new Error('There is no next page'));
+        }
+
+        setPage(prevState => prevState+1);
+
+        return Result.success<Error>();
+    }, [setPage, ref.current, page]);
+
+    const prevPage = useCallback(()=>
+    {
+        if(ref.current === undefined)
+        {
+            return Result.error<Error, void>(new Error('This should not happen'));
+        }
+
+        if(page === 0)
+        {
+            return Result.error<Error, void>(new Error('There is no previous page'));
+        }
+
+        setPage(prevState => prevState-1);
+        return Result.success<Error>();
+
+    }, [setPage, page, ref.current]);
+
+
+    const reports = ref.current !== undefined ?
+        ref.current.getPage(page) : Result.value<Error, Array<Report> | undefined>(undefined);
+
+    return (
+        {
+            reports: reports,
+            fetchReports: fetchReport,
+            hasNextPage: hasNextPage,
+            nextPage: nextPage,
+            prevPage: prevPage
+    });
+}
+
+
+//useReports(ids)
+//usePages(pages)
+//usePage(page)

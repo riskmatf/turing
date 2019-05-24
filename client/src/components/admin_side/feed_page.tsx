@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {RouteComponentProps} from 'react-router-dom';
 import {withMainLayout} from "./main_layout";
-import {useReports} from "../../services/admin_side/i_report_service";
+import {FilterCriteria, useFilterReports} from "../../services/admin_side/i_report_service";
 import {useForceRender} from "../../utils/force_render";
 import {useCallback, useMemo, useState} from "react";
 import {Report} from "../../models/admin_side/report";
@@ -15,10 +15,12 @@ type Props =
 
     }> & RouteComponentProps<{}>
 
+const filter: FilterCriteria = {classrooms: [], comments: 'all', fixed: 'notFixed'};
+
 function FeedPage_(props: Props): React.ReactElement
 {
     const [value, forceRender] = useForceRender();
-    const reportApi = useReports(forceRender);
+    const reportApi = useFilterReports(filter, forceRender);
     const [currentSelectedReport, setCurrentSelectedReport]: Hook<Report | undefined> = useState();
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -29,7 +31,13 @@ function FeedPage_(props: Props): React.ReactElement
 
     const onReportSolved = useCallback((idReport: number)=>
     {
-        ServiceLocator.getReportService().updateReport(idReport).setFix(true).executeUpdate();
+        const updater = ServiceLocator.getReportService().updateReport(idReport);
+        if(updater.isError())
+        {
+            throw updater.error;
+        }
+
+        updater.value.setFix(true).executeUpdate();
         onToggleModalOpen();
     }, [onToggleModalOpen]);
 
@@ -44,10 +52,19 @@ function FeedPage_(props: Props): React.ReactElement
         console.log('Regenerating report data...');
         let res: Array<Report> = [];
 
-        const reports = reportApi.reports;
+        if(reportApi.reports.isError())
+        {
+            throw reportApi.reports.error;
+        }
+        if(reportApi.reports.value === undefined)
+        {
+            return res;
+        }
+
+        const reports = reportApi.reports.value;
         for(let it = reports.values(), curr = it.next(); !curr.done; curr = it.next())
         {
-            res.push(...curr.value);
+            res.push(curr.value);
         }
 
         res = res.filter(value1 => !value1.fixed);

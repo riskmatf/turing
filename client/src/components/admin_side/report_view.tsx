@@ -136,14 +136,25 @@ function ExtendedReportView(props: Props): React.ReactElement
 
     const onCommentChanged = useCallback((comment: string)=>
     {
-        ServiceLocator.getReportService().updateReport(props.report.idReport).addAdminComment(comment).executeUpdate();
+        const updater = ServiceLocator.getReportService().updateReport(props.report.idReport);
+        if(updater.isError())
+        {
+            throw updater.error;
+        }
+        updater.value.addAdminComment(comment).executeUpdate();
     }, [props.report.idReport]);
 
     const onCommentRemoved = useCallback(()=>
     {
         onAcceptedAction.current = ()=>
         {
-            ServiceLocator.getReportService().updateReport(props.report.idReport).removeComment().executeUpdate();
+            const updater = ServiceLocator.getReportService().updateReport(props.report.idReport);
+            if(updater.isError())
+            {
+                throw updater.error;
+            }
+
+            updater.value.removeComment().executeUpdate();
         };
 
         toggleConfirmDialog();
