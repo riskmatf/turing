@@ -7,6 +7,7 @@ import { user } from '../types/types';
 import CookieParser from 'cookie-parser';
 import authConf from '../auth/authConfig';
 import { solveReport, updateReport, deleteReport } from '../db/functions/reportsDB';
+import { addClassroom, deleteClassroom } from '../db/functions/classroomsDB';
 
 initPassport(passport);
 initJWTPassport(passport);
@@ -90,6 +91,36 @@ router.post("/signup", (req, res)=>{
 })
 
 router.use('/admin', passport.authenticate('jwt', {session : false}));
+
+
+router.post('/admin/classrooms', (req, res)=>{
+	let body = req.body;
+	
+	const requiredFields : string[] = ["name", "location", "numOfComputers", "schema"];
+	for(let field of requiredFields){
+		if(body[field] == null){
+			res.status(400).send(`${field} is not provided or is null!`);
+			return;
+		}
+	}
+	if(body.numOfComputers < 0){
+		res.status(400).send("number of computer must be >= 0");
+		return;
+	}
+
+	addClassroom(body['name'], body.location, body.numOfComputers, body.schema,
+				(msg = "All OK!", httpCode = 200)=>{
+					res.status(httpCode).send(msg);
+				});
+});
+
+router.delete("/admin/classrooms/:name", (req, res)=>{
+	deleteClassroom(req.params.name, ()=>{
+		res.send("classroom is no more!");
+	});
+})
+
+
 
 router.put("/admin/reports/:id", (req, res)=>{
 	let token : string = req.cookies['jwt'];

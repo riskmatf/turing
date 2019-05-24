@@ -26,7 +26,7 @@ create table if not exists reports(
 	timestamp integer not null,
 	urgent tinyint(1) default 0 not null,
 	
-	foreign key (classroomName) references classrooms(name),
+	foreign key (classroomName) references classrooms(name) ON DELETE CASCADE,
 	foreign key (adminUsername) references admins(username)
 );
 
@@ -67,5 +67,12 @@ create trigger reportsBU before update on reports
 		then
 			SIGNAL SQLSTATE '45000' SET message_text = "ERROR! Urgent must be either 1 or 0!";
 		end if;
+	end;$$
+
+drop trigger if exists adminBD $$
+create trigger adminBD before delete on admins
+	for each row
+	begin
+		update reports set adminComment = NULL, adminUsername = NULL where adminUsername = old.username $$
 	end;$$
 delimiter ;
