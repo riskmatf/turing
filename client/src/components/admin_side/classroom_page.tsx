@@ -1,30 +1,32 @@
 import * as React from 'react';
-import {match, RouteComponentProps} from "react-router";
-import {useClassroom } from "../../services/user_side/i_classroom_service";
+import {RouteComponentProps} from 'react-router-dom';
+import {withMainLayout} from "./main_layout";
 import {useForceRender} from "../../utils/force_render";
-import {SvgShema} from "../svg_shema";
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {ReportData, useReportsForClassroom} from "../../services/user_side/i_report_service";
-import {Col, Row, Card, CardHeader, CardBody, Button, Modal, ModalHeader, ModalBody, ListGroup} from "reactstrap";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
-import {Report, ReportType} from "../../models/user_side/report";
+import {useClassroom} from "../../services/admin_side/i_classroom_service";
 import {Hook} from "../../utils/hook";
+import {useCallback, useEffect, useMemo, useState} from "react";
+import {useReportForClassroom} from '../../services/admin_side/i_report_service';
+import {Report, ReportType} from "../../models/admin_side/report";
+import {ReportEditor} from "../user_side/report_editor";
+import {Button, Card, CardBody, CardHeader, Col, ListGroup, Modal, ModalBody, ModalHeader, Row} from "reactstrap";
+import {SvgShema} from "../svg_shema";
+import {ServiceLocator} from "../../services/admin_side/service_locator";
 import {ReportView} from "./report_view";
-import {ReportEditor} from "./report_editor";
-import {ServiceLocator} from "../../services/user_side/serviceLocator";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faArrowLeft} from "@fortawesome/free-solid-svg-icons";
+import {ReportData} from "../../services/admin_side/i_report_service";
 
-type BodyProps =
+type Props =
     Readonly<{
-}> & RouteComponentProps<{id: string}>;
 
+    }> & RouteComponentProps<{id: string}>
 
-export function BodyPart(props: BodyProps): React.ReactElement | null
+function ClassroomPage_(props: Props): React.ReactElement | null
 {
     const [reportsDidChange, forceRender] = useForceRender();
     const classroom = useClassroom(props.match.params.id, forceRender);
     const [toggleErrors, setToggleErrors]: Hook<{fn?: (id:number, visible: boolean)=>void}> = useState({});
-    const reports = useReportsForClassroom(props.match.params.id, forceRender);
+    const reports = useReportForClassroom(props.match.params.id, forceRender);
 
     const [isModalOpen, setModalOpen] = useState(false);
     const [modalData, setModalData]: Hook<ModalData | undefined> = useState();
@@ -101,9 +103,10 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
         {
             toggleErrors.fn(curr.value, true);
         }
+
     }, [reportsDidChange, toggleErrors, classroom.classroom]);
 
-    const onLoad = useCallback((fn: (id: number, visibe: boolean)=>void)=>
+    const onLoad = useCallback((fn: (id: number, visible: boolean)=>void)=>
     {
         setToggleErrors({fn: fn});
     }, [setToggleErrors]);
@@ -183,6 +186,8 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
     );
 }
 
+
+export const ClassroomPage = withMainLayout(ClassroomPage_);
 type ModalData =
     {
         title: string;
@@ -250,6 +255,18 @@ function ModalComponetn(props: ModalProps): React.ReactElement
         }
     }, [setModalPage]);
 
+    const onReportSolved = useCallback((idReport: number)=>
+    {
+        ServiceLocator.getReportService().updateReport(idReport).setFix(true).executeUpdate();
+        setModalPage(0);
+    }, [setModalPage]);
+
+    const onReportRemoved = useCallback((idReport: number)=>
+    {
+        ServiceLocator.getReportService().removeReport(idReport);
+        setModalPage(0);
+    }, [setModalPage]);
+
     const reportsJSX = props.reports.map(value =>
     {
         return (
@@ -311,7 +328,10 @@ function ModalComponetn(props: ModalProps): React.ReactElement
                             </Row>
                             <Row>
                                 <Col>
-                                    <ReportView report={currentReport}/>
+                                    <ReportView report={currentReport}
+                                                soleReport={onReportSolved}
+                                                removeReport={onReportRemoved}
+                                    />
                                 </Col>
                             </Row>
                         </React.Fragment>
