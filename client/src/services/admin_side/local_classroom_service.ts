@@ -44,7 +44,7 @@ export class LocalClassroomService implements IClassroomService
 
             const classroom = new Classroom(data.name, data.location, url, data.computerCount);
 
-            this.classrooms_.set(classroom.location, classroom);
+            this.classrooms_.set(classroom.name, classroom);
 
             this.emitter_.emit(LocalClassroomService.ON_CLASSROOMS_CHANGE);
             return classroom;
@@ -243,7 +243,7 @@ export class LocalClassroomService implements IClassroomService
 
 }
 
-function getUrlFromFile(file: File): Promise<string>
+export function getUrlFromFile(file: File): Promise<string>
 {
     const fileReader = new FileReader();
     const promise = new Promise<string>((resolve, reject) =>

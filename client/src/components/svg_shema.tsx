@@ -1,11 +1,11 @@
 import * as React from 'react';
-import {useCallback} from "react";
+import {RefObject, useCallback, useRef} from "react";
 
 type Props =
     Readonly<{
         url: string;
         numOfEl: number;
-        onLoad: (errorToggle: (id: number)=>void)=>void;
+        onLoad: (errorToggle: (id: number, visible: boolean)=>void)=>void;
         onClick: (id_comp: number)=>void;
     }>
 
@@ -16,11 +16,11 @@ type Props =
  */
 export function SvgShema(props: Props): React.ReactElement
 {
+    const objectRef = useRef<HTMLObjectElement>(null);
     const onLoad = useCallback(()=>
     {
-
-        const el = document.querySelector('object');
-        const visible: Array<boolean> = [];
+        //const el = document.querySelector('object');
+        const el = objectRef.current;
 
         if(el === undefined || el === null)
         {
@@ -52,20 +52,20 @@ export function SvgShema(props: Props): React.ReactElement
             {
                 err_el.setAttribute('visibility', 'hidden');
                 res.push(err_el);
-                visible.push(false);
                 //res.push(value=>err_el.setAttribute('visibility', value ? '' : 'hidden'));
             }
         }
 
-        props.onLoad((id: number)=>
+        props.onLoad((id: number, visible: boolean)=>
         {
-            res[id-1].setAttribute('visibility', !visible[id-1] ? '' : 'hidden');
-            visible[id-1] = !visible[id-1];
+            res[id-1].setAttribute('visibility', visible? '' : 'hidden');
         });
     }, [props.numOfEl, props.onLoad, props.onClick]);
 
     return (
-        <object data={props.url} onLoad={onLoad} style={{width:'100%'}}/>
+        <object data={props.url} onLoad={onLoad} style={{width:'100%'}} type='image/svg+xml'
+                ref={objectRef}
+        />
     );
 }
 

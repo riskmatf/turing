@@ -18,7 +18,6 @@ import {ClassroomsPage} from "./components/admin_side/classrooms_page";
 import {ClassroomPage} from "./components/admin_side/classroom_page";
 import {FeedPage} from "./components/admin_side/feed_page";
 import {LocalAuthService} from "./services/admin_side/local_auth_service";
-import {scryRenderedComponentsWithType} from "react-dom/test-utils";
 import {useForceRender} from "./utils/force_render";
 
 /**
