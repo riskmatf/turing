@@ -3,3 +3,4 @@ test
 deploy/
 node_modules
 package-lock.json
+server/src/auth/authConfig.ts
