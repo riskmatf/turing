@@ -35,7 +35,7 @@ export function ReportEditor(props: Props): React.ReactElement
     const onAccept = useCallback(()=>
     {
         props.onDone({...props.predefinedData, description: descr, urgent: urgent});
-    }, [props.onDone, descr]);
+    }, [props.onDone, descr, urgent]);
 
     const onDecline = useCallback(()=>
     {

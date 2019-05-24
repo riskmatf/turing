@@ -1,7 +1,8 @@
 import {Report, ReportType} from "../../models/user_side/report";
 import {EventSubscription} from "fbemitter";
 import {ServiceLocator} from "./serviceLocator";
-import {useCallback, useEffect} from "react";
+import {useCallback, useEffect, useState} from "react";
+import {Result} from "../../utils/result";
 
 /*export type ReportCollection =
     {
@@ -9,6 +10,7 @@ import {useCallback, useEffect} from "react";
     }
 */
 
+/*Deprecated*/
 export type ReportCollection = Map<string, Array<Report>>;
 
 export type ReportData =
@@ -21,27 +23,79 @@ export type ReportData =
         urgent: boolean;
     }
 
+
 export interface IReportService
 {
-    fetchAllReports(force?: boolean): Promise<void>;
-    getAllReports(): ReportCollection;
-    fetchReportsForClassroom(classroomName: string, force?: boolean): Promise<void>;
-    getReportsForClassroom(classroomName: string): Array<Report>;
-    fetchReport(id: number, force?: boolean): Promise<void>;
-    getReport(id: number): Report | undefined;
-    addReport(data: ReportData): Promise<Report>;
+
+    // fetchAllReports(force?: boolean): Promise<void>;
+    // getAllReports(): ReportCollection;
+
+    fetchReportPage(pageNumber: number, force?: boolean): Promise<Result<Error, void>>;
+    getReportPage(pageNumber: number): Result<Error, Array<Report> | undefined>;
+    hasNextPage(currentPage: number): Result<Error, boolean>;
+
+    fetchReportPages(pages: Array<number>, force?: boolean): Promise<Result<Error, void>>;
+    getReportPages(pages: Array<number>): Result<Error, Array<Result<Error, Array<Report> | undefined>>>;
+
+
+    // fetchReportsForClassroom(classroomName: string, force?: boolean): Promise<void>;
+    // getReportsForClassroom(classroomName: string): Array<Report>;
+
+    fetchReportsForClassroom(classroomName: string, force?: boolean): Promise<Result<Error, void>>;
+    getReportsForClassroom(classroomName: string): Result<Error, Array<Report>>;
+
+    // fetchReport(id: number, force?: boolean): Promise<void>;
+    // getReport(id: number): Report | undefined;
+
+    fetchReport(id: number, force?: boolean): Promise<Result<Error, void>>;
+    getReport(id: number): Result<Error, Report | undefined>;
+
+    fetchReports(ids: Array<number>, force?: boolean): Promise<Result<Error, void>>;
+    getReports(ids: Array<number>): Result<Error, Array<Result<Error, Report | undefined>>>
+
+    addReport(data: ReportData): Promise<Result<Error, Report>>;
     onReportChange(handler: ()=>void): EventSubscription;
 }
 
-/*TODO: chagne api remove add report*/
-export function useReports(forceRender: ()=>void):
+export function useReportsPage(initPage: number, forceRender: ()=>void):
     {
-        reports: ReportCollection;
-        fetchReports: (force?: boolean)=>Promise<void>;
-        addReport: (data: ReportData)=> Promise<Report>;
+        reports: Result<Error, Array<Report> | undefined>
+        nextPage: ()=>void;
+        prevPage: ()=>void;
+        hasNextPage: ()=>void;
+        page: number;
+        fetchPage: (force?: boolean)=>Promise<Result<Error, void>>;
     }
 {
+    const [page, setPage] = useState<number>(initPage);
     const service = ServiceLocator.getReportService();
+
+    const nextPage = useCallback(()=>
+    {
+        if(service.hasNextPage(page))
+        {
+            setPage(prevState => prevState+1);
+        }
+    }, [page, setPage, service]);
+
+    const prevPage = useCallback(()=>
+    {
+        if(page !== 0)
+        {
+            setPage(prevState => prevState-1);
+        }
+    }, [page, setPage, service]);
+
+
+    const hasNextPage = useCallback(()=>
+    {
+        return service.hasNextPage(page);
+    }, [page, service]);
+
+    const fetchPage = useCallback((force?: boolean)=>
+    {
+        return service.fetchReportPage(page, force);
+    }, [page, service]);
 
     useEffect(()=>
     {
@@ -52,31 +106,23 @@ export function useReports(forceRender: ()=>void):
         }
     }, [service, forceRender]);
 
-    const fetchReports = useCallback((force?: boolean)=>
-    {
-        return service.fetchAllReports(force);
-    }, [service]);
-
-    const addReport = useCallback((data: ReportData)=>
-    {
-        return service.addReport(data);
-    }, [service]);
 
     return (
         {
-            reports: service.getAllReports(),
-            addReport: addReport,
-            fetchReports: fetchReports
+            reports: service.getReportPage(page),
+            hasNextPage: hasNextPage,
+            nextPage: nextPage,
+            prevPage: prevPage,
+            page: page,
+            fetchPage: fetchPage
         }
     );
 }
 
-/*TODO: chagne api remove add report*/
 export function useReportsForClassroom(classroomName: string, forceRender: ()=>void):
     {
-        reports: Array<Report>;
-        fetchReportsForClassroom: (force?: boolean)=>Promise<void>;
-        addReport: (data: ReportData)=>Promise<Report>;
+        reports: Result<Error, Array<Report>>;
+        fetchReportsForClassroom: (force?: boolean)=>Promise<Result<Error, void>>;
     }
 {
     const service = ServiceLocator.getReportService();
@@ -95,15 +141,10 @@ export function useReportsForClassroom(classroomName: string, forceRender: ()=>v
         return service.fetchReportsForClassroom(classroomName, force);
     }, [service]);
 
-    const addReport = useCallback((data: ReportData)=>
-    {
-        return service.addReport(data);
-    }, [service]);
 
     return (
         {
             reports: service.getReportsForClassroom(classroomName),
-            addReport: addReport,
             fetchReportsForClassroom: fetchReports
         }
     );
@@ -111,8 +152,8 @@ export function useReportsForClassroom(classroomName: string, forceRender: ()=>v
 
 export function useReport(id: number, forceRender: ()=>void):
     {
-        report: Report| undefined;
-        fetchReport: (force?: boolean)=>Promise<void>;
+        report: Result<Error, Report| undefined>;
+        fetchReport: (force?: boolean)=>Promise<Result<Error, void>>;
     }
 {
     const service = ServiceLocator.getReportService();
@@ -137,3 +178,9 @@ export function useReport(id: number, forceRender: ()=>void):
             fetchReport: fetchReport
         });
 }
+
+
+/**
+ *  useReportsPages
+ *  think about jumping more pages
+ */

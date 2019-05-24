@@ -24,17 +24,23 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
     const [reportsDidChange, forceRender] = useForceRender();
     const classroom = useClassroom(props.match.params.id, forceRender);
     const [toggleErrors, setToggleErrors]: Hook<{fn?: (id:number, visible: boolean)=>void}> = useState({});
-    const reports = useReportsForClassroom(props.match.params.id, forceRender);
+    const reportsApi = useReportsForClassroom(props.match.params.id, forceRender);
 
     const [isModalOpen, setModalOpen] = useState(false);
     const [modalData, setModalData]: Hook<ModalData | undefined> = useState();
 
+    if(reportsApi.reports.isError())
+    {
+        throw reportsApi.reports.error;
+    }
+
+    const reports = reportsApi.reports.value;
 
     const computerNotFixedReports = useMemo(()=>
     {
         let res = new Map<number, Array<Report>>();
 
-        for(const rep of reports.reports)
+        for(const rep of reports)
         {
             /*In case of type = computer report idComputer should not be undefined but ts forces us to check*/
             if(rep.type === Report.TYPE_COMPUTER_REPORT && !rep.fixed && rep.idComputer !== undefined)
@@ -61,7 +67,7 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
 
     const otherReportsNotFixed = useMemo(()=>
     {
-        return reports.reports.filter(value=>
+        return reports.filter(value=>
         {
             return value.type !== Report.TYPE_COMPUTER_REPORT && !value.fixed;
         });
