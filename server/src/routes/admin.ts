@@ -15,7 +15,6 @@ initJWTPassport(passport);
 const router = Router();
 
 let loggedUsers : string[] = [];
-//TODO clear this list sometimes
 let tokenBlacklist : string[] = []; //used for tokens that are logged out
 
 //reference:
@@ -23,7 +22,6 @@ let tokenBlacklist : string[] = []; //used for tokens that are logged out
 function canYouPlayBass(token : string) : boolean{//checks if token is in black list
 	return !(tokenBlacklist.indexOf(token) == -1);
 }
-
 
 
 router.use(CookieParser());
@@ -74,7 +72,6 @@ router.post('/login', (req, res)=>{
 
 })
 //TODO: nacin da proveri da li je ulogovan i da vrati ko je ulogovan
-
 
 router.post("/signup", (req, res)=>{
 	passport.authenticate('local-signup',(err, user, info)=>{
@@ -164,10 +161,26 @@ router.put("/admin/reports/:id", (req, res)=>{
 //and user can logout only if it has a valid jwt token
 router.post('/admin/logout', (req, res)=>{
 	let token : string = req.cookies['jwt'];
-	tokenBlacklist.push(token);
-	let userInfo : string | {[key:string] : string} | null = jwt.decode(token);
+	let userInfo : string | {[key:string] : any} | null = jwt.decode(token);
+	/**this should be
+	 * let userInfo : string | {[key:string] : string | number} | null = jwt.decode(token);
+	 * but ts is....... ts*/
+	
 	if(userInfo != null && typeof(userInfo) != "string"){
 		loggedUsers.splice(loggedUsers.indexOf(userInfo["username"]), 1);
+		var d = new Date();
+		var seconds = Math.round(d.getTime() / 1000);
+		if(seconds < userInfo.exp){
+			tokenBlacklist.push(token);
+			setTimeout(()=>{
+					let tmp = tokenBlacklist.indexOf(token)
+					if(tmp != -1){
+						tokenBlacklist.splice(tmp,1);
+						// console.log("izbrisano!");
+						// console.log(tokenBlacklist);
+					}
+				},(userInfo.exp - seconds)*1000);//deleting element from array when its time is due
+		}
 	}
 	req.logout();
 	res.clearCookie("jwt");
