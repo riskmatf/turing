@@ -121,20 +121,6 @@ router.delete("/admin/classrooms/:name", (req, res)=>{
 })
 
 
-
-router.put("/admin/reports/:id", (req, res)=>{
-	let token : string = req.cookies['jwt'];
-	let userInfo : string | {[key:string] : string} | null = jwt.decode(token);
-	let body = req.body;
-	let comment = body["adminComment"] != undefined ? body["adminComment"] : null;
-	if(userInfo != null && typeof(userInfo) != "string" && userInfo["username"] != null){
-		solveReport(req.params.id, userInfo["username"], comment,
-			(msg = "All ok", code = 200)=>{
-				res.status(code).send(msg);
-		});
-	}
-})
-
 router.delete("/admin/reports/:id",(req, res)=>{
 	const repID = req.params.id;
 	if(repID <= 0){
@@ -148,17 +134,30 @@ router.delete("/admin/reports/:id",(req, res)=>{
 	}
 })
 
-router.put("/admin/reports/update/:id", (req, res)=>{
+router.put("/admin/reports/:id", (req, res)=>{
 	let token : string = req.cookies['jwt'];
 	let userInfo : string | {[key:string] : string} | null = jwt.decode(token);
 	let body = req.body;
 	let comment = body["adminComment"] != undefined ? body["adminComment"] : null;
+
 	if(userInfo != null && typeof(userInfo) != "string" && userInfo["username"] != null){
-		updateReport(req.params.id, userInfo["username"], comment,
+		if(body["update"] != null && body["update"] == true){
+			updateReport(req.params.id, userInfo["username"], comment,
 			(msg = "All ok", code = 200)=>{
 				res.status(code).send(msg);
-		});
+			});
+		}
+		else if(body["solve"] != null && body["solve"] == true){
+			solveReport(req.params.id, userInfo["username"], comment,
+			(msg = "All ok", code = 200)=>{
+				res.status(code).send(msg);
+			});
+		}
+		else{
+			res.status(400).send({message : "INVALID REQUEST, solve/update has to be specified"})
+		}
 	}
+	
 })
 
 //this is /admin/logout because validaton is required even for logout
