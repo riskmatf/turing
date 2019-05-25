@@ -19,7 +19,7 @@ import {ReportsPage} from "./components/admin_side/reports_page";
 import {ClassroomsPage} from "./components/admin_side/classrooms_page";
 import {ClassroomPage} from "./components/admin_side/classroom_page";
 import {FeedPage} from "./components/admin_side/feed_page";
-import {LocalAuthService} from "./services/admin_side/local_auth_service";
+import {RemoteAuthService} from './services/admin_side/remote_auth_service';
 import {useForceRender} from "./utils/force_render";
 
 /**
@@ -32,7 +32,7 @@ UserServiceLocator.registerReportService(new UserRemoteReportService());
 
 AdminServiceLocator.registerReportService(new AdminLocalReportService());
 AdminServiceLocator.registerClassroomService(new AdminLocalClassroomService());
-AdminServiceLocator.registerAuthService(new LocalAuthService());
+AdminServiceLocator.registerAuthService(new RemoteAuthService());
 
 
 type Props = {};
@@ -49,10 +49,12 @@ function AdminRoutes(props: RouteComponentProps): React.ReactElement | null
     const service = AdminServiceLocator.getAuthService();
     const [, forceRender] = useForceRender();
 
+    console.log(service.isLogedIn())
+
     useEffect(()=>
     {
         const sub = service.onLogedInChange(forceRender);
-
+        setTimeout(()=>forceRender(), 0);
         return ()=>
         {
             sub.remove();
