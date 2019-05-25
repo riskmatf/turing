@@ -2,7 +2,8 @@
 type classroom = {
 	name : string,
 	location : string, 
-	numOfComputers : number
+	numOfComputers : number,
+	schemaPath: string
 }
 
 type report = {

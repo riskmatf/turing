@@ -6,6 +6,8 @@ import { json } from 'body-parser';
 import { user } from '../types/types';
 import CookieParser from 'cookie-parser';
 import authConf from '../auth/authConfig';
+import { solveReport, updateReport, deleteReport } from '../db/functions/reportsDB';
+import { addClassroom, deleteClassroom } from '../db/functions/classroomsDB';
 
 initPassport(passport);
 initJWTPassport(passport);
@@ -13,7 +15,6 @@ initJWTPassport(passport);
 const router = Router();
 
 let loggedUsers : string[] = [];
-//TODO clear this list sometimes
 let tokenBlacklist : string[] = []; //used for tokens that are logged out
 
 //reference:
@@ -21,7 +22,6 @@ let tokenBlacklist : string[] = []; //used for tokens that are logged out
 function canYouPlayBass(token : string) : boolean{//checks if token is in black list
 	return !(tokenBlacklist.indexOf(token) == -1);
 }
-
 
 
 router.use(CookieParser());
@@ -73,7 +73,6 @@ router.post('/login', (req, res)=>{
 })
 //TODO: nacin da proveri da li je ulogovan i da vrati ko je ulogovan
 
-
 router.post("/signup", (req, res)=>{
 	passport.authenticate('local-signup',(err, user, info)=>{
 		if(err){
@@ -91,14 +90,97 @@ router.post("/signup", (req, res)=>{
 router.use('/admin', passport.authenticate('jwt', {session : false}));
 
 
+router.post('/admin/classrooms', (req, res)=>{
+	let body = req.body;
+	
+	const requiredFields : string[] = ["name", "location", "numOfComputers", "schema"];
+	for(let field of requiredFields){
+		if(body[field] == null){
+			res.status(400).send(`${field} is not provided or is null!`);
+			return;
+		}
+	}
+	if(body.numOfComputers < 0){
+		res.status(400).send("number of computer must be >= 0");
+		return;
+	}
+
+	addClassroom(body['name'], body.location, body.numOfComputers, body.schema,
+				(msg = "All OK!", httpCode = 200)=>{
+					res.status(httpCode).send(msg);
+				});
+});
+
+router.delete("/admin/classrooms/:name", (req, res)=>{
+	deleteClassroom(req.params.name, ()=>{
+		res.send("classroom is no more!");
+	});
+})
+
+
+router.delete("/admin/reports/:id",(req, res)=>{
+	const repID = req.params.id;
+	if(repID <= 0){
+		res.status(400).send('INVALID ID!');
+		return;
+	}
+	else{
+		deleteReport(repID,()=>{
+			res.send("report is no more");
+		})
+	}
+})
+
+router.put("/admin/reports/:id", (req, res)=>{
+	let token : string = req.cookies['jwt'];
+	let userInfo : string | {[key:string] : string} | null = jwt.decode(token);
+	let body = req.body;
+	let comment = body["adminComment"] != undefined ? body["adminComment"] : null;
+
+	if(userInfo != null && typeof(userInfo) != "string" && userInfo["username"] != null){
+		if(body["update"] != null && body["update"] == true){
+			updateReport(req.params.id, userInfo["username"], comment,
+			(msg = "All ok", code = 200)=>{
+				res.status(code).send(msg);
+			});
+		}
+		else if(body["solve"] != null && body["solve"] == true){
+			solveReport(req.params.id, userInfo["username"], comment,
+			(msg = "All ok", code = 200)=>{
+				res.status(code).send(msg);
+			});
+		}
+		else{
+			res.status(400).send({message : "INVALID REQUEST, solve/update has to be specified"})
+		}
+	}
+	
+})
+
 //this is /admin/logout because validaton is required even for logout
 //and user can logout only if it has a valid jwt token
-router.get('/admin/logout', (req, res)=>{
+router.post('/admin/logout', (req, res)=>{
 	let token : string = req.cookies['jwt'];
-	tokenBlacklist.push(token);
-	let userInfo : string | {[key:string] : string} | null = jwt.decode(token);
+	let userInfo : string | {[key:string] : any} | null = jwt.decode(token);
+	/**this should be
+	 * let userInfo : string | {[key:string] : string | number} | null = jwt.decode(token);
+	 * but ts is....... ts*/
+	
 	if(userInfo != null && typeof(userInfo) != "string"){
 		loggedUsers.splice(loggedUsers.indexOf(userInfo["username"]), 1);
+		var d = new Date();
+		var seconds = Math.round(d.getTime() / 1000);
+		if(seconds < userInfo.exp){
+			tokenBlacklist.push(token);
+			setTimeout(()=>{
+					let tmp = tokenBlacklist.indexOf(token)
+					if(tmp != -1){
+						tokenBlacklist.splice(tmp,1);
+						// console.log("izbrisano!");
+						// console.log(tokenBlacklist);
+					}
+				},(userInfo.exp - seconds)*1000);//deleting element from array when its time is due
+		}
 	}
 	req.logout();
 	res.clearCookie("jwt");

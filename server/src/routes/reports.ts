@@ -1,62 +1,105 @@
-import {Router} from 'express';
+import {Router, Response} from 'express';
 import {report, nextObject} from "../types/types";
 import {json} from 'body-parser';
-import { getReportById, getReports } from '../db/functions/reportsDB';
+import { getReportById, getReports, createReport } from '../db/functions/reportsDB';
 
- /***
-  * TODO:
-  * bice GET na /subscribe
-  * vratim neke headere:
-  * 	conn type :keep alive
-  * 	i sacuvam resp objekat u globalan niz
-  */
-const router = Router();
-
-router.use(json());
-
-router.get('/reports', (req, res)=>{
-
+function parseQueryParams(query : any, res : Response) : Map<string, string | number> | undefined
+{
+	let whereClauseParams : Map<string, string | number> = new Map();
 	let offset : number = 0;
 	let limit : number = 42;
-	let whereClauseParams : Map<string, string | number> = new Map();
-	if(req.query.classroomName != undefined){
-		whereClauseParams.set("classroomName", req.query.classroomName);
+	if(query.classrooms != undefined){
+		whereClauseParams.set("classroomName", query.classrooms);
 	}
-	if(req.query.fixed != undefined){
-		if(req.query.fixed != 0 && req.query.fixed != 1){
+	if(query.fixed != undefined){
+		if(query.fixed != 0 && query.fixed != 1){
 			res.status(400).send("ERROR! Fixed must be either 0 or 1!");
 			return;
 		}
-		whereClauseParams.set("fixed", req.query.fixed);
+		whereClauseParams.set("fixed", query.fixed);
 	}
-	if(req.query.urgent != undefined){
-		if(req.query.urgent != 0 && req.query.urgent != 1){
+	if(query.comment != undefined){
+		if(query.comment != 0 && query.comment != 1){
+			res.status(400).send("ERROR! Comment must be either 0 or 1!");
+			return;
+		}
+		whereClauseParams.set("reportComment", query.comment);
+	}
+	if(query.urgent != undefined){
+		if(query.urgent != 0 && query.urgent != 1){
 			res.status(400).send("ERROR! Urgent must be either 0 or 1!");
 			return;
 		}
-		whereClauseParams.set("urgent", req.query.urgent);
+		whereClauseParams.set("urgent", query.urgent);
 	}
-	if(req.query.offset != undefined){
-		offset = parseInt(req.query.offset);
+	if(query.offset != undefined){
+		offset = parseInt(query.offset);
 		if(isNaN(offset)){
 			res.status(400).send("ERROR! Offset is NaN");
 			return;
 		}
 	}
-	if(req.query.limit != undefined){
-		limit = parseInt(req.query.limit);
+	if(query.limit != undefined){
+		limit = parseInt(query.limit);
 		if(isNaN(limit)){
 			res.status(400).send("ERROR! Limit is NaN");
 			return;
 		}
 	}
-	getReports(whereClauseParams, offset, limit,
-			(results : report[], nextObject : nextObject | null)=>{
-				res.json({
-						reports: results,
-						next : nextObject
-					})
-			});
+	return whereClauseParams;
+
+}
+const router = Router();
+
+router.use(json());
+
+router.post("/reports",(req,res)=>{
+	let body = req.body;
+	const requiredFields : string[] = ["classroomName", "reportType"];
+	const optionalFields : string[] = ["computerID", "reportComment"];
+	let reportColumns : Map<string, string | number> = new Map();
+	for(let field of requiredFields){
+		if(body[field] == null){
+			res.status(400).send(`${field} is not provided or is null!`);
+			return;
+		}
+		else{
+			reportColumns.set(field, body[field]);
+		}
+	}
+	for(let field of optionalFields){
+		if(body[field] != null){
+			reportColumns.set(field, body[field]);
+		}
+	}
+
+	createReport(reportColumns, (msg="All OK!", httpCode = 200, id?)=>{
+		if(httpCode == 200){
+			res.status(httpCode).send({id:id});
+		}
+		else{
+			res.status(httpCode).send({msg:msg});
+		}
+	})
+})
+
+router.get('/reports', (req, res)=>{
+
+	let offset : number = 0;
+	let limit : number = 42;
+	let whereClauseParams = parseQueryParams(req.query, res);
+	if (whereClauseParams == undefined){
+		return;
+	}
+	else{
+		getReports(whereClauseParams, offset, limit,
+				(results : report[], nextObject : nextObject | null)=>{
+					res.json({
+							reports: results,
+							next : nextObject
+						})
+				});
+	}
 });
 
 router.get('/reports/:id',
@@ -79,8 +122,5 @@ router.get('/reports/:id',
 		}
 	}
 )
-
-
-
 
 export default router;

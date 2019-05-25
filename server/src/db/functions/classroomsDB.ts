@@ -1,5 +1,8 @@
 import { classroom } from "../../types/types";
 import { dbCon } from "../dbConnection";
+import { Readable } from "stream";
+import fs from "fs";
+import config from "../../config";
 
 /**
  * @param finalCallback Callback for sending data
@@ -36,6 +39,7 @@ function getClassroomByName(name : string,
 			console.log(err.message);
 			throw(err);
 		}
+		
 		finalCallback(results);
 	});
 }
@@ -69,11 +73,17 @@ function getClassroomsByLocation(location : string,
  * 		
  */
 function addClassroom(name : string, location : string, numOfComputers : number,
+						schema : string,
 						finalCallback : (message? : string, httpCode? : number)=>void ) : void
 {
+	let svgBuffer = Buffer.from(schema, 'base64');
+	var s = new Readable()
 
+	s.push(svgBuffer);
+	s.push(null) 
+	s.pipe(fs.createWriteStream(config.SCHEMAS_PATH + name + ".svg"));//TODO create path
 	dbCon.query('insert into classrooms values(?, ?, ?)', [name, location, numOfComputers],
-							(err, res, fields)=>{
+							(err, _res, _fields)=>{
 								if(err){
 									if(err.errno == 1062){
 										console.error("DUPLICATE ENTRY!");
@@ -85,4 +95,15 @@ function addClassroom(name : string, location : string, numOfComputers : number,
 							})
 }
 
-export {addClassroom, getAllClassrooms, getClassroomByName, getClassroomsByLocation}
+function deleteClassroom(name:string, finalCallback: () => void) {
+	dbCon.query("delete from classrooms where name = ?", [name], 
+				(err, res, fields)=>{
+					if(err){
+						console.log(err.message);
+						throw err;
+					}
+					finalCallback();
+				})
+}
+
+export {addClassroom, getAllClassrooms, getClassroomByName, getClassroomsByLocation, deleteClassroom}
