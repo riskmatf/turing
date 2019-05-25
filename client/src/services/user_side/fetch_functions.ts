@@ -29,7 +29,7 @@ function fetchClassroomByName(name : string){
 			let tmp : any = response.data.classroom;
 			if (tmp != null){
 				classroom = new Classroom(tmp.name, tmp.location, tmp.schemaUrl,
-					tmp.numOfComputers);
+					tmp.numberOfComputers);
 			}
 
             if(classroom != null){
