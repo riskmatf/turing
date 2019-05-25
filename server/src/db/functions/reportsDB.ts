@@ -1,6 +1,6 @@
 import { report, nextObject } from "../../types/types";
 import { dbCon } from "../dbConnection";
-import config from "../../config";
+import config from "../../../../config";
 
 
 /**
