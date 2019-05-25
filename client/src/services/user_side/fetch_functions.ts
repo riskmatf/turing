@@ -14,7 +14,7 @@ function fetchAllClassrooms(){
 			let tmp : any[] =response.data.classrooms;
 			tmp.forEach(classroom =>{
 				classrooms.push(new Classroom(classroom.name, classroom.location, classroom.schemaUrl,
-												classroom.numOfComputers));
+												classroom.numberOfComputers));
 			});
 			resolve(classrooms);
 		});
@@ -26,7 +26,7 @@ function fetchClassroomByName(name : string){
 	return new Promise((resolve, reject)=>{
 		let classroom : Classroom | null= null;
 		axios.get(config.API_URL + "/classrooms/" + name).then((response)=>{
-			let tmp : any = response.data["classroom"];
+			let tmp : any = response.data.classroom;
 			if (tmp != null){
 				classroom = new Classroom(tmp.name, tmp.location, tmp.schemaUrl,
 					tmp.numOfComputers);
