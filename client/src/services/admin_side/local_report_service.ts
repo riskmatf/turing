@@ -413,7 +413,7 @@ export class LocalReportService implements IReportService
 
         hasNextPage(page: number): Result<Error, boolean>
         {
-            const numOfPages = Math.floor(this.data_.length / this.pageSize_) + 1;
+            const numOfPages = Math.floor(this.data_.length / this.pageSize_) + (this.data_.length % this.pageSize_ === 0 ? 0 : 1);
             if(page + 1 >= numOfPages)
             {
                 return Result.value<Error, boolean>(false);

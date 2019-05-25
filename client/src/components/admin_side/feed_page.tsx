@@ -9,6 +9,7 @@ import {ReportView} from "./report_view";
 import {ListGroup, Row, Col, Modal, ModalHeader, ModalBody} from "reactstrap";
 import {Hook} from "../../utils/hook";
 import {ServiceLocator} from "../../services/admin_side/service_locator";
+import {Pager} from "../pager";
 
 type Props =
     Readonly<{
@@ -47,6 +48,48 @@ function FeedPage_(props: Props): React.ReactElement
         onToggleModalOpen();
     }, [onToggleModalOpen]);
 
+    const onNextPage = useCallback(()=>
+    {
+        const res = reportApi.nextPage();
+        if(res.isError())
+        {
+            throw res.error;
+        }
+
+    }, [reportApi]);
+
+    const onPrevPage = useCallback(()=>
+    {
+        const res = reportApi.prevPage();
+        if(res.isError())
+        {
+            throw res.error;
+        }
+    }, [reportApi]);
+
+
+    const hasPrevPage = useCallback(()=>
+    {
+        const res = reportApi.hasPrevPage();
+        if(res.isError())
+        {
+            throw res.error;
+        }
+        return res.value;
+
+    }, [reportApi]);
+
+    const hasNextPage = useCallback(()=>
+    {
+        const res = reportApi.hasNextPage();
+        if(res.isError())
+        {
+            throw res.error;
+        }
+
+        return res.value;
+    }, [reportApi]);
+
     const reportData = useMemo(()=>
     {
         console.log('Regenerating report data...');
@@ -72,19 +115,23 @@ function FeedPage_(props: Props): React.ReactElement
         res.sort((a, b) => a.date - b.date);
 
         return res;
-    }, [value]);
+    }, [value, reportApi.page]);
 
     const reportJSX = useMemo(()=>
     {
         console.log('Regenerating report jsx');
 
-        return reportData.map(value1 => <ReportView report={value1} inline idComputer classroom
+        return (
+            <ListGroup>
+                {reportData.map(value1 => <ReportView report={value1} inline idComputer classroom
                                                     onClick={()=>
                                                     {
                                                         setCurrentSelectedReport(value1);
                                                         onToggleModalOpen();
                                                     }}
-        />);
+        />)}
+            </ListGroup>
+        )
     }, [reportData, setCurrentSelectedReport, onToggleModalOpen]);
 
 
@@ -92,9 +139,12 @@ function FeedPage_(props: Props): React.ReactElement
         <React.Fragment>
             <Row className='justify-content-center'>
                 <Col xs='12' md='10'>
-                    <ListGroup style={{marginBottom: 20}}>
-                        {reportJSX}
-                    </ListGroup>
+                    <Pager nextPage={onNextPage}
+                           prevPage={onPrevPage}
+                           hasNextPage={hasNextPage}
+                           hasPrevPage={hasPrevPage}
+                           data={reportJSX}
+                    />
                 </Col>
             </Row>
 

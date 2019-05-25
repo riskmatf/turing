@@ -3,6 +3,7 @@ import {EventSubscription} from "fbemitter";
 import {SetStateAction, useCallback, useEffect, useRef, useState} from "react";
 import {ServiceLocator} from "./service_locator";
 import {Result} from "../../utils/result";
+import {bool} from "prop-types";
 
 export type ReportCollection = Map<string, Array<Report>>;
 
@@ -198,8 +199,10 @@ export function useFilterReports(criteria: FilterCriteria, forceRender: ()=>void
         reports: Result<Error, Array<Report> | undefined>;
         fetchReports: (force?: boolean)=> Promise<Result<Error, void>>;
         hasNextPage: ()=>Result<Error, boolean>;
+        hasPrevPage: ()=>Result<Error, boolean>;
         nextPage: ()=>Result<Error, void>;
         prevPage: ()=>Result<Error, void>;
+        page: number;
 
     }
 {
@@ -244,7 +247,7 @@ export function useFilterReports(criteria: FilterCriteria, forceRender: ()=>void
     {
         if(ref.current === undefined)
         {
-            return Result.error<Error, boolean>(new Error('This should not happen'));
+            return Result.value<Error, boolean>(false);
         }
 
         return ref.current.hasNextPage(page);
@@ -284,6 +287,10 @@ export function useFilterReports(criteria: FilterCriteria, forceRender: ()=>void
 
     }, [setPage, page, ref.current]);
 
+    const hasPrevPage = useCallback(()=>
+    {
+        return Result.value<Error, boolean>(page !== 0);
+    }, [page]);
 
     const reports = ref.current !== undefined ?
         ref.current.getPage(page) : Result.value<Error, Array<Report> | undefined>(undefined);
@@ -293,8 +300,10 @@ export function useFilterReports(criteria: FilterCriteria, forceRender: ()=>void
             reports: reports,
             fetchReports: fetchReport,
             hasNextPage: hasNextPage,
+            hasPrevPage: hasPrevPage,
             nextPage: nextPage,
-            prevPage: prevPage
+            prevPage: prevPage,
+            page: page
     });
 }
 

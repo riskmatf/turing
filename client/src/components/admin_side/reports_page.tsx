@@ -25,6 +25,7 @@ import {Report} from "../../models/admin_side/report";
 import {ReportView} from "./report_view";
 import {Hook} from "../../utils/hook";
 import {ServiceLocator} from "../../services/admin_side/service_locator";
+import {Pager} from "../pager";
 
 type Props =
     Readonly<{
@@ -67,6 +68,47 @@ function ReportsPage_(props: Props): React.ReactElement
         setFilters(filter);
     }, [setFilters]);
 
+    const onNextPage = useCallback(()=>
+    {
+        const res = reports.nextPage();
+        if(res.isError())
+        {
+            throw res.error;
+        }
+    }, [reports]);
+
+    const onPrevPage = useCallback(()=>
+    {
+        const res = reports.prevPage();
+
+        if(res.isError())
+        {
+            throw res.error;
+        }
+    }, [reports]);
+
+    const onHasNextPage = useCallback(()=>
+    {
+        const res = reports.hasNextPage();
+
+        if(res.isError())
+        {
+            throw res.error;
+        }
+
+        return res.value;
+    }, [reports]);
+
+    const onHasPrev = useCallback(()=>
+    {
+        const res = reports.hasPrevPage();
+        if(res.isError())
+        {
+            throw res.error;
+        }
+
+        return res.value;
+    }, [reports]);
 
     const reportJSX = useMemo(()=>
     {
@@ -80,13 +122,19 @@ function ReportsPage_(props: Props): React.ReactElement
             return [];
         }
 
-        return reports.reports.value.map(value1 => <ReportView report={value1} inline idComputer classroom
+        return (
+            <ListGroup>
+                {
+                    reports.reports.value.map(value1 => <ReportView report={value1} inline idComputer classroom
                                                      onClick={()=>
                                                      {
                                                          setCurrentSelectedReport(value1);
                                                          onToggleModalOpen();
                                                      }}
-        />);
+                    />)
+                }
+            </ListGroup>
+        ) ;
 
     }, [reports]);
 
@@ -96,9 +144,11 @@ function ReportsPage_(props: Props): React.ReactElement
 
             <Row>
                 <Col>
-                    <ListGroup>
-                        {reportJSX}
-                    </ListGroup>
+                    <Pager nextPage={onNextPage}
+                           prevPage={onPrevPage}
+                           hasNextPage={onHasNextPage}
+                           hasPrevPage={onHasPrev}
+                           data={reportJSX}/>
                 </Col>
             </Row>
 
