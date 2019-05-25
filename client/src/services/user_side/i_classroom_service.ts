@@ -16,7 +16,8 @@ export function useClassroom(classroomName: string, forceRender: ()=>void):
     {
         classroom: Classroom | undefined;
         fetchClassroom: (force?:boolean)=>Promise<void>;
-    } {
+    }
+{
     const service: IClassroomService = ServiceLocator.getClassroomService();
 
     useEffect(()=>
@@ -25,14 +26,14 @@ export function useClassroom(classroomName: string, forceRender: ()=>void):
         forceRender(); 
         return ()=>
         {
-           sub.remove();
+        sub.remove();
         }
-    }, [service, forceRender]);
+        }, [service, forceRender]);
 
     const fetchclassroom = useCallback((force?: boolean)=>
     {
         return service.fetchClassroom(classroomName, force);
-    }, [classroomName, service]);
+        }, [classroomName, service]);
 
     return {classroom: service.getClassroom(classroomName), fetchClassroom: fetchclassroom};
 }

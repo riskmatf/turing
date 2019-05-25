@@ -98,7 +98,15 @@ function fetchReportByID(id : number) : Promise<Result<Error, Report>>{
 
 function addReport(data : ReportData){
 	return (async()=>{
-		let response = await axios.post(config.API_URL + "/reports/", data);
+		const dataToSend =
+			{
+				classroomName: data.classroomName,
+				reportType: data.type,
+				computerID: data.idComputer,
+                reportComment: data.description,
+				urgent: data.urgent
+			};
+		let response = await axios.post(config.API_URL + "/reports/", dataToSend);
 		if(response.status == 200){
 			let report : Report = new Report(response.data.id, data.classroomName, data.date,
 											data.description, false, data.urgent, data.type,
