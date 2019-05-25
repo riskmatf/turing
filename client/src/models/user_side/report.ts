@@ -5,8 +5,9 @@ export class Report
     public constructor(public readonly idReport: number, public readonly classroomName: string,
                        public readonly date: number, public description: string, public fixed: boolean,
                        public urgent: boolean, public readonly type: ReportType,
-                       public readonly idComputer?: number | undefined,
-                       private idAdmin_?: string| undefined, private adminComment_?: string | undefined)
+                       public readonly idComputer?: number | null,
+					   private idAdmin_?: string| null, private adminComment_?: string | null,
+					   private adminDisplayName_?: string| null,)
     {
         if(idReport < 0)
         {
@@ -18,35 +19,35 @@ export class Report
             throw new Error('Can not create Report where idAdmin is not valid');
         }*/
 
-        if(type === Report.TYPE_COMPUTER_REPORT && idComputer === undefined)
+        if(type === Report.TYPE_COMPUTER_REPORT && idComputer === null)
         {
             throw new Error('Can not create computer report with no computer id');
         }
 
-        if(type !== Report.TYPE_COMPUTER_REPORT && idComputer !== undefined)
+        if(type !== Report.TYPE_COMPUTER_REPORT && idComputer !== null)
         {
             throw new Error('Non computer report does not take computer id');
         }
 
-        if(idComputer !== undefined && idComputer < 0)
+        if(idComputer !== undefined && idComputer !== null && idComputer < 0)
         {
             throw new Error('Can not create Report where idComputer is not valid');
         }
 
-        if(adminComment_ !== undefined && idAdmin_ === undefined)
+        if(adminComment_ !== null && idAdmin_ === null)
         {
             throw new Error('Can not set admin comment without admin id');
         }
 
-        if(idAdmin_ !== undefined && adminComment_ === undefined)
+        if(idAdmin_ !== null && adminComment_ === null)
         {
             throw new Error('Can not set idAdmin when comment is not provided');
-        }
+		}
     }
 
     public addAdminComment(id: string, adminComment: string): void
     {
-        if(this.idAdmin_ !== undefined && this.idAdmin_ !== id)
+        if(this.idAdmin_ !== null && this.idAdmin_ !== id)
         {
             throw new Error('Comment can be changed only by the same admin that placed it');
         }
@@ -57,23 +58,23 @@ export class Report
 
     public removeAdminComment(id: string): void
     {
-        if(this.idAdmin_ === undefined)
+        if(this.idAdmin_ === null)
         {
             throw new Error('Can not remove not set comment');
         }
 
-        this.idAdmin_ = undefined;
-        this.adminComment_ = undefined;
+        this.idAdmin_ = null;
+        this.adminComment_ = null;
     }
 
     public isAdminCommentSet(): boolean
     {
-        return this.idAdmin_ !== undefined && this.adminComment_ !== undefined;
+        return this.idAdmin_ !== null && this.adminComment_ !== null;
     }
 
     public get idAdmin(): string
     {
-        if(this.idAdmin_ !== undefined)
+        if(this.idAdmin_ !== undefined && this.idAdmin_ !== null)
         {
             return this.idAdmin_;
         }
@@ -83,12 +84,22 @@ export class Report
 
     public get adminComment(): string
     {
-        if(this.adminComment_ !== undefined)
+        if(this.adminComment_ !== undefined && this.adminComment_ !== null)
         {
             return this.adminComment_;
         }
 
         throw new Error('Admin comment is not set');
+	}
+	
+	public get adminDisplayName(): string
+    {
+        if(this.adminDisplayName_ !== undefined && this.adminDisplayName_ !== null)
+        {
+            return this.adminDisplayName_;
+        }
+
+        throw new Error('admin display name is not set');
     }
 
 

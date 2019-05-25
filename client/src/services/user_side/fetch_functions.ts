@@ -1,6 +1,9 @@
 import axios from 'axios';
 import config from "../../config";
 import { Classroom } from '../../models/user_side/classroom';
+import { Report } from '../../models/user_side/report';
+import { ReportData } from './i_report_service';
+import { Result } from '../../utils/result';
 
 //TODO: process errors
 
@@ -40,4 +43,68 @@ function fetchClassroomByName(name : string){
 	})
 }
 
-export {fetchAllClassrooms, fetchClassroomByName};
+type nextObject = {
+	itemsRemaining : number,
+	nextPageUrl : string
+}
+
+function fetchReports(params : any) : Promise<Result<Error, Report[]>>{
+	return (async ()=>{
+		let reports : Report[] = [];
+		let next : nextObject | null = null;
+		let url : string = config.API_URL + "/reports/";
+		do{
+			let response = await axios.get(url, { params });
+			let tmp : any[] = response.data.reports;
+			next = response.data.next;
+			params = {};//params are encoded in next url!;
+			tmp.forEach(report=>{
+				reports.push(new Report(report.reportId, report.classroomName, report.timestamp,
+										report.reportComment,report.fixed, report.urgent, report.type,
+										report.computerID, report.adminUsername, report.adminComment,
+										report.displayName));
+			});
+			console.log(reports);
+			if(next != null){
+				url = next.nextPageUrl;
+			}
+		}while(next != null);
+		return Result.value<Error, Report[]>(reports);
+	})();
+}
+
+function fetchReportByID(id : number) : Promise<Result<Error, Report>>{
+	return (async ()=>{
+		let response = await axios.get(config.API_URL + "/reports/" + id);
+		let report : Report | null = null;
+		if(response.data.report != null){
+			let tmp = response.data.report;
+			report = new Report(
+								tmp.tmpId, tmp.classroomName, tmp.timestamp,
+								tmp.tmpComment,tmp.fixed, tmp.urgent, tmp.type,
+								tmp.computerID, tmp.adminUsername, tmp.adminComment,
+								tmp.displayName
+			);
+		}
+		if(report == null){
+			return Result.error<Error, Report>(new Error("Bad report id!"));
+		}
+		else{
+			return Result.value<Error, Report>(report);
+		}
+	})();
+}
+
+function addReport(data : ReportData){
+	return (async()=>{
+		let response = await axios.post(config.API_URL + "/reports/", data);
+		if(response.status == 200){
+			return Result.value<Error, number>(response.data.id);
+		}
+		else{
+			return Result.error<Error, number>(new Error(response.data.msg));
+		}
+	})();
+}
+
+export {fetchAllClassrooms, fetchClassroomByName, fetchReportByID, fetchReports, addReport};
