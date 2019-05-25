@@ -68,7 +68,7 @@ function addClassroom(data : ClassroomData){
 			numOfComputers : data.computerCount,
 			schema : tmp
 		}
-		let resp = await axios.post(config.API_URL + "/admin/classrooms", {dataToSend});
+		let resp = await axios.post(config.API_URL + "/admin/classrooms", dataToSend);
 		if(resp.status == 400 || resp.status == 409){
 			let er = resp.data.message;
 			return Result.error<Error, Classroom>(new Error(er));
