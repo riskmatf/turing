@@ -18,7 +18,7 @@ export class RemoteClassroomService implements IClassroomService
 
     private classrooms_: Map<string, Wrapper>;
     private emitter_: EventEmitter;
-    private timeWhenAllFetched_ = 0;
+    private timeWhenAllFetched_ = -1;
     private static ON_CLASSROOM_CHANGE = 'on_classroom_change';
     private static FETHC_ON =  10 * 60 * 1000;
 
@@ -84,7 +84,6 @@ export class RemoteClassroomService implements IClassroomService
             const classrooms = (await fetchAllClassrooms()) as Array<Classroom>;
             for(const classroom of classrooms)
             {
-                console.log(classroom)
                 this.classrooms_.set(classroom.name, {data: classroom, metaData: {time: time}});
             }
             this.emitter_.emit(RemoteClassroomService.ON_CLASSROOM_CHANGE);
@@ -96,6 +95,7 @@ export class RemoteClassroomService implements IClassroomService
         this.fetchClassroom(classroomName);
         const wraper = this.classrooms_.get(classroomName);
 
+        console.log(this.classrooms_);
         return wraper === undefined ? undefined : wraper.data;
     }
 

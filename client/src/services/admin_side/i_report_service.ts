@@ -128,6 +128,7 @@ export function useReportForClassroom(classroomName: string, forceRender: ()=>vo
     {
         const sub = service.onReportsChanged(forceRender);
 
+        forceRender(); 
         return ()=>
         {
             sub.remove();
@@ -164,6 +165,7 @@ export function useReport(id: number, forceRender: ()=>void):
     {
         const sub = service.onReportsChanged(forceRender);
 
+        forceRender(); 
         return ()=>
         {
             sub.remove();
@@ -214,6 +216,7 @@ export function useFilterReports(criteria: FilterCriteria, forceRender: ()=>void
     useEffect(()=>
     {
         const sub = service.onReportsChanged(forceRender);
+        forceRender();
 
         return ()=>
         {

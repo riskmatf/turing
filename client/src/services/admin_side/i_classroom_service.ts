@@ -54,7 +54,7 @@ export function useClassrooms(forceRender: ()=>void):
     useEffect(()=>
     {
         const sub = service.onClassroomsChange(forceRender);
-
+        forceRender();
         return ()=>
         {
             sub.remove();
@@ -79,6 +79,19 @@ export function useClassroom(classroomName: string, forceRender: ()=>void):
 {
 
     const service = ServiceLocator.getClassroomService();
+
+
+    useEffect(()=>
+    {
+        const sub = service.onClassroomsChange(forceRender);
+        forceRender();
+        return ()=>
+        {
+            sub.remove();
+        }
+
+    }, [service, forceRender]);
+
 
     const fetchClassroom = useCallback((force?: boolean)=>
     {
