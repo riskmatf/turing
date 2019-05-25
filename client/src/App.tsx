@@ -6,7 +6,7 @@ import {
 import {RemoteReportService as UserRemoteReportService} from "./services/user_side/remote_report_service";
 import {ServiceLocator as AdminServiceLocator} from './services/admin_side/service_locator';
 import {LocalReportService as AdminLocalReportService} from './services/admin_side/local_report_service';
-import {LocalClassroomService as AdminLocalClassroomService} from './services/admin_side/local_classroom_service';
+import {RemoteClassroomService as AdminRemoteClassroomService} from './services/admin_side/remote_classroom_service';
 
 import {BrowserRouter, Redirect, Route, RouteComponentProps, Switch} from "react-router-dom";
 import {BodyPart as ClassroomPageBodyPart} from './components/user_side/classroom_page';
@@ -31,7 +31,7 @@ UserServiceLocator.registerClassroomService(new UserRemoteClassroomService());
 UserServiceLocator.registerReportService(new UserRemoteReportService());
 
 AdminServiceLocator.registerReportService(new AdminLocalReportService());
-AdminServiceLocator.registerClassroomService(new AdminLocalClassroomService());
+AdminServiceLocator.registerClassroomService(new AdminRemoteClassroomService());
 AdminServiceLocator.registerAuthService(new RemoteAuthService());
 
 

@@ -60,19 +60,19 @@ function fetchWhoami(){
 
 function addClassroom(data : ClassroomData){
 	return (async ()=>{
+		let tmp = await getUrlFromFile(data.schemaFile);
+		console.log(tmp);
 		let dataToSend = {
 			name : data.name,
 			location : data.location,
 			numOfComputers : data.computerCount,
-			schema : data.schemaFile
+			schema : tmp
 		}
 		let resp = await axios.post(config.API_URL + "/admin/classrooms", {dataToSend});
 		if(resp.status == 400 || resp.status == 409){
 			let er = resp.data.message;
 			return Result.error<Error, Classroom>(new Error(er));
 		}
-		let tmp = await getUrlFromFile(data.schemaFile);
-		console.log(tmp);
 		return Result.value<Error, Classroom>(new Classroom(data.name, data.location, tmp,
 															data.computerCount));
 	})()
@@ -95,7 +95,7 @@ function getUrlFromFile(file: File): Promise<string>
         {
             if(fileReader.result !== null && typeof(fileReader.result) === 'string')
             {
-                resolve(fileReader.result);
+                resolve(Buffer.from(fileReader.result).toString('base64'));
             }
             else
             {
@@ -105,7 +105,7 @@ function getUrlFromFile(file: File): Promise<string>
         };
     });
 
-    fileReader.readAsText(file, 'base64');
+    fileReader.readAsText(file, 'utf8');
 
     return promise;
 

@@ -1,10 +1,11 @@
 import {ClassroomData, ClassroomUpdateBuilder, IClassroomService} from './i_classroom_service';
 import {EventEmitter, EventSubscription} from "fbemitter";
 import {Classroom} from "../../models/admin_side/classroom";
+import {fetchAllClassrooms, fetchClassroomsByName, deleteClassroom, addClassroom} from './fetch_functions';
 
 type Wraper =
     {
-        classroom: Classroom | undefined;
+        data: Classroom | undefined;
         metaData: {time: number};
     };
 
@@ -15,7 +16,7 @@ export class RemoteClassroomService implements IClassroomService
 
     private emitter_: EventEmitter;
     private classrooms_: Map<string, Wraper>;
-    private static FETCH_ON = 10 * 60 * 1000;
+    private static FETHC_ON = 10 * 60 * 1000;
     private allClassroomsFatched_ = 0;
 
     constructor()
@@ -30,7 +31,19 @@ export class RemoteClassroomService implements IClassroomService
         return (async ()=>
         {
 
+            const res = await addClassroom(data);
+            const time = new Date().getTime();
+
+            if(res.isError())
+            {
+                throw res.error;
+            }
+
+            this.classrooms_.set(res.value.name, {data: res.value, metaData:{time: time}});
+
             this.emitter_.emit(RemoteClassroomService.ON_CLASSROOMS_CHANGE);
+
+            return res.value;
         })();
 
 
@@ -42,26 +55,35 @@ export class RemoteClassroomService implements IClassroomService
         {
             let wraper = this.classrooms_.get(classroomName);
             const time = new Date().getTime();
-
             if(wraper === undefined)
             {
-                this.classrooms_.set(classroomName, {classroom: undefined, metaData:{time: time}})
-            }
-            else if(time - wraper.metaData.time >= RemoteClassroomService.FETCH_ON || force)
-            {
-                wraper.metaData.time = time;
+                this.classrooms_.set(classroomName, {data: undefined,metaData:{time:time}})
+                wraper = this.classrooms_.get(classroomName);
             }
             else
             {
-                return ;
+                if(time - wraper.metaData.time >= RemoteClassroomService.FETHC_ON || force)
+                {
+                    wraper.metaData.time = time;
+                }
+                else
+                {
+                    return;
+                }
             }
-
-            if(wraper === undefined)
+            /*Make request*/
+            console.log('Making a request');
+            const classroom = await fetchClassroomsByName(classroomName) as Classroom;
+            if(wraper !== undefined)
             {
-                throw new Error('This should not happen');
+                wraper.data = classroom;
+            }
+            else
+            {
+                throw new Error('Wraper should not be undefined');
             }
 
-            console.log('Fetching data');
+            this.emitter_.emit(RemoteClassroomService.ON_CLASSROOMS_CHANGE);
         })();
     }
 
@@ -70,44 +92,50 @@ export class RemoteClassroomService implements IClassroomService
         return (async ()=>
         {
             const time = new Date().getTime();
-
-            if(time - this.allClassroomsFatched_ >= RemoteClassroomService.FETCH_ON || force)
+            if(time - this.allClassroomsFatched_ >= RemoteClassroomService.FETHC_ON || force)
             {
-                this.allClassroomsFatched_ = time;
+                this.allClassroomsFatched_= time;
             }
             else
             {
                 return;
             }
-
-            console.log('Getting data');
-
+            console.log('Making a request');
+            /*Make request*/
+            const classrooms = (await fetchAllClassrooms()) as Array<Classroom>;
+            for(const classroom of classrooms)
+            {
+                this.classrooms_.set(classroom.name, {data: classroom, metaData: {time: time}});
+            }
+            this.emitter_.emit(RemoteClassroomService.ON_CLASSROOMS_CHANGE);
         })();
     }
 
     getClassroom(classroomName: string): Classroom | undefined
     {
         this.fetchClassroom(classroomName);
+        const wraper = this.classrooms_.get(classroomName);
 
-        const res = this.classrooms_.get(classroomName);
-        return  res === undefined ? undefined : res.classroom;
+        console.log(this.classrooms_);
+        return wraper === undefined ? undefined : wraper.data;
     }
 
     getClassrooms(): Array<Classroom>
     {
         this.fetchClassrooms();
+        const res: Array<Classroom> = [];
 
-        const res = [];
         for(let it = this.classrooms_.values(), curr = it.next(); !curr.done; curr = it.next())
         {
-            if(curr.value.classroom !== undefined)
+            if(curr.value.data !== undefined)
             {
-                res.push(curr.value.classroom);
+                res.push(curr.value.data);
             }
         }
 
         return res;
     }
+
 
     onClassroomsChange(handler: () => void): EventSubscription
     {
@@ -119,6 +147,12 @@ export class RemoteClassroomService implements IClassroomService
         return (async ()=>
         {
             this.classrooms_.delete(classroomName);
+            const res = await deleteClassroom(classroomName);
+            if(res.isError())
+            {
+                throw res.error;
+            }
+
             this.emitter_.emit(RemoteClassroomService.ON_CLASSROOMS_CHANGE);
         })();
     }
