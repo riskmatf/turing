@@ -30,7 +30,7 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
     const [isModalOpen, setModalOpen] = useState(false);
     const [modalData, setModalData]: Hook<ModalData | undefined> = useState();
 
-    console.log(classroom);
+    console.log(JSON.stringify(classroom));
     if(reportsApi.reports.isError())
     {
         throw reportsApi.reports.error;
@@ -151,7 +151,7 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
 
     console.log('hiasdias');
     return (
-        <div>
+        <React.Fragment>
             <Row>
                 <Col>
                     <Card>
@@ -168,7 +168,8 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
                         </CardHeader>
 
                         <CardBody>
-                            hi
+                            <SvgShema url={classroom.classroom.schemaUrl} numOfEl={classroom.classroom.computerCount}
+                            onLoad={onLoad} onClick={onComputerClicked}/>
                         </CardBody>
                     </Card>
                 </Col>
@@ -187,7 +188,7 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
             }
 
 
-        </div>
+        </React.Fragment>
     );
 }
 

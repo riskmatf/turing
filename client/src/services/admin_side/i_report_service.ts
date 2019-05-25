@@ -128,7 +128,7 @@ export function useReportForClassroom(classroomName: string, forceRender: ()=>vo
     {
         const sub = service.onReportsChanged(forceRender);
 
-        forceRender(); 
+        setTimeout(()=>forceRender(), 0);
         return ()=>
         {
             sub.remove();
@@ -165,7 +165,7 @@ export function useReport(id: number, forceRender: ()=>void):
     {
         const sub = service.onReportsChanged(forceRender);
 
-        forceRender(); 
+        setTimeout(()=>forceRender(), 0);
         return ()=>
         {
             sub.remove();
