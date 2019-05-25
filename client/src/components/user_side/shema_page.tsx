@@ -1,9 +1,9 @@
 import * as React from 'react';
-import {match, RouteComponentProps} from "react-router";
+import {RouteComponentProps} from "react-router";
 import {useClassroom } from "../../services/user_side/i_classroom_service";
 import {useForceRender} from "../../utils/force_render";
 import {SvgShema} from "../svg_shema";
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import {ReportData, useReportsForClassroom} from "../../services/user_side/i_report_service";
 import {Col, Row, Card, CardHeader, CardBody, Button, Modal, ModalHeader, ModalBody, ListGroup} from "reactstrap";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -21,6 +21,7 @@ type BodyProps =
 
 export function BodyPart(props: BodyProps): React.ReactElement | null
 {
+    console.log('jsalkjdalkjlksajlkajsslkdjaslkjdklj');
     const [reportsDidChange, forceRender] = useForceRender();
     const classroom = useClassroom(props.match.params.id, forceRender);
     const [toggleErrors, setToggleErrors]: Hook<{fn?: (id:number, visible: boolean)=>void}> = useState({});
@@ -29,6 +30,7 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
     const [isModalOpen, setModalOpen] = useState(false);
     const [modalData, setModalData]: Hook<ModalData | undefined> = useState();
 
+    console.log(classroom);
     if(reportsApi.reports.isError())
     {
         throw reportsApi.reports.error;
@@ -147,8 +149,9 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
         return null;
     }
 
+    console.log('hiasdias');
     return (
-        <React.Fragment>
+        <div>
             <Row>
                 <Col>
                     <Card>
@@ -165,8 +168,7 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
                         </CardHeader>
 
                         <CardBody>
-                            <SvgShema url={classroom.classroom.schemaUrl} numOfEl={classroom.classroom.computerCount}
-                            onLoad={onLoad} onClick={onComputerClicked}/>
+                            hi
                         </CardBody>
                     </Card>
                 </Col>
@@ -185,7 +187,7 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
             }
 
 
-        </React.Fragment>
+        </div>
     );
 }
 
