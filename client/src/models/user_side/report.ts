@@ -1,3 +1,4 @@
+
 export type ReportType = 1 | 2 | 3;
 
 export class Report
