@@ -1,10 +1,9 @@
 import React, {useEffect} from 'react';
 import {ServiceLocator as UserServiceLocator} from "./services/user_side/serviceLocator";
-import {LocalReportService as UserLocalReportService} from "./services/user_side/local_report_service";
 import {
-    RemoteClassroomService,
     RemoteClassroomService as UserRemoteClassroomService
 } from './services/user_side/remote_classroom_service';
+import {RemoteReportService as UserRemoteReportService} from "./services/user_side/remote_report_service";
 import {ServiceLocator as AdminServiceLocator} from './services/admin_side/service_locator';
 import {LocalReportService as AdminLocalReportService} from './services/admin_side/local_report_service';
 import {LocalClassroomService as AdminLocalClassroomService} from './services/admin_side/local_classroom_service';
@@ -28,8 +27,8 @@ import {useForceRender} from "./utils/force_render";
  * ServiceLocator.registerAudioService(new AudioServiceImpl())
  */
 
-UserServiceLocator.registerClassroomService(new RemoteClassroomService());
-UserServiceLocator.registerReportService(new UserLocalReportService());
+UserServiceLocator.registerClassroomService(new UserRemoteClassroomService());
+UserServiceLocator.registerReportService(new UserRemoteReportService());
 
 AdminServiceLocator.registerReportService(new AdminLocalReportService());
 AdminServiceLocator.registerClassroomService(new AdminLocalClassroomService());
