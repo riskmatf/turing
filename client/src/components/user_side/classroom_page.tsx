@@ -6,6 +6,7 @@ import {useMemo, useState} from "react";
 import {Classroom} from "../../models/user_side/classroom";
 import {Card, CardBody, CardHeader, CardImg, Col, Row, UncontrolledCollapse} from "reactstrap";
 import {ClassroomDisplay} from "./classroom_display";
+import {ServiceLocator} from "../../services/user_side/serviceLocator";
 
 type AppBarProps  =
     Readonly<{
@@ -29,7 +30,7 @@ export function BodyPart(props: BodyProps): React.ReactElement
 
         const devided = new Map<string, Array<Classroom>>();
 
-        for(const classroom of classrooms.classrooms)
+        for(const classroom of ServiceLocator.getClassroomService().getClassrooms())
         {
             if(devided.has(classroom.location))
             {
