@@ -17,7 +17,7 @@
     "rootDir": "./src",
     "outDir": "./build"
   },
-  "include": ["src", "../config.ts"],
+  "include": ["src"],
   "exclude": [
     "node_modules"
   ]

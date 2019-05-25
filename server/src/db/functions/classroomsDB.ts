@@ -2,7 +2,7 @@ import { classroom } from "../../types/types";
 import { dbCon } from "../dbConnection";
 import { Readable } from "stream";
 import fs from "fs";
-import config from "../../../../config";
+import config from '../../config';
 
 /**
  * @param finalCallback Callback for sending data

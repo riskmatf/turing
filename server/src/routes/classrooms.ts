@@ -3,7 +3,7 @@ import {classroom} from "../types/types";
 import {json} from 'body-parser';
 import { getClassroomsByLocation, getClassroomByName, getAllClassrooms }
 																from '../db/functions/classroomsDB';
-import config from '../../../config';
+import config from '../config';
 
 const router = Router();
 router.use(json());

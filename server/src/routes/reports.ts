@@ -87,6 +87,7 @@ router.get('/reports', (req, res)=>{
 
 	let offset : number = 0;
 	let limit : number = 42;
+	console.log(req.query);
 	let whereClauseParams = parseQueryParams(req.query, res);
 	if (whereClauseParams == undefined){
 		return;
