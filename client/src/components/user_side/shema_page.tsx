@@ -21,7 +21,6 @@ type BodyProps =
 
 export function BodyPart(props: BodyProps): React.ReactElement | null
 {
-    console.log('jsalkjdalkjlksajlkajsslkdjaslkjdklj');
     const [reportsDidChange, forceRender] = useForceRender();
     const classroom = useClassroom(props.match.params.id, forceRender);
     const [toggleErrors, setToggleErrors]: Hook<{fn?: (id:number, visible: boolean)=>void}> = useState({});
@@ -30,7 +29,6 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
     const [isModalOpen, setModalOpen] = useState(false);
     const [modalData, setModalData]: Hook<ModalData | undefined> = useState();
 
-    console.log(JSON.stringify(classroom));
     if(reportsApi.reports.isError())
     {
         throw reportsApi.reports.error;
@@ -149,7 +147,6 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
         return null;
     }
 
-    console.log('hiasdias');
     return (
         <React.Fragment>
             <Row>
