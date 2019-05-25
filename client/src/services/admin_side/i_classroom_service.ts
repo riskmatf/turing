@@ -28,7 +28,6 @@ export interface IClassroomService
     getClassroom(classroomName: string): Classroom | undefined;
     fetchClassroom(classroomName: string, force?: boolean): Promise<void>;
     addClassroom(data: ClassroomData): Promise<Classroom>;
-    updateClassroom(classroomName: string): ClassroomUpdateBuilder;
     removeClassroom(classroomName: string): Promise<void>;
     onClassroomsChange(handler: ()=>void): EventSubscription;
 }
@@ -73,7 +72,6 @@ export function useClassroom(classroomName: string, forceRender: ()=>void):
     {
         classroom: Classroom | undefined;
         fetchClassroom: (force?: boolean)=>Promise<void>;
-        updateClassroom: ()=>ClassroomUpdateBuilder;
         removeClassroom: ()=>Promise<void>;
     }
 {
@@ -98,10 +96,6 @@ export function useClassroom(classroomName: string, forceRender: ()=>void):
         return service.fetchClassroom(classroomName, force);
     }, [service, classroomName]);
 
-    const updateClassroom = useCallback(()=>
-    {
-        return service.updateClassroom(classroomName);
-    }, [service, classroomName]);
 
     const removeClassroom = useCallback(()=>
     {
@@ -112,7 +106,6 @@ export function useClassroom(classroomName: string, forceRender: ()=>void):
     return {
         classroom: service.getClassroom(classroomName),
         fetchClassroom: fetchClassroom,
-        updateClassroom: updateClassroom,
         removeClassroom: removeClassroom
     };
 }
