@@ -73,6 +73,9 @@ router.post('/login', (req, res)=>{
 })
 //TODO: nacin da proveri da li je ulogovan i da vrati ko je ulogovan
 
+
+
+
 router.post("/signup", (req, res)=>{
 	passport.authenticate('local-signup',(err, user, info)=>{
 		if(err){
@@ -89,7 +92,25 @@ router.post("/signup", (req, res)=>{
 
 router.use('/admin', passport.authenticate('jwt', {session : false}));
 
-
+router.get("/admin/whoami", (req, res)=>{
+	let token : string | null = null;
+	if(req.cookies["jwt"] != undefined){
+		token = req.cookies["jwt"];
+		let userInfo : string | {[key:string] : any} | null = null;
+		if(token != null){
+			userInfo = jwt.decode(token);
+		}
+		if(userInfo !== null && typeof(userInfo) !== "string"){
+			res.send({
+				username : userInfo["username"],
+				displayName : userInfo["displayName"]
+				});
+		}
+	}
+	else{
+		res.status(401).send("this should never happen!");
+	}
+})
 router.post('/admin/classrooms', (req, res)=>{
 	let body = req.body;
 	
