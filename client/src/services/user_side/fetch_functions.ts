@@ -99,10 +99,13 @@ function addReport(data : ReportData){
 	return (async()=>{
 		let response = await axios.post(config.API_URL + "/reports/", data);
 		if(response.status == 200){
-			return Result.value<Error, number>(response.data.id);
+			let report : Report = new Report(response.data.id, data.classroomName, data.date,
+											data.description, false, data.urgent, data.type,
+											data.idComputer);
+			return Result.value<Error, Report>(report);
 		}
 		else{
-			return Result.error<Error, number>(new Error(response.data.msg));
+			return Result.error<Error, Report>(new Error(response.data.msg));
 		}
 	})();
 }
