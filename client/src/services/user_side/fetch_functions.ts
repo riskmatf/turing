@@ -1,5 +1,5 @@
 import axios from 'axios';
-import config from "../../../../config";
+import config from "../../config";
 import { Classroom } from '../../models/user_side/classroom';
 
 //TODO: process errors
@@ -8,13 +8,13 @@ function fetchAllClassrooms(){
 	return new Promise((resolve, _reject)=>{
 		let classrooms : Classroom[] = [];
 		axios.get(config.API_URL + "/classrooms/").then((response)=>{
-			let tmp : any[] = JSON.parse(response.data)["classrooms"];
+			let tmp : any[] =response.data.classrooms;
 			tmp.forEach(classroom =>{
 				classrooms.push(new Classroom(classroom.name, classroom.location, classroom.schemaUrl,
 												classroom.numOfComputers));
 			});
+			resolve(classrooms);
 		});
-		resolve(classrooms);
 	})
 	
 }
@@ -28,13 +28,15 @@ function fetchClassroomByName(name : string){
 				classroom = new Classroom(tmp.name, tmp.location, tmp.schemaUrl,
 					tmp.numOfComputers);
 			}
+
+            if(classroom != null){
+                resolve(classroom);
+            }
+            else{
+                reject(classroom);
+            }
 		});
-		if(classroom != null){
-			resolve(classroom);
-		}
-		else{
-			reject(classroom);
-		}
+
 	})
 }
 
