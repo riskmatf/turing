@@ -1,7 +1,7 @@
 import {ClassroomData, ClassroomUpdateBuilder, IClassroomService} from './i_classroom_service';
 import {EventEmitter, EventSubscription} from "fbemitter";
 import {Classroom} from "../../models/admin_side/classroom";
-import {fetchAllClassrooms, fetchClassroomsByName, deleteClassroom, addClassroom} from './fetch_functions';
+import {fetchAllClassrooms, fetchClassroomByName, deleteClassroom, addClassroom} from './fetch_functions';
 
 type Wraper =
     {
@@ -57,7 +57,7 @@ export class RemoteClassroomService implements IClassroomService
             const time = new Date().getTime();
             if(wraper === undefined)
             {
-                this.classrooms_.set(classroomName, {data: undefined,metaData:{time:time}})
+                this.classrooms_.set(classroomName, {data: undefined,metaData:{time:time}});
                 wraper = this.classrooms_.get(classroomName);
             }
             else
@@ -73,7 +73,7 @@ export class RemoteClassroomService implements IClassroomService
             }
             /*Make request*/
             console.log('Making a request');
-            const classroom = await fetchClassroomsByName(classroomName) as Classroom;
+            const classroom = await fetchClassroomByName(classroomName) as Classroom;
             if(wraper !== undefined)
             {
                 wraper.data = classroom;

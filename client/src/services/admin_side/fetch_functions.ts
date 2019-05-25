@@ -59,19 +59,20 @@ function fetchWhoami(){
 function addClassroom(data : ClassroomData){
 	return (async ()=>{
 		let tmp = await getUrlFromFile(data.schemaFile);
-		console.log(tmp);
 		let dataToSend = {
 			name : data.name,
 			location : data.location,
 			numOfComputers : data.computerCount,
 			schema : tmp
 		}
+
 		let resp = await axios.post(config.API_URL + "/admin/classrooms", dataToSend);
 		if(resp.status == 400 || resp.status == 409){
 			let er = resp.data.message;
 			return Result.error<Error, Classroom>(new Error(er));
 		}
 		let newClassroom = (await fetchClassroomByName(data.name) as Classroom);
+
 		return Result.value<Error, Classroom>(newClassroom);
 	})()
 }
