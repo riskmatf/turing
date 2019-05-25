@@ -71,10 +71,6 @@ router.post('/login', (req, res)=>{
 	})(req, res);
 
 })
-//TODO: nacin da proveri da li je ulogovan i da vrati ko je ulogovan
-
-
-
 
 router.post("/signup", (req, res)=>{
 	passport.authenticate('local-signup',(err, user, info)=>{

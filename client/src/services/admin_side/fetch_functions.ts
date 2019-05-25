@@ -59,6 +59,7 @@ function fetchWhoami(){
 function addClassroom(data : ClassroomData){
 	return (async ()=>{
 		let tmp = await getUrlFromFile(data.schemaFile);
+		//console.log(tmp);
 		let dataToSend = {
 			name : data.name,
 			location : data.location,
@@ -73,6 +74,7 @@ function addClassroom(data : ClassroomData){
 		}
 		let newClassroom = (await fetchClassroomByName(data.name) as Classroom);
 
+		//console.log(newClassroom);
 		return Result.value<Error, Classroom>(newClassroom);
 	})()
 }
@@ -84,8 +86,23 @@ function deleteClassroom(name : string){
 	})();
 }
 
-function updateReport(){
-	
+function updateReport(data : any){
+	return (async ()=>{
+		let resp = await axios.put(config.API_URL + "/admin/reports/" + data.idReport);
+
+	})()
+}
+
+function deleteReport(id : number){
+	return (async ()=>{
+		let resp = await axios.delete(config.API_URL + "/admin/reports/" + id);
+		if (resp.status == 400){
+			return Result.error<Error, void>(new Error(resp.data.message));
+		}
+		else{
+			return Result.success<Error>();
+		}
+	})()
 }
 
 function getUrlFromFile(file: File): Promise<string>
@@ -114,4 +131,4 @@ function getUrlFromFile(file: File): Promise<string>
 
 }
 
-export {fetchLogin, fetchLogout, fetchWhoami, addClassroom, deleteClassroom};
+export {fetchLogin, fetchLogout, fetchWhoami, addClassroom, deleteClassroom, deleteReport};
