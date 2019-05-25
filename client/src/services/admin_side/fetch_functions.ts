@@ -11,23 +11,16 @@ export const fetchReports = userFetchReports;
 export const fetchReportByID = userFetchReportByID;
 export const fetchAllClassrooms = userFetchAllClassrooms;
 export const fetchClassroomsByName = userFetchClassoormByName;
+import { ClassroomData } from './i_classroom_service';
+import { Classroom } from '../../models/admin_side/classroom';
 
-
-// axios.interceptors.response.use(response => {
-// 	return response;
-// 	}, error => {
-// 		if (error.response.status === 401) {
-// 			return Result.error<Error, User>(new Error("Not logged in!"));
-//    		}
-//    }
-//    );
 
 function fetchLogin(username : string, password : string) : Promise<Result<Error, User>>{
 	return (async()=>{
 		let resp = await axios.post(config.API_URL + "/login", {username : username, password: password});
 		if(resp.status == 400){
 			let info = resp.data.message;
-			return Result.error<Error, User>(info);
+			return Result.error<Error, User>(new Error(info));
 		}
 		else{
 			let userInfo = resp.data.user;
@@ -53,23 +46,43 @@ function fetchWhoami(){
 	return (async()=>{
 		try{
 			let resp = await axios.get(config.API_URL + "/admin/whoami");
-			let userInfo = resp.data.user;
+			let userInfo = resp.data;
 			let user : User = new User(userInfo.username, userInfo.displayName);
 			return Result.value<Error, User>(user);
 		}catch(e){
-			// console.log(e);
+			console.log(e);
 			return Result.error<Error, User>(e);
 		}
-		
-		// if(resp.status == 401){
-		// 	console.log(resp);
-		// 	return Result.error<Error, User>(new Error("Not logged in!"));
-		// }
-		
-			
-		
+	})();
+}
 
+
+
+function addClassroom(data : ClassroomData){
+	return (async ()=>{
+		let dataToSend = {
+			name : data.name,
+			location : data.location,
+			numOfComputers : data.computerCount,
+			schema : data.schemaFile
+		}
+		let resp = await axios.post(config.API_URL + "/admin/classrooms", {dataToSend});
+		if(resp.status == 400 || resp.status == 409){
+			let er = resp.data.message;
+			return Result.error<Error, Classroom>(new Error(er));
+		}
+		let tmp = await getUrlFromFile(data.schemaFile);
+		console.log(tmp);
+		return Result.value<Error, Classroom>(new Classroom(data.name, data.location, tmp,
+															data.computerCount));
 	})()
+}
+
+function deleteClassroom(name : string){
+	return (async ()=>{
+		let resp = await axios.delete(config.API_URL + "/admin/classrooms/" + name);
+		return Result.success<Error>();
+	})();
 }
 
 function getUrlFromFile(file: File): Promise<string>
@@ -98,4 +111,4 @@ function getUrlFromFile(file: File): Promise<string>
 
 }
 
-export {fetchLogin, fetchLogout, fetchWhoami};
+export {fetchLogin, fetchLogout, fetchWhoami, addClassroom, deleteClassroom};
