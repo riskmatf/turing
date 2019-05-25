@@ -13,6 +13,7 @@ export const fetchAllClassrooms = userFetchAllClassrooms;
 export const fetchClassroomByName = userFetchClassoormByName;
 import { ClassroomData } from './i_classroom_service';
 import { Classroom } from '../../models/admin_side/classroom';
+import { UpdatePayload } from './remote_report_service';
 
 
 function fetchLogin(username : string, password : string) : Promise<Result<Error, User>>{
@@ -86,11 +87,22 @@ function deleteClassroom(name : string){
 	})();
 }
 
-function updateReport(data : any){
-	return (async ()=>{
-		let resp = await axios.put(config.API_URL + "/admin/reports/" + data.idReport);
+function updateReport(data : UpdatePayload){
+	return (async()=>{
+		let dataToSend = {
+			adminComment : data.comment,
+			update : data.action == 'update',
+			solve  : data.action == 'solve'
+		}
+		let resp = await axios.put(config.API_URL + "/admin/reports/" + data.idReport, dataToSend);
+		if(resp.status == 400){
+			return Result.error<Error, void>(new Error(resp.data.message));
+		}
+		else{
+			return Result.success<Error>();
+		}
 
-	})()
+	})();
 }
 
 function deleteReport(id : number){
@@ -119,7 +131,7 @@ function getUrlFromFile(file: File): Promise<string>
             }
             else
             {
-                reject(new Error('FileReader dose not have result after onLoad event or it is not string'));
+                reject(new Error('FileReader does not have result after onLoad event or it is not string'));
             }
 
         };
@@ -131,4 +143,4 @@ function getUrlFromFile(file: File): Promise<string>
 
 }
 
-export {fetchLogin, fetchLogout, fetchWhoami, addClassroom, deleteClassroom, deleteReport};
+export {fetchLogin, fetchLogout, fetchWhoami, addClassroom, deleteClassroom, deleteReport, updateReport};

@@ -141,12 +141,12 @@ router.delete("/admin/classrooms/:name", (req, res)=>{
 router.delete("/admin/reports/:id",(req, res)=>{
 	const repID = req.params.id;
 	if(repID <= 0){
-		res.status(400).send('INVALID ID!');
+		res.status(400).send({message:'INVALID ID!'});
 		return;
 	}
 	else{
 		deleteReport(repID,()=>{
-			res.send("report is no more");
+			res.send({message:"report is no more"});
 		})
 	}
 })
