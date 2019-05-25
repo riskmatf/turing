@@ -56,7 +56,7 @@ router.use(json());
 router.post("/reports",(req,res)=>{
 	let body = req.body;
 	const requiredFields : string[] = ["classroomName", "reportType"];
-	const optionalFields : string[] = ["computerID", "reportComment"];
+	const optionalFields : string[] = ["computerID", "reportComment", "urgent"];
 	let reportColumns : Map<string, string | number> = new Map();
 	for(let field of requiredFields){
 		if(body[field] == null){
