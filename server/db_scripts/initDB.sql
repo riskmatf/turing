@@ -50,7 +50,8 @@ create trigger reportsBI before insert on reports
 		end if;
 		set new.timestamp = UNIX_TIMESTAMP();
 	END;$$
-	
+
+drop trigger if exists reportsBU $$
 create trigger reportsBU before update on reports
 	for each row
 	begin
