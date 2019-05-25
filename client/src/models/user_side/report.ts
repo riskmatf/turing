@@ -35,15 +35,15 @@ export class Report
             throw new Error('Can not create Report where idComputer is not valid');
         }
 
-        if(adminComment_ !== undefined && idAdmin_ === undefined)
-        {
-            throw new Error('Can not set admin comment without admin id');
-        }
+        // if(adminComment_ !== undefined && idAdmin_ === undefined)
+        // {
+        //     throw new Error('Can not set admin comment without admin id');
+        // }
 
-        if(idAdmin_ !== undefined && adminComment_ === undefined)
-        {
-            throw new Error('Can not set idAdmin when comment is not provided');
-		}
+        // if(idAdmin_ !== undefined && adminComment_ === undefined)
+        // {
+        //     throw new Error('Can not set idAdmin when comment is not provided');
+		// }
     }
 
     public addAdminComment(id: string, adminComment: string): void
