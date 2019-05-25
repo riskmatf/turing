@@ -26,7 +26,7 @@ function fetchClassroomByName(name : string){
 	return new Promise((resolve, reject)=>{
 		let classroom : Classroom | null= null;
 		axios.get(config.API_URL + "/classrooms/" + name).then((response)=>{
-			let tmp : any = JSON.parse(response.data)["classroom"];
+			let tmp : any = response.data["classroom"];
 			if (tmp != null){
 				classroom = new Classroom(tmp.name, tmp.location, tmp.schemaUrl,
 					tmp.numOfComputers);
