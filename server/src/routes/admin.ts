@@ -96,6 +96,10 @@ router.get("/admin/whoami", (req, res)=>{
 	let token : string | null = null;
 	if(req.cookies["jwt"] != undefined){
 		token = req.cookies["jwt"];
+		if(typeof(token) === "string" && canYouPlayBass(token)){
+			res.status(401).send("token is on blacklist");
+			return;
+		}
 		let userInfo : string | {[key:string] : any} | null = null;
 		if(token != null){
 			userInfo = jwt.decode(token);
@@ -113,22 +117,21 @@ router.get("/admin/whoami", (req, res)=>{
 })
 router.post('/admin/classrooms', (req, res)=>{
 	let body = req.body;
-	
 	const requiredFields : string[] = ["name", "location", "numOfComputers", "schema"];
 	for(let field of requiredFields){
 		if(body[field] == null){
-			res.status(400).send(`${field} is not provided or is null!`);
+			res.status(400).send({message:`${field} is not provided or is null!`});
 			return;
 		}
 	}
 	if(body.numOfComputers < 0){
-		res.status(400).send("number of computer must be >= 0");
+		res.status(400).send({message:"number of computers must be >= 0"});
 		return;
 	}
 
 	addClassroom(body['name'], body.location, body.numOfComputers, body.schema,
 				(msg = "All OK!", httpCode = 200)=>{
-					res.status(httpCode).send(msg);
+					res.status(httpCode).send({message : msg});
 				});
 });
 

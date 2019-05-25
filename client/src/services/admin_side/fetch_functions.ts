@@ -10,7 +10,7 @@ export const addReport = userAddReport;
 export const fetchReports = userFetchReports;
 export const fetchReportByID = userFetchReportByID;
 export const fetchAllClassrooms = userFetchAllClassrooms;
-export const fetchClassroomsByName = userFetchClassoormByName;
+export const fetchClassroomByName = userFetchClassoormByName;
 import { ClassroomData } from './i_classroom_service';
 import { Classroom } from '../../models/admin_side/classroom';
 
@@ -56,8 +56,6 @@ function fetchWhoami(){
 	})();
 }
 
-
-
 function addClassroom(data : ClassroomData){
 	return (async ()=>{
 		let tmp = await getUrlFromFile(data.schemaFile);
@@ -73,8 +71,8 @@ function addClassroom(data : ClassroomData){
 			let er = resp.data.message;
 			return Result.error<Error, Classroom>(new Error(er));
 		}
-		return Result.value<Error, Classroom>(new Classroom(data.name, data.location, tmp,
-															data.computerCount));
+		let newClassroom = (await fetchClassroomByName(data.name) as Classroom);
+		return Result.value<Error, Classroom>(newClassroom);
 	})()
 }
 
@@ -83,6 +81,10 @@ function deleteClassroom(name : string){
 		let resp = await axios.delete(config.API_URL + "/admin/classrooms/" + name);
 		return Result.success<Error>();
 	})();
+}
+
+function updateReport(){
+	
 }
 
 function getUrlFromFile(file: File): Promise<string>

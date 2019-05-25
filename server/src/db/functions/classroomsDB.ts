@@ -4,6 +4,7 @@ import { Readable } from "stream";
 import fs from "fs";
 import config from '../../config';
 
+
 /**
  * @param finalCallback Callback for sending data
  *
@@ -76,12 +77,9 @@ function addClassroom(name : string, location : string, numOfComputers : number,
 						schema : string,
 						finalCallback : (message? : string, httpCode? : number)=>void ) : void
 {
-	let svgBuffer = Buffer.from(schema, 'base64');
-	var s = new Readable()
-
-	s.push(svgBuffer);
-	s.push(null) 
-	s.pipe(fs.createWriteStream(config.SCHEMAS_PATH + name + ".svg"));//TODO create path
+	let svgBuffer = Buffer.from(schema, 'base64').toString('utf8');
+	fs.writeFileSync(config.SCHEMAS_PATH + name + ".svg", svgBuffer);
+	//s.pipe(fs.createWriteStream(config.SCHEMAS_PATH + name + ".svg"));
 	dbCon.query('insert into classrooms values(?, ?, ?)', [name, location, numOfComputers],
 							(err, _res, _fields)=>{
 								if(err){
