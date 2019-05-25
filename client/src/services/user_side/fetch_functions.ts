@@ -60,7 +60,7 @@ function fetchReports(params : any) : Promise<Result<Error, Report[]>>{
 			params = {};//params are encoded in next url!;
 			tmp.forEach(report=>{
 				reports.push(new Report(report.reportId, report.classroomName, report.timestamp,
-										report.reportComment,report.fixed, report.urgent, report.type,
+										report.reportComment,report.fixed, report.urgent, report.reportType,
 										report.computerID, report.adminUsername, report.adminComment,
 										report.displayName));
 			});
@@ -81,7 +81,7 @@ function fetchReportByID(id : number) : Promise<Result<Error, Report>>{
 			let tmp = response.data.report;
 			report = new Report(
 								tmp.tmpId, tmp.classroomName, tmp.timestamp,
-								tmp.tmpComment,tmp.fixed, tmp.urgent, tmp.type,
+								tmp.tmpComment, tmp.fixed, tmp.urgent, tmp.type,
 								tmp.computerID, tmp.adminUsername, tmp.adminComment,
 								tmp.displayName
 			);

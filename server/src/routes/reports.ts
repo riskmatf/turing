@@ -95,6 +95,14 @@ router.get('/reports', (req, res)=>{
 	else{
 		getReports(whereClauseParams, offset, limit,
 				(results : report[], nextObject : nextObject | null)=>{
+					let nullableCols = ["adminComment", "adminUsername", "computerID", "reportComment"];
+					results.forEach(report => {
+						nullableCols.forEach(col => {
+							if((report as any)[col] === null){
+								(report as any)[col] = undefined;
+							}
+						});
+					});
 					res.json({
 							reports: results,
 							next : nextObject
