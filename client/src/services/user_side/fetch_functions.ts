@@ -11,6 +11,7 @@ function fetchAllClassrooms(){
 	return new Promise((resolve, _reject)=>{
 		let classrooms : Classroom[] = [];
 		axios.get(config.API_URL + "/classrooms/").then((response)=>{
+			console.log(response.data);
 			let tmp : any[] =response.data.classrooms;
 			tmp.forEach(classroom =>{
 				classrooms.push(new Classroom(classroom.name, classroom.location, classroom.schemaUrl,

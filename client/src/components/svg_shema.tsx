@@ -58,8 +58,6 @@ export function SvgShema(props: Props): React.ReactElement
 
         props.onLoad((id: number, visible: boolean)=>
         {
-            console.log(id);
-            console.log(res);
             res[id-1].setAttribute('visibility', visible? '' : 'hidden');
         });
     }, [props.numOfEl, props.onLoad, props.onClick]);
