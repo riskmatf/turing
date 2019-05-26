@@ -15,6 +15,7 @@ import { ClassroomData } from './i_classroom_service';
 import { Classroom } from '../../models/admin_side/classroom';
 import { UpdatePayload } from './remote_report_service';
 import { FilterCriteria } from './i_report_service';
+import { Report } from '../../models/admin_side/report';
 
 
 function fetchLogin(username : string, password : string) : Promise<Result<Error, User>>{
@@ -146,19 +147,29 @@ function getUrlFromFile(file: File): Promise<string>
 
 function fetchReportsPage(page : number, filter : FilterCriteria){
 	return (async()=>{
-		let fixed = filter.fixed == 'all' ? undefined : (filter.fixed == 'fixed');
-		let comment = filter.comments == 'all' ? undefined : (filter.comments == 'has');
-		let dataToSend :any = {
+		let fixed = filter.fixed == 'all' ? undefined : (filter.fixed == 'fixed' ? 1 : 0);
+		let comment = filter.comments == 'all' ? undefined : (filter.comments == 'has' ? 1 : 0);
+		let dataToSend : any = {
 			fixed : fixed,
 			comment : comment, 
-			classrooms : filter.classrooms,
+			classrooms : JSON.stringify(filter.classrooms),
 			offset : page*config.PAGE_SIZE,
 			limit : config.PAGE_SIZE
 		}
 		let resp = await axios.get(config.API_URL + "/reports", { params: dataToSend });
+		console.log(resp.data);
+		let tmp : any[] = resp.data.reports;
+		let reports : Report[] = []
+
+		tmp.forEach(report =>{
+			reports.push(new Report(report.reportId, report.classroomName, report.timestamp*1000,
+				report.reportComment,report.fixed, report.urgent, report.reportType,
+				report.computerID, report.adminUsername, report.adminComment,
+				report.displayName));
+		})
 		let dataToReturn = {
-			reports : resp.data.reports,
-			itemsLeft : resp.data.next.itemsRemaining
+			reports : reports,
+			itemsLeft : resp.data.next != null ? resp.data.next.itemsRemaining : 0
 		}
 		return Result.value(dataToReturn);
 	})()
