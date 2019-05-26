@@ -77,3 +77,7 @@ create trigger adminBD before delete on admins
 		update reports set adminComment = NULL, adminUsername = NULL where adminUsername = old.username $$
 	end;$$
 delimiter ;
+
+insert into classrooms values 	("704", "trg", 15), ("718", "trg", 21), ("BIM", "trg", 21),
+								("RLAB", "trg", 15), ("DLAB", "trg", 11), ("JAG1", "jagic", 21),
+								("JAG2", "jagic", 21);
