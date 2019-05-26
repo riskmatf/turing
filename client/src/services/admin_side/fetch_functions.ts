@@ -14,6 +14,7 @@ export const fetchClassroomByName = userFetchClassoormByName;
 import { ClassroomData } from './i_classroom_service';
 import { Classroom } from '../../models/admin_side/classroom';
 import { UpdatePayload } from './remote_report_service';
+import { FilterCriteria } from './i_report_service';
 
 
 function fetchLogin(username : string, password : string) : Promise<Result<Error, User>>{
@@ -143,4 +144,25 @@ function getUrlFromFile(file: File): Promise<string>
 
 }
 
-export {fetchLogin, fetchLogout, fetchWhoami, addClassroom, deleteClassroom, deleteReport, updateReport};
+function fetchReportsPage(page : number, filter : FilterCriteria){
+	return (async()=>{
+		let fixed = filter.fixed == 'all' ? undefined : (filter.fixed == 'fixed');
+		let comment = filter.comments == 'all' ? undefined : (filter.comments == 'has');
+		let dataToSend :any = {
+			fixed : fixed,
+			comment : comment, 
+			classrooms : filter.classrooms,
+			offset : page*config.PAGE_SIZE,
+			limit : config.PAGE_SIZE
+		}
+		let resp = await axios.get(config.API_URL + "/reports", { params: dataToSend });
+		let dataToReturn = {
+			reports : resp.data.reports,
+			itemsLeft : resp.data.next.itemsRemaining
+		}
+		return dataToReturn;
+	})()
+}
+
+export {fetchLogin, fetchLogout, fetchWhoami, addClassroom, deleteClassroom, deleteReport,
+	updateReport, fetchReportsPage};
