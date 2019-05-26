@@ -160,7 +160,7 @@ function fetchReportsPage(page : number, filter : FilterCriteria){
 			reports : resp.data.reports,
 			itemsLeft : resp.data.next.itemsRemaining
 		}
-		return dataToReturn;
+		return Result.value(dataToReturn);
 	})()
 }
 
