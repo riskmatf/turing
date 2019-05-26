@@ -480,7 +480,7 @@ export class RemoteReportService implements IReportService
         constructor(service: RemoteReportService, criteria: FilterCriteria)
         {
             this.service_ = service;
-            this.pages_= new Map<number, Wrapper2>()
+            this.pages_= new Map<number, Wrapper2>();
             this.criteria_ = criteria;
         }
 
@@ -494,6 +494,7 @@ export class RemoteReportService implements IReportService
                 if(wrapper === undefined)
                 {
                     this.pages_.set(page, {reports: Result.value(undefined), metaData: {time: time, hasNext:false}})
+                    wrapper = this.pages_.get(page);
                 }
                 else if(time - wrapper.metaData.time >= RemoteReportService.FETCH_ON || force || wrapper.reports.isError())
                 {
@@ -511,22 +512,22 @@ export class RemoteReportService implements IReportService
 
                 const res  = await fetchReportsPage(page, this.criteria_);
 
-                if(res.reports.isError())
+                if(res.isError())
                 {
-                    wrapper.reports = Result.error(res.reports.error);
+                    wrapper.reports = Result.error(res.error as Error);
                     wrapper.metaData.hasNext = false;
-                    return Result.error<Error, void>(res.reports.error);
+                    return Result.error<Error, void>(res.error as Error);
                 }
 
                 const pageData: Array<number> = [];
-                for(const rep of (res.reports.value as  Array<Report>))
+                for(const rep of (res.value.reports as  Array<Report>))
                 {
                     this.service_.setReport__(rep.idReport, Result.value(rep), false);
                     pageData.push(rep.idReport);
                 }
 
                 wrapper.reports = Result.value(pageData);
-                wrapper.metaData.hasNext = res.itemsLeft > 0;
+                wrapper.metaData.hasNext = res.value.itemsLeft > 0;
 
                 return Result.success<Error>();
             })();
