@@ -576,7 +576,7 @@ function editingPartJSX(props: EditingPartJSXProps): React.ReactElement
                 <React.Fragment>
                     <Row>
                         <Col>
-                            Admin: {props.report.idAdmin}
+                            Admin: {props.report.adminDisplayName}
                         </Col>
                     </Row>
 

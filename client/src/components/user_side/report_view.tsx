@@ -142,7 +142,7 @@ export function ReportView(props: Props): React.ReactElement
                                             <React.Fragment>
                                                 <Row>
                                                     <Col>
-                                                        Admin: {props.report.idAdmin}
+                                                        Admin: {props.report.adminDisplayName}
                                                     </Col>
                                                 </Row>
                                                 <Row>
