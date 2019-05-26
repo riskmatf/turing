@@ -10,7 +10,7 @@ function parseQueryParams(query : any, res : Response) : Map<string, string | nu
 	let limit : number = 42;
 	console.log(query);
 	if(query.classrooms != undefined){
-		whereClauseParams.set("classroomName", query.classrooms);
+		whereClauseParams.set("classroomName", JSON.parse(query.classrooms));
 	}
 	if(query.fixed != undefined){
 		if(query.fixed != 0 && query.fixed != 1){
@@ -24,7 +24,7 @@ function parseQueryParams(query : any, res : Response) : Map<string, string | nu
 			res.status(400).send("ERROR! Comment must be either 0 or 1!");
 			return;
 		}
-		whereClauseParams.set("reportComment", query.comment);
+		whereClauseParams.set("adminComment", query.comment);
 	}
 	if(query.urgent != undefined){
 		if(query.urgent != 0 && query.urgent != 1){

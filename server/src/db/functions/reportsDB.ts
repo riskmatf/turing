@@ -16,20 +16,20 @@ function createWhereClause(whereClauseParams : Map<string, string | number>){
 	let whereClauseConidtions : string[] = [];
 	if(whereClauseParams.size > 0){
 		whereClause += "where ";
-		whereClauseParams.forEach((val : string | number, key : string)=>{
+		whereClauseParams.forEach((val : any, key : string)=>{
 			//if given queryParam is array of values, like classrooms = [718, jag1, 704]
-			if(typeof(val) == "string" && val.startsWith("[")){
-				if(val.length > 2){
-					let vals = val.slice(1, val.length-1).split(",");
+
+			if(key == "classroomName"){
+				console.log(val);
+				if(val.length > 0){
 					let tmp : string[] = [];
-					vals.forEach(v => {
-						tmp.push(key + "=" + dbCon.escape(v.trim().toLowerCase()) + " ");
+					val.forEach((v : string) =>{
+						tmp.push(key + "=" + dbCon.escape(v) + " ")
 					});
-					whereClauseConidtions.push("(" + tmp.join(" or ") + ")");
+					whereClauseConidtions.push("(" + tmp.join(" or ") + ") ");
 				}
-			}
-			//reportComment is NULL or NOT NULL so it has to go like this
-			else if(key == "reportComment"){
+			}//reportComment is NULL or NOT NULL so it has to go like this
+			else if(key == "adminComment"){
 				whereClauseConidtions.push(key + " IS " + ((val == 1) ? " NOT " : "") + " NULL ")
 			}
 			else{
