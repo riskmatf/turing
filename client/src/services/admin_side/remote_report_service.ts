@@ -528,6 +528,7 @@ export class RemoteReportService implements IReportService
 
                 wrapper.reports = Result.value(pageData);
                 wrapper.metaData.hasNext = res.value.itemsLeft > 0;
+                this.service_.emitter_.emit(RemoteReportService.ON_REPORTS_CHANGED);
 
                 return Result.success<Error>();
             })();
@@ -537,6 +538,7 @@ export class RemoteReportService implements IReportService
         {
             this.fetchPage(page);
 
+            console.log(this.pages_);
             const wrapper = this.pages_.get(page);
 
             if(wrapper === undefined)
@@ -567,9 +569,12 @@ export class RemoteReportService implements IReportService
                 }
             }));
 
+            console.log(wrapper);
             if(wrapper.reports.value !== undefined)
             {
-                return Result.value(wrapper.reports.value.map(value => this.service_.getReport(value).value as Report))
+                const tmp = Result.value<Error, Array<Report> | undefined>(wrapper.reports.value.map(value => this.service_.getReport(value).value as Report));
+                console.log(tmp);
+                return tmp;
             }
             else
             {

@@ -196,7 +196,7 @@ function ExtendedReportView(props: Props): React.ReactElement
             {
                 /*Buttons on top for removing and solving reports*/
                 (props.removeReport !== undefined || props.soleReport !== undefined) &&
-                <Row className='justify-content-end mb-2'>
+                <Row className='justify-content-end mb-2 align-items-center'>
                     {
                         props.removeReport !== undefined &&
                         <Col xs='auto'>

@@ -117,12 +117,16 @@ export function MainLayout(props: Props): React.ReactElement
                                         </ListGroupItem>
                                     </Link>
 
-                                    <Link to='/admin/add'>
-                                        <ListGroupItem action>
-                                            <FontAwesomeIcon icon={faUserPlus}/>
-                                            <span style={{paddingLeft: 10}}>Add new admin</span>
-                                        </ListGroupItem>
-                                    </Link>
+                                    {
+                                        /*
+                                        <Link to='/admin/add'>
+                                            <ListGroupItem action>
+                                                <FontAwesomeIcon icon={faUserPlus}/>
+                                                <span style={{paddingLeft: 10}}>Add new admin</span>
+                                            </ListGroupItem>
+                                        </Link>
+                                         */
+                                    }
                                 </ListGroup>
                             </Col>
                         </Row>

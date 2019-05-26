@@ -18,8 +18,7 @@ export function Pager(props: Props): React.ReactElement
             <Row className='justify-content-end mb-2'>
                 <Col xs='auto'>
                     {
-                        props.hasPrevPage() &&
-                        <Button onClick={props.prevPage}>
+                        <Button onClick={props.prevPage} style={{visibility: props.hasPrevPage() ? 'visible' : 'hidden'}}>
                             Prev
                         </Button>
                     }
@@ -28,8 +27,7 @@ export function Pager(props: Props): React.ReactElement
 
                 <Col xs='auto'>
                     {
-                        props.hasNextPage() &&
-                        <Button onClick={props.nextPage}>
+                        <Button onClick={props.nextPage} style={{visibility: props.hasNextPage()? 'visible' : 'hidden'}}>
                             Next
                         </Button>
                     }
