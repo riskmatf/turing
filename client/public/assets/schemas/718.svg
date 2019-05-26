@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.175"
-     inkscape:cx="970.74017"
-     inkscape:cy="328.86274"
+     inkscape:zoom="1.4"
+     inkscape:cx="1251.5838"
+     inkscape:cy="-122.26591"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -44,7 +44,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -66,7 +66,8 @@
          style="fill:#ececec;stroke:#000000;stroke-width:0.26458332" />
       <g
          inkscape:label="#g4837"
-         transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)">
+         transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
+         id="err_1">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778">
@@ -124,8 +125,8 @@
        id="rect859"
        width="9.4997873"
        height="345.51733"
-       x="97.174797"
-       y="-41.034279"
+       x="95.234291"
+       y="-41.485569"
        ry="0"
        rx="0" />
     <rect
@@ -138,22 +139,22 @@
        ry="0"
        rx="0" />
     <rect
-       style="fill:#797979;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.34700456;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#797979;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.34872442;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect859-6-7"
        width="9.5099268"
-       height="380.189"
+       height="383.96704"
        x="-307.93033"
-       y="99.082832"
+       y="95.304794"
        ry="0"
        rx="0"
        transform="rotate(-90)" />
     <rect
-       style="fill:#797979;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.34706309;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#797979;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.34879509;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect859-6-7-5"
-       width="9.5138617"
-       height="380.15988"
-       x="31.972572"
-       y="95.233421"
+       width="9.5121298"
+       height="384.03357"
+       x="31.973438"
+       y="95.234291"
        ry="0"
        rx="0"
        transform="rotate(-90)" />
