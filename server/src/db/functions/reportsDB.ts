@@ -18,13 +18,15 @@ function createWhereClause(whereClauseParams : Map<string, string | number>){
 		whereClause += "where ";
 		whereClauseParams.forEach((val : string | number, key : string)=>{
 			//if given queryParam is array of values, like classrooms = [718, jag1, 704]
-			if(typeof(val) == "string" && val.startsWith("[") && val.length > 2){
-				let vals = val.slice(1, val.length-1).split(",");
-				let tmp : string[] = [];
-				vals.forEach(v => {
-					tmp.push(key + "=" + dbCon.escape(v.trim().toLowerCase()) + " ");
-				});
-				whereClauseConidtions.push("(" + tmp.join(" or ") + ")");
+			if(typeof(val) == "string" && val.startsWith("[")){
+				if(val.length > 2){
+					let vals = val.slice(1, val.length-1).split(",");
+					let tmp : string[] = [];
+					vals.forEach(v => {
+						tmp.push(key + "=" + dbCon.escape(v.trim().toLowerCase()) + " ");
+					});
+					whereClauseConidtions.push("(" + tmp.join(" or ") + ")");
+				}
 			}
 			//reportComment is NULL or NOT NULL so it has to go like this
 			else if(key == "reportComment"){
@@ -36,7 +38,8 @@ function createWhereClause(whereClauseParams : Map<string, string | number>){
 		})
 		whereClause += whereClauseConidtions.join(" and ");
 	}
-	return whereClause;
+	console.log(whereClause);
+	return whereClause == "where " ? "" : whereClause;
 }
 
 /**
@@ -77,6 +80,7 @@ function getReports(	reportsParameters : Map<string, string | number>, offset : 
 									+"r.adminUsername = a.username " + whereClause + "limit " 
 									+ dbCon.escape(limit) + " offset " + dbCon.escape(offset);
 		let countQuery : string = "select count(*) as numOfCols from reports " + whereClause;
+		console.log(reportsQuery);
 		dbCon.query(reportsQuery + ";" + countQuery, (err, res, _fields)=>{
 			if(err){
 				console.log(err.message);
