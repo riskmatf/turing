@@ -8,6 +8,7 @@ function parseQueryParams(query : any, res : Response) : Map<string, string | nu
 	let whereClauseParams : Map<string, string | number> = new Map();
 	let offset : number = 0;
 	let limit : number = 42;
+	console.log(query);
 	if(query.classrooms != undefined){
 		whereClauseParams.set("classroomName", query.classrooms);
 	}
@@ -32,20 +33,8 @@ function parseQueryParams(query : any, res : Response) : Map<string, string | nu
 		}
 		whereClauseParams.set("urgent", query.urgent);
 	}
-	if(query.offset != undefined){
-		offset = parseInt(query.offset);
-		if(isNaN(offset)){
-			res.status(400).send("ERROR! Offset is NaN");
-			return;
-		}
-	}
-	if(query.limit != undefined){
-		limit = parseInt(query.limit);
-		if(isNaN(limit)){
-			res.status(400).send("ERROR! Limit is NaN");
-			return;
-		}
-	}
+
+
 	return whereClauseParams;
 
 }
@@ -89,10 +78,25 @@ router.get('/reports', (req, res)=>{
 	let limit : number = 42;
 	console.log(req.query);
 	let whereClauseParams = parseQueryParams(req.query, res);
+	console.log(whereClauseParams);
 	if (whereClauseParams == undefined){
 		return;
 	}
 	else{
+		if(req.query.offset != undefined){
+			offset = parseInt(req.query.offset);
+			if(isNaN(offset)){
+				res.status(400).send("ERROR! Offset is NaN");
+				return;
+			}
+		}
+		if(req.query.limit != undefined){
+			limit = parseInt(req.query.limit);
+			if(isNaN(limit)){
+				res.status(400).send("ERROR! Limit is NaN");
+				return;
+			}
+		}
 		getReports(whereClauseParams, offset, limit,
 				(results : report[], nextObject : nextObject | null)=>{
 					let nullableCols = ["adminComment", "adminUsername", "computerID", "reportComment"];
