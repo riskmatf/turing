@@ -46,7 +46,7 @@ export class Report
 		// }
     }
 
-    public addAdminComment(id: string, adminComment: string): void
+    public addAdminComment(id: string, display:  string, adminComment: string): void
     {
         if(this.idAdmin_ !== undefined && this.idAdmin_ !== id)
         {
@@ -55,6 +55,7 @@ export class Report
 
         this.idAdmin_ = id;
         this.adminComment_ = adminComment;
+        this.adminDisplayName_ = display;
     }
 
     public removeAdminComment(id: string): void

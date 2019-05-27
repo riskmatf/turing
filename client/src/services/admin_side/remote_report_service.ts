@@ -383,11 +383,11 @@ export class RemoteReportService implements IReportService
                             if(typeof(action.value.comment) === 'function')
                             {
                                 const comment = model.isAdminCommentSet() ? model.adminComment : undefined;
-                                model.addAdminComment(idAdmin, action.value.comment(comment));
+                                model.addAdminComment(idAdmin, admin.displayName, action.value.comment(comment));
                             }
                             else
                             {
-                                model.addAdminComment(idAdmin, action.value.comment);
+                                model.addAdminComment(idAdmin, admin.displayName, action.value.comment);
                             }
                         }
                             hasCommentBeenUpdated = true;
@@ -431,6 +431,7 @@ export class RemoteReportService implements IReportService
 
                 if(hasCommentBeenUpdated)
                 {
+                    console.log('sending comment updat');
                     if(model.isAdminCommentSet())
                     {
                         payloadUpdate.comment = model.adminComment;
@@ -445,6 +446,7 @@ export class RemoteReportService implements IReportService
 
                 if(hasBeenSolvde && model.fixed)
                 {
+                    console.log('sending solve');
                     const res = await updateReport(payloadSolve);
                     if(res.isError())
                     {

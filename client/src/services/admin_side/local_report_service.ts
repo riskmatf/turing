@@ -311,11 +311,11 @@ export class LocalReportService implements IReportService
                             if(typeof(action.value.comment) === 'function')
                             {
                                 const comment = model.isAdminCommentSet() ? model.adminComment : undefined;
-                                model.addAdminComment(idAdmin, action.value.comment(comment));
+                                model.addAdminComment(idAdmin, admin.displayName,action.value.comment(comment));
                             }
                             else
                             {
-                                model.addAdminComment(idAdmin, action.value.comment);
+                                model.addAdminComment(idAdmin, admin.displayName, action.value.comment);
                             }
                         }
                             break;
