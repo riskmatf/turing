@@ -378,7 +378,7 @@ function inlineReportViewJSX(props: Props): React.ReactElement
                     }
 
                     {
-                        props.idComputer&&
+                        (props.report.type === Report.TYPE_COMPUTER_REPORT && props.idComputer)&&
                         <Col xs='auto'>
                             ComputerId: {props.report.idComputer}
                         </Col>
