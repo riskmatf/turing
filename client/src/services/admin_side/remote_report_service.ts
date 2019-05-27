@@ -429,13 +429,11 @@ export class RemoteReportService implements IReportService
                 }
 
 
+                payloadSolve.comment = model.isAdminCommentSet() ? model.adminComment : undefined;
+                payloadUpdate.comment = model.isAdminCommentSet() ? model.adminComment : undefined;
                 if(hasCommentBeenUpdated)
                 {
                     console.log('sending comment updat');
-                    if(model.isAdminCommentSet())
-                    {
-                        payloadUpdate.comment = model.adminComment;
-                    }
 
                     const res = await updateReport(payloadUpdate);
                     if(res.isError())

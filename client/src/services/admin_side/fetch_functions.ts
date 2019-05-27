@@ -95,7 +95,7 @@ function updateReport(data : UpdatePayload){
 			adminComment : data.comment,
 			update : data.action == 'update',
 			solve  : data.action == 'solve'
-		}
+		};
 		let resp = await axios.put(config.API_URL + "/admin/reports/" + data.idReport, dataToSend);
 		if(resp.status == 400){
 			return Result.error<Error, void>(new Error(resp.data.message));

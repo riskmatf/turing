@@ -67,6 +67,7 @@ export class Report
 
         this.idAdmin_ = undefined;
         this.adminComment_ = undefined;
+        this.adminDisplayName_ = undefined;
     }
 
     public isAdminCommentSet(): boolean
