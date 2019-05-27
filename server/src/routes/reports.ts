@@ -8,7 +8,7 @@ function parseQueryParams(query : any, res : Response) : Map<string, string | nu
 	let whereClauseParams : Map<string, string | number> = new Map();
 	let offset : number = 0;
 	let limit : number = 42;
-	console.log(query);
+	//console.log(query);
 	if(query.classrooms != undefined){
 		whereClauseParams.set("classroomName", JSON.parse(query.classrooms));
 	}
@@ -76,9 +76,9 @@ router.get('/reports', (req, res)=>{
 
 	let offset : number = 0;
 	let limit : number = 42;
-	console.log(req.query);
+	//console.log(req.query);
 	let whereClauseParams = parseQueryParams(req.query, res);
-	console.log(whereClauseParams);
+	//console.log(whereClauseParams);
 	if (whereClauseParams == undefined){
 		return;
 	}

@@ -20,7 +20,7 @@ function createWhereClause(whereClauseParams : Map<string, string | number>){
 			//if given queryParam is array of values, like classrooms = [718, jag1, 704]
 
 			if(key == "classroomName"){
-				console.log(val);
+			//	console.log(val);
 				if(val.length > 0){
 					let tmp : string[] = [];
 					val.forEach((v : string) =>{
@@ -38,7 +38,7 @@ function createWhereClause(whereClauseParams : Map<string, string | number>){
 		})
 		whereClause += whereClauseConidtions.join(" and ");
 	}
-	console.log(whereClause);
+	//console.log(whereClause);
 	return whereClause == "where " ? "" : whereClause;
 }
 
@@ -80,7 +80,7 @@ function getReports(	reportsParameters : Map<string, string | number>, offset : 
 									+"r.adminUsername = a.username " + whereClause + "limit " 
 									+ dbCon.escape(limit) + " offset " + dbCon.escape(offset);
 		let countQuery : string = "select count(*) as numOfCols from reports " + whereClause;
-		console.log(reportsQuery);
+		//console.log(reportsQuery);
 		dbCon.query(reportsQuery + ";" + countQuery, (err, res, _fields)=>{
 			if(err){
 				console.log(err.message);
