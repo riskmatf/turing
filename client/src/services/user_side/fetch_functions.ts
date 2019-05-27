@@ -53,8 +53,11 @@ function fetchReports(params : any) : Promise<Result<Error, Report[]>>{
 		let reports : Report[] = [];
 		let next : nextObject | null = null;
 		let url : string = config.API_URL + "/reports/";
+		let dataToSend={
+			classrooms : JSON.stringify(params.classrooms)
+		}
 		do{
-			let response = await axios.get(url, { params });
+			let response = await axios.get(url, { params : dataToSend });
 			let tmp : any[] = response.data.reports;
 			next = response.data.next;
 			params = {};//params are encoded in next url!;
