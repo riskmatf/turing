@@ -159,7 +159,7 @@ function ReportsPage_(props: Props): React.ReactElement
                     Report
                 </ModalHeader>
 
-                <ModalBody>
+                <ModalBody style={{overflowY: 'auto'}}>
                     {
                        currentSelectedReport !== undefined &&
                            <ReportView report={currentSelectedReport}
