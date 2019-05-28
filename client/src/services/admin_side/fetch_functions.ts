@@ -163,7 +163,7 @@ function fetchReportsPage(page : number, filter : FilterCriteria){
 
 		tmp.forEach(report =>{
 			reports.push(new Report(report.reportId, report.classroomName, report.timestamp*1000,
-				report.reportComment,report.fixed, report.urgent, report.reportType,
+				report.reportComment,report.fixed !== 0, report.urgent, report.reportType,
 				report.computerID, report.adminUsername, report.adminComment,
 				report.displayName));
 		})
