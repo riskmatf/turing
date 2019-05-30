@@ -5,12 +5,11 @@ create table if not exists classrooms(
 	name varchar(20) not null primary key,
 	location varchar(100) not null,
 	numberOfComputers integer not null
-
 );
 
 create table if not exists admins(
 	username varchar(20) primary key not null,
-	displayName varchar(20) not null,
+	displayName varchar(20) not null UNIQUE,
 	password char(32) not null
 );
 
@@ -19,9 +18,9 @@ create table if not exists reports(
 	classroomName varchar(20) not null,
 	reportType tinyint(1) not null,
 	computerID integer default null,
-	reportComment varchar(1000) charset utf8mb4 collation utf8mb4_unicode_ci default null,
+	reportComment varchar(1000) charset utf8mb4 collate utf8mb4_unicode_ci default null,
 	fixed tinyint(1) default 0 not null,
-	adminComment varchar(1000) charset utf8mb4 collation utf8mb4_unicode_ci default null,
+	adminComment varchar(1000) charset utf8mb4 collate utf8mb4_unicode_ci default null,
 	adminUsername varchar(20) default null,
 	timestamp integer not null,
 	urgent tinyint(1) default 0 not null,
@@ -72,9 +71,9 @@ create trigger reportsBU before update on reports
 
 drop trigger if exists adminBD $$
 create trigger adminBD before delete on admins
-	for each row
+    for each row
 	begin
-		update reports set adminComment = NULL, adminUsername = NULL where adminUsername = old.username $$
+		update reports set adminComment = NULL, adminUsername = NULL where adminUsername = old.username;
 	end;$$
 delimiter ;
 
