@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import config from "../../config";
 import { User } from '../../models/admin_side/user';
 import { Result } from '../../utils/result';
@@ -180,8 +180,26 @@ function addAdmin(data: AdminSignInData): Promise<Result<Error, void>>
 {
 	return (async ()=>
 	{
-		return Result.success<Error>();
-		// return Result.error<Error, void>(new Error('hello'));
+
+		const url = `${config.API_URL}/admin/signup`;
+		let res: AxiosResponse | undefined = undefined ;
+		try
+		{
+			res = await axios.post(url ,data);
+			if(res.status !== 200)
+            {
+                console.log(res.data);
+                return Result.error<Error, void>(new Error(res.data))
+            }
+			else
+            {
+                return Result.success<Error>();
+            }
+		}
+		catch(e)
+		{
+			return Result.error<Error, void>(new Error('Failed to create admin'))
+		}
 	})();
 }
 

@@ -52,18 +52,22 @@ function SignUpPage_(props: {}): React.ReactElement
         if(signUpData.password !== signUpData.password1)
         {
             setError('Passwords dont match');
+            setSuccess(false);
         }
         else if(signUpData.password === '')
         {
             setError('Password cant be an empty string');
+            setSuccess(false);
         }
         else if(signUpData.displayName === '')
         {
             setError('Display name cant be an empty string');
+            setSuccess(false);
         }
         else if(signUpData.userName === '')
         {
             setError('Username cant be an empty string');
+            setSuccess(false);
         }
         else
         {
@@ -71,17 +75,19 @@ function SignUpPage_(props: {}): React.ReactElement
                 {
                     displayName: signUpData.displayName,
                     password: signUpData.password,
-                    username: signUpData.password
+                    username: signUpData.userName
                 })
                 .then((value =>
                 {
                     if(value.isError())
                     {
                         setError(value.error.message);
+                        setSuccess(false);
                     }
                     else
                     {
                         setSuccess(true);
+                        setError(undefined);
                         setSignUpData({displayName: '', password: '', userName: '', password1: ''});
                     }
                 }));
@@ -100,22 +106,30 @@ function SignUpPage_(props: {}): React.ReactElement
                             <Form title='Add admin'>
                                <FormGroup>
                                     <Label>Display name</Label>
-                                    <Input type='text' placeholder='Display name' onChange={onDisplayChanged}/>
+                                    <Input type='text' placeholder='Display name' onChange={onDisplayChanged}
+                                           value={signUpData.displayName}
+                                    />
                                 </FormGroup>
 
                                 <FormGroup>
                                     <Label>Username</Label>
-                                    <Input type='text' placeholder='Username' onChange={onUserNameChanged}/>
+                                    <Input type='text' placeholder='Username' onChange={onUserNameChanged}
+                                           value={signUpData.userName}
+                                    />
                                 </FormGroup>
 
                                 <FormGroup>
                                     <Label>Password</Label>
-                                    <Input type='password' placeholder='Password' onChange={onPasswordChanged}/>
+                                    <Input type='password' placeholder='Password' onChange={onPasswordChanged}
+                                           value={signUpData.password}
+                                    />
                                 </FormGroup>
 
                                 <FormGroup>
                                     <Label>Repeat password</Label>
-                                    <Input type='password' placeholder='Repeat password' onChange={onPassword1Changed}/>
+                                    <Input type='password' placeholder='Repeat password' onChange={onPassword1Changed}
+                                           value={signUpData.password1}
+                                    />
                                 </FormGroup>
 
 
