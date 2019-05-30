@@ -3,7 +3,8 @@ type classroom = {
 	name : string,
 	location : string, 
 	numOfComputers : number,
-	schemaUrl: string
+	schemaUrl: string,
+	imgUrl : string
 }
 
 type report = {

@@ -14,6 +14,7 @@ router.get('/classrooms/:name', (req, res)=>{
 		if(classroomArr.length > 0){
 			tmp = classroomArr[0];
 			tmp.schemaUrl = config.SCHEMAS_URL + tmp.name + ".svg";
+			tmp.imgUrl = config.IMG_URL + tmp.name;
 		}
 		res.json({
 			classroom : tmp
@@ -28,6 +29,7 @@ router.get('/classrooms', (req, res) =>
 		getAllClassrooms((allClassrooms : classroom[])=>{
 			allClassrooms.forEach(classroom => {
 				classroom.schemaUrl = config.SCHEMAS_URL + classroom.name + ".svg";
+				classroom.imgUrl = config.IMG_URL + classroom.name;
 			});
 			res.json({
 				classrooms: allClassrooms
@@ -38,6 +40,7 @@ router.get('/classrooms', (req, res) =>
 		getClassroomsByLocation(req.query.location, (classroomArr : classroom[])=>{
 			classroomArr.forEach(classroom => {
 				classroom.schemaUrl = config.SCHEMAS_URL + classroom.name + ".svg";
+				classroom.imgUrl = config.IMG_URL + classroom.name;
 			});
 			res.json({
 				classrooms : classroomArr
