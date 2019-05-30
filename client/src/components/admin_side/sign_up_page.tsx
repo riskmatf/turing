@@ -2,10 +2,11 @@ import * as React from 'react';
 import {Button, Card, CardBody, Col, Form, FormGroup, Input, Label, Row} from "reactstrap";
 import {useCallback, useState} from "react";
 import {ServiceLocator} from "../../services/admin_side/service_locator";
+import {withMainLayout} from "./main_layout";
 
 
 
-export function SignUpPage(props: {}): React.ReactElement
+function SignUpPage_(props: {}): React.ReactElement
 {
 
     const [signUpData, setSignUpData] = useState(
@@ -92,7 +93,7 @@ export function SignUpPage(props: {}): React.ReactElement
     return (
         <React.Fragment>
             <Row style={{height: '100%'}} className='justify-content-center align-items-center'>
-                <Col xs='10' md='4'>
+                <Col xs='10' md='6'>
                     <Card className='bg-light'>
                         <h3 style={{textAlign: 'center', marginTop: '1.5rem'}}>Add admin</h3>
                         <CardBody>
@@ -149,3 +150,5 @@ export function SignUpPage(props: {}): React.ReactElement
         </React.Fragment>
     );
 }
+
+export const SignUpPage = withMainLayout(SignUpPage_);
