@@ -81,6 +81,7 @@ router.post("/admin/signup", (req, res)=>{
 	passport.authenticate('local-signup',(err, user, info)=>{
 		if(err){
 			console.log(err.message);
+			res.status(400).send({message:'err.message'})
 			return;
 		}
 		if(!user){

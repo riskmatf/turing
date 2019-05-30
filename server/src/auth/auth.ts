@@ -39,18 +39,29 @@ function initPassport(passport : Passport){
 				if(req.body["displayName"] == undefined){
 					return done(undefined, false, {message : "no displayName provided"});	
 				}
-				else{
-					//create new
-					dbCon.query("insert into admins (username, password, displayName) values(?,?,?)",
-								[username, Md5.hashStr(password) , req.body["displayName"]], 
-								(err, _res, _fields)=>{
-									if(err){
-										console.log(err.message);
-										done(err);
-									}
-									return done(undefined, {message: "signup successfull"});
-								});
-				}
+				dbCon.query("select * from admins where displayName = ?", [req.body["displayName"]],
+				(err, res : any[], _fields)=>{
+					if(err){
+						console.log(err.message);
+						return done(err);
+					}
+					if(res.length > 0){
+						//allready exists
+						return done(undefined, false, {message : "user with that display name allready exists"});
+					}
+					else{
+						//create new
+						dbCon.query("insert into admins (username, password, displayName) values(?,?,?)",
+									[username, Md5.hashStr(password) , req.body["displayName"]], 
+									(err, _res, _fields)=>{
+										if(err){
+											console.log(err.message);
+											done(err);
+										}
+										return done(undefined, {message: "signup successfull"});
+									});
+					}
+				})
 			})
 		}
 	)
