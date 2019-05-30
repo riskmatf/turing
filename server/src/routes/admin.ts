@@ -72,7 +72,12 @@ router.post('/login', (req, res)=>{
 
 })
 
-router.post("/signup", (req, res)=>{
+
+
+router.use('/admin', passport.authenticate('jwt', {session : false}));
+
+
+router.post("/admin/signup", (req, res)=>{
 	passport.authenticate('local-signup',(err, user, info)=>{
 		if(err){
 			console.log(err.message);
@@ -85,8 +90,6 @@ router.post("/signup", (req, res)=>{
 	})(req, res);
 	
 })
-
-router.use('/admin', passport.authenticate('jwt', {session : false}));
 
 router.get("/admin/whoami", (req, res)=>{
 	let token : string | null = null;
