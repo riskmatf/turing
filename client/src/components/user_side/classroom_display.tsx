@@ -17,7 +17,7 @@ export function ClassroomDisplay(props: Props): React.ReactElement
                     <h3>{props.classroom.name}</h3>
                 </CardHeader>
 
-                <CardImg  src={'https://via.placeholder.com/150'} top/>
+                <CardImg  src={props.classroom.imgUrl} top/>
 
                 <CardBody>
                     Computer count: {props.classroom.computerCount}

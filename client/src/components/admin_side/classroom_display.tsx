@@ -38,7 +38,7 @@ export function ClassroomDisplay(props: Props): React.ReactElement
             </CardHeader>
 
             <Link to={`/admin/classrooms/${props.classroom.name}`} style={{color:'inherit', textDecoration: 'none'}}>
-                <CardImg  src={'https://via.placeholder.com/150'} top/>
+                <CardImg  src={props.classroom.imgUrl} top/>
 
                 <CardBody>
                     Computer count: {props.classroom.computerCount}

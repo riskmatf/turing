@@ -1,8 +1,9 @@
 import React, {useEffect} from 'react';
 import {ServiceLocator as UserServiceLocator} from "./services/user_side/serviceLocator";
-import {
-    RemoteClassroomService as UserRemoteClassroomService
-} from './services/user_side/remote_classroom_service';
+// import {
+//     RemoteClassroomService as UserRemoteClassroomService
+// } from './services/user_side/remote_classroom_service';
+import {LocalClassroomService} from './services/user_side/local_classroom_service';
 import {RemoteReportService as UserRemoteReportService} from "./services/user_side/remote_report_service";
 import {ServiceLocator as AdminServiceLocator} from './services/admin_side/service_locator';
 import {RemoteReportService as AdminRemoteReportService} from './services/admin_side/remote_report_service';
@@ -28,7 +29,8 @@ import {useForceRender} from "./utils/force_render";
  * ServiceLocator.registerAudioService(new AudioServiceImpl())
  */
 
-UserServiceLocator.registerClassroomService(new UserRemoteClassroomService());
+// UserServiceLocator.registerClassroomService(new UserRemoteClassroomService());
+UserServiceLocator.registerClassroomService(new LocalClassroomService());
 UserServiceLocator.registerReportService(new UserRemoteReportService());
 
 AdminServiceLocator.registerReportService(new AdminRemoteReportService());
@@ -50,7 +52,7 @@ function AdminRoutes(props: RouteComponentProps): React.ReactElement | null
     const service = AdminServiceLocator.getAuthService();
     const [, forceRender] = useForceRender();
 
-    console.log(service.isLogedIn())
+    // console.log(service.isLogedIn());
 
     useEffect(()=>
     {

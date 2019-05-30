@@ -23,7 +23,7 @@ export class LocalClassroomService implements IClassroomService
     constructor()
     {
         this.classrooms_ = new Map<string, Classroom>(
-            data.map(([a, b, c])=> [a, new Classroom(a, b, schemaUrl(a), c)])
+            data.map(([a, b, c])=> [a, new Classroom(a, b, schemaUrl(a), c, `/turing/assets/img/${a}.jpg`)])
         );
         this.emitter_ = new EventEmitter();
     }

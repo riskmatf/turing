@@ -26,7 +26,7 @@ export class LocalClassroomService implements IClassroomService
     {
         this.emitter_ = new EventEmitter();
         this.classrooms_ = new Map<string, Classroom>(
-            data.map(([a, b, c])=> [a, new Classroom(a, b, schemaUrl(a), c)])
+            data.map(([a, b, c])=> [a, new Classroom(a, b, schemaUrl(a), c, `/turing/assets/img/${a}.jpg`)])
             );
     }
 
@@ -42,7 +42,7 @@ export class LocalClassroomService implements IClassroomService
 
             const url = await getUrlFromFile(data.schemaFile);
 
-            const classroom = new Classroom(data.name, data.location, url, data.computerCount);
+            const classroom = new Classroom(data.name, data.location, url, data.computerCount, '');
 
             this.classrooms_.set(classroom.name, classroom);
 
