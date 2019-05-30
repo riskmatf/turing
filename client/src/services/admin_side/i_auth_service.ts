@@ -1,5 +1,13 @@
 import {EventSubscription} from 'fbemitter';
 import {User} from "../../models/admin_side/user";
+import {Result} from "../../utils/result";
+
+export type AdminSignInData =
+    {
+        username: string;
+        password: string;
+        displayName: string;
+    };
 
 export interface IAuthService
 {
@@ -12,4 +20,5 @@ export interface IAuthService
 
     onLogedInChange(handler: ()=>void): EventSubscription;
 
+    addAdmin(data: AdminSignInData): Promise<Result<Error, void>>;
 }

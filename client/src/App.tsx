@@ -20,6 +20,7 @@ import {ClassroomsPage} from "./components/admin_side/classrooms_page";
 import {ClassroomPage} from "./components/admin_side/classroom_page";
 import {FeedPage} from "./components/admin_side/feed_page";
 import {RemoteAuthService} from './services/admin_side/remote_auth_service';
+import {SignUpPage} from './components/admin_side/sign_up_page';
 import {useForceRender} from "./utils/force_render";
 
 /**
@@ -85,6 +86,7 @@ function AdminRoutes(props: RouteComponentProps): React.ReactElement | null
                 <Route path={'/admin/reports'} component={ReportsPage}/>
                 <Route path={'/admin/classrooms/:id'} component={ClassroomPage}/>
                 <Route path={'/admin/classrooms'} component={ClassroomsPage}/>
+                <Route path={'/admin/add'} component={SignUpPage}/>
                 <Route exact path={'/admin'} render={(props)=>{props.history.replace('/admin/feed'); return null;}}/>
                 <Redirect to={'/error'}/>
             </Switch>

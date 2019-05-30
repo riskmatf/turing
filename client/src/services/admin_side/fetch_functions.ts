@@ -16,6 +16,7 @@ import { Classroom } from '../../models/admin_side/classroom';
 import { UpdatePayload } from './remote_report_service';
 import { FilterCriteria } from './i_report_service';
 import { Report } from '../../models/admin_side/report';
+import {AdminSignInData} from "./i_auth_service";
 
 
 function fetchLogin(username : string, password : string) : Promise<Result<Error, User>>{
@@ -175,5 +176,14 @@ function fetchReportsPage(page : number, filter : FilterCriteria){
 	})()
 }
 
+function addAdmin(data: AdminSignInData): Promise<Result<Error, void>>
+{
+	return (async ()=>
+	{
+		return Result.success<Error>();
+		// return Result.error<Error, void>(new Error('hello'));
+	})();
+}
+
 export {fetchLogin, fetchLogout, fetchWhoami, addClassroom, deleteClassroom, deleteReport,
-	updateReport, fetchReportsPage};
+	updateReport, fetchReportsPage, addAdmin};

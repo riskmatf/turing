@@ -1,7 +1,8 @@
-import {IAuthService} from "./i_auth_service";
+import {AdminSignInData, IAuthService} from "./i_auth_service";
 import {EventEmitter, EventSubscription} from "fbemitter";
 import {User} from "../../models/admin_side/user";
-import {fetchLogin, fetchLogout, fetchWhoami} from './fetch_functions';
+import {addAdmin, fetchLogin, fetchLogout, fetchWhoami,} from './fetch_functions';
+import {Result} from "../../utils/result";
 
 
 export class RemoteAuthService implements IAuthService
@@ -74,6 +75,12 @@ export class RemoteAuthService implements IAuthService
     {
         return this.user_;
     }
+
+    addAdmin(data: AdminSignInData): Promise<Result<Error, void>>
+    {
+        return addAdmin(data);
+    }
+
 
     private amILogedIn(): void
     {
