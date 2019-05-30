@@ -12,18 +12,23 @@ export class RemoteAuthService implements IAuthService
     private emitter_: EventEmitter;
     private user_: User | undefined;
     private isLogedIn_: boolean | undefined;
+    private logedInChecked_: boolean;
 
     constructor()
     {
         this.emitter_ = new EventEmitter();
         this.user_ = undefined;
         this.isLogedIn_ = undefined;
-
-        this.amILogedIn();
+        this.logedInChecked_ = false;
     }
 
     isLogedIn(): boolean | undefined
     {
+        if(!this.logedInChecked_)
+        {
+            this.amILogedIn();
+            this.logedInChecked_ = true;
+        }
         return this.isLogedIn_;
     }
 

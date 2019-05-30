@@ -14,7 +14,7 @@ function fetchAllClassrooms(){
 			let tmp : any[] =response.data.classrooms;
 			tmp.forEach(classroom =>{
 				classrooms.push(new Classroom(classroom.name, classroom.location, classroom.schemaUrl,
-												classroom.numberOfComputers, ''));
+												classroom.numberOfComputers, classroom.imgUrl));
 			});
 			resolve(classrooms);
 		});
@@ -29,7 +29,7 @@ function fetchClassroomByName(name : string){
 			let tmp : any = response.data.classroom;
 			if (tmp != null){
 				classroom = new Classroom(tmp.name, tmp.location, tmp.schemaUrl,
-					tmp.numberOfComputers, '');
+					tmp.numberOfComputers, tmp.imgUrl);
 			}
 
             if(classroom != null){
