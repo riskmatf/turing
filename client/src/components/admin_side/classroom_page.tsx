@@ -113,7 +113,7 @@ function ClassroomPage_(props: Props): React.ReactElement | null
             return ;
         }
 
-        for(let i = 1; i <= classroom.classroom.computerCount; ++i)
+        for(let i = 0; i < classroom.classroom.computerCount; ++i)
         {
             toggleErrors.fn(i, false);
         }
@@ -143,7 +143,7 @@ function ClassroomPage_(props: Props): React.ReactElement | null
                 {
                     idComputer: idComp,
                     reportType: Report.TYPE_COMPUTER_REPORT,
-                    title: `Reports for computer ${classroom.classroom.name} ${idComp === 0 ? 'N' : idComp}`
+                    title: `Reports for computer ${idComp === 0 ? 'N' : idComp}`
 
                 });
             onToggleModal();
