@@ -35,7 +35,7 @@ export function SvgShema(props: Props): React.ReactElement
 
         /*TODO change to map*/
         const res: Array<Element> = [];
-        for(let i = 1; i <= props.numOfEl; ++i)
+        for(let i = 0; i < props.numOfEl; ++i)
         {
             const comp_el = doc.querySelector(`#comp_${i}`);
             const err_el = doc.querySelector(`#err_${i}`);
@@ -58,7 +58,7 @@ export function SvgShema(props: Props): React.ReactElement
 
         props.onLoad((id: number, visible: boolean)=>
         {
-            res[id-1].setAttribute('visibility', visible? '' : 'hidden');
+            res[id].setAttribute('visibility', visible? '' : 'hidden');
         });
     }, [props.numOfEl, props.onLoad, props.onClick]);
 

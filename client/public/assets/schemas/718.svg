@@ -55,7 +55,7 @@
      transform="translate(-95.05989,41.659966)">
     <g
        transform="translate(377.04013,-64.498344)"
-       id="comp_1"
+       id="comp_0"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -67,7 +67,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_1">
+         id="err_0">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778">
@@ -160,7 +160,7 @@
        transform="rotate(-90)" />
     <g
        transform="translate(88.185617,-2.0646456)"
-       id="comp_2"
+       id="comp_1"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -172,7 +172,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_2">
+         id="err_1">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-2">
@@ -227,7 +227,7 @@
     </g>
     <g
        transform="translate(149.03353,-2.0646456)"
-       id="comp_3"
+       id="comp_2"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -239,7 +239,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_3">
+         id="err_2">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-28">
@@ -294,7 +294,7 @@
     </g>
     <g
        transform="translate(209.88145,-2.0646456)"
-       id="comp_4"
+       id="comp_3"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -306,7 +306,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_4">
+         id="err_3">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-5">
@@ -361,7 +361,7 @@
     </g>
     <g
        transform="translate(88.185617,58.783271)"
-       id="comp_5"
+       id="comp_6"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -373,7 +373,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_5">
+         id="err_6">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-4">
@@ -447,7 +447,7 @@
          style="stroke-width:0.42562294">TABLA</tspan></text>
     <g
        transform="translate(149.03353,58.783271)"
-       id="comp_6"
+       id="comp_7"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -459,7 +459,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_6">
+         id="err_7">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-2-6">
@@ -514,7 +514,7 @@
     </g>
     <g
        transform="translate(209.88145,58.783271)"
-       id="comp_7"
+       id="comp_8"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -526,7 +526,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_7">
+         id="err_8">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-28-7">
@@ -581,7 +581,7 @@
     </g>
     <g
        transform="translate(88.185617,119.63119)"
-       id="comp_8"
+       id="comp_11"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -593,7 +593,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_8">
+         id="err_11">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-5-9">
@@ -648,7 +648,7 @@
     </g>
     <g
        transform="translate(149.03353,119.63119)"
-       id="comp_9"
+       id="comp_12"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -660,7 +660,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_9">
+         id="err_12">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-4-2">
@@ -715,7 +715,7 @@
     </g>
     <g
        transform="translate(209.88145,119.63119)"
-       id="comp_10"
+       id="comp_13"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -727,7 +727,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_10">
+         id="err_13">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-2-7">
@@ -782,7 +782,7 @@
     </g>
     <g
        transform="translate(88.185617,180.4791)"
-       id="comp_11"
+       id="comp_16"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -794,7 +794,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_11">
+         id="err_16">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-28-9">
@@ -849,7 +849,7 @@
     </g>
     <g
        transform="translate(149.03353,180.4791)"
-       id="comp_12"
+       id="comp_17"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -861,7 +861,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_12">
+         id="err_17">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-5-7">
@@ -916,7 +916,7 @@
     </g>
     <g
        transform="translate(209.88145,180.4791)"
-       id="comp_13"
+       id="comp_18"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -928,7 +928,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_13">
+         id="err_18">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-4-1">
@@ -983,7 +983,7 @@
     </g>
     <g
        transform="translate(317.99514,-4.0247557)"
-       id="comp_14"
+       id="comp_4"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -995,7 +995,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_14">
+         id="err_4">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-2-0">
@@ -1050,7 +1050,7 @@
     </g>
     <g
        transform="translate(378.84306,-4.0247557)"
-       id="comp_15"
+       id="comp_5"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -1062,7 +1062,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_15">
+         id="err_5">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-28-74">
@@ -1117,7 +1117,7 @@
     </g>
     <g
        transform="translate(317.99514,56.823161)"
-       id="comp_16"
+       id="comp_9"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -1129,7 +1129,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_16">
+         id="err_9">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-5-2">
@@ -1184,7 +1184,7 @@
     </g>
     <g
        transform="translate(378.84306,56.823161)"
-       id="comp_17"
+       id="comp_10"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -1196,7 +1196,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_17">
+         id="err_10">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-4-13">
@@ -1251,7 +1251,7 @@
     </g>
     <g
        transform="translate(317.99514,117.67108)"
-       id="comp_18"
+       id="comp_14"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -1263,7 +1263,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_18">
+         id="err_14">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-2-9">
@@ -1318,7 +1318,7 @@
     </g>
     <g
        transform="translate(378.84306,117.67108)"
-       id="comp_19"
+       id="comp_15"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -1330,7 +1330,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_19">
+         id="err_15">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-28-2">
@@ -1385,7 +1385,7 @@
     </g>
     <g
        transform="translate(317.99514,178.51899)"
-       id="comp_20"
+       id="comp_19"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -1397,7 +1397,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_20">
+         id="err_19">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-5-97">
@@ -1452,7 +1452,7 @@
     </g>
     <g
        transform="translate(378.84306,178.51899)"
-       id="comp_21"
+       id="comp_20"
        inkscape:label="#g5563">
       <rect
          y="36.952377"
@@ -1464,7 +1464,7 @@
       <g
          inkscape:label="#g4837"
          transform="matrix(0.10050825,0,0,0.10263325,30.279784,24.508492)"
-         id="err_21">
+         id="err_20">
         <g
            transform="matrix(0.62499998,0,0,-0.62499999,26.176287,262.96418)"
            id="g4778-4-5">

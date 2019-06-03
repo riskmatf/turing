@@ -80,7 +80,8 @@ export function ReportEditor(props: Props): React.ReactElement
                     props.predefinedData.type === Report.TYPE_COMPUTER_REPORT &&
                     props.predefinedData.idComputer !== undefined &&
                     <Col style={{textAlign: 'center'}}>
-                        Computer #{props.predefinedData.idComputer}
+                        Computer {props.predefinedData.classroomName + ' '}
+                        {props.predefinedData.idComputer  === 0 ? 'N' : props.predefinedData.idComputer}
                     </Col>
                 }
             </Row>

@@ -121,13 +121,17 @@ export function BodyPart(props: BodyProps): React.ReactElement | null
 
     const onComputerClicked = useCallback((idComp: number)=>
     {
-        setModalData(
-            {
-                idComputer: idComp,
-                reportType: Report.TYPE_COMPUTER_REPORT,
-                title: `Reports for computer #${idComp}`
-            });
-        onToggleModal();
+        if(classroom.classroom !== undefined)
+        {
+            setModalData(
+                {
+                    idComputer: idComp,
+                    reportType: Report.TYPE_COMPUTER_REPORT,
+                    title: `Reports for computer ${classroom.classroom.name} ${idComp === 0 ? 'N' : idComp}`
+                });
+            onToggleModal();
+        }
+
 
     }, [onToggleModal, setModalData]);
 

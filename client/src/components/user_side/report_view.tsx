@@ -103,7 +103,8 @@ export function ReportView(props: Props): React.ReactElement
                         /*No need to check idComputer !== undefined but ts forces us*/
                         props.report.type === Report.TYPE_COMPUTER_REPORT && props.report.idComputer !== undefined &&
                         <Col style={{textAlign: 'center'}}>
-                            <b>Computer</b> #{props.report.idComputer}
+                            <b>Computer</b> {props.report.classroomName + ' '}
+                            {props.report.idComputer === 0 ? 'N' : props.report.idComputer}
                         </Col>
                     }
                 </Row>

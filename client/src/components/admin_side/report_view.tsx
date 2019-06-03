@@ -267,7 +267,8 @@ function ExtendedReportView(props: Props): React.ReactElement
                     <Col style={{textAlign: 'center'}}>
                         <Row>
                             <Col xs='12' md='auto'>
-                                <b>Computer</b> #{props.report.idComputer}
+                                <b>Computer</b> {props.report.classroomName + ' '}
+                                {props.report.idComputer  === 0 ? 'N' : props.report.idComputer}
                             </Col>
                             <Col xs='12' md='auto' onClick={toggleComputerDialog}>
                                 <FontAwesomeIcon icon={faQuestionCircle}/>
@@ -358,7 +359,8 @@ function inlineReportViewJSX(props: Props): React.ReactElement
                 {
                     props.idComputer&&
                     <Col xs='auto' className='d-none d-md-flex'>
-                        ComputerId: {props.report.idComputer}
+                        ComputerId: {props.report.classroomName + ' '}
+                        {props.report.idComputer === 0 ? 'N' : props.report.idComputer}
                     </Col>
                 }
 
@@ -380,7 +382,8 @@ function inlineReportViewJSX(props: Props): React.ReactElement
                     {
                         (props.report.type === Report.TYPE_COMPUTER_REPORT && props.idComputer)&&
                         <Col xs='auto'>
-                            ComputerId: {props.report.idComputer}
+                            ComputerId: {props.report.classroomName + ' '}
+                            {props.report.idComputer === 0 ? 'N' : props.report.idComputer}
                         </Col>
                     }
                 </Row>
