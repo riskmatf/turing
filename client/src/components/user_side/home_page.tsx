@@ -16,7 +16,7 @@ export function HomePage(props: Props): React.ReactElement
             {/*TODO - set new logo*/}
                 <Col>
                     <div className='hv-center-container'>
-                        <img src='/turing/assets/img/logo.png' alt='Turing Logo' />
+                        <img src='/assets/img/logo.png' alt='Turing Logo' />
                     </div>
                 </Col>
             </Row>
