@@ -113,7 +113,7 @@ function ClientRoutes(props: RouteComponentProps): React.ReactElement
 
 export function App(props: Props): React.ReactElement {
     return (
-        <BrowserRouter basename={'turing'}>
+        <BrowserRouter>
             <Switch>
 
                 {/*Admin routes*/}
