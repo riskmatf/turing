@@ -55,7 +55,13 @@ router.post('/login', (req, res)=>{
 					}
 				);
 				loggedUsers.push(user.username);
-
+				setTimeout((user)=>{
+					var index = loggedUsers.indexOf(user.username);
+					if(index >= 0){
+						loggedUsers.splice(index, 1);
+					}
+					//if index is < 0 then element is allready deleted
+				}, authConf.jwtExpire['cookie'], user);
 				res.cookie('jwt', token,
 								{
 									maxAge : authConf.jwtExpire["cookie"],
