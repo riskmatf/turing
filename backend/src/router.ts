@@ -7,11 +7,11 @@ router.use((req, _res, next)=>{
 });
 
 router.get("/", (_req, res)=>{
-	res.send("Hello from the otter side");
+	res.set("allow-access-control-origin", "*").send("Hello from the otter side");
 });
 
 router.get("/classrooms", (_req, res)=>{
-	res.send("Classrooms will exist here");
+	res.set("allow-access-control-origin", "*").send("Classrooms will exist here");
 });
 
 export {router};
