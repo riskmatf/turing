@@ -3,7 +3,10 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
+import Test from '../components/test'
+
 const routes = [
+    { path: '/', component: Test }
 ]
 
 const router = new VueRouter({
