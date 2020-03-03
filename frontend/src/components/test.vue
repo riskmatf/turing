@@ -6,11 +6,10 @@
 </style>
 
 <script>
-    import axios from 'axios'
     export default {
         name: 'test',
         created() {
-            axios.get('http://turing.dev.matf.bg.ac.rs:3000/api/v1')
+            this.$http.get('/')
             .then((resp) => {
                 console.log(resp)
             })
