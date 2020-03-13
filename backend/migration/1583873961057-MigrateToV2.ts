@@ -25,7 +25,7 @@ export class MigrateToV21583873961057 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query("ALTER TABLE `reports` DROP FOREIGN KEY `reports_ibfk_1`", undefined);
         await queryRunner.query("ALTER TABLE `reports` DROP FOREIGN KEY `reports_ibfk_2`", undefined);
-        await queryRunner.query("CREATE TABLE `computers` (`id` int NOT NULL, `classroomName` varchar(255) NOT NULL, PRIMARY KEY (`id`, `classroomName`)) ENGINE=InnoDB", undefined);
+        await queryRunner.query("CREATE TABLE `computers` (`id` int NOT NULL, `classroomName` varchar(255) NOT NULL, `broken` tinyint(1) NOT NULL DEFAULT '0', PRIMARY KEY (`id`, `classroomName`)) ENGINE=InnoDB", undefined);
 		await queryRunner.query("ALTER TABLE `classrooms` DROP COLUMN `numberOfComputers`", undefined);
 		
 		await queryRunner.query(sqlInsert, undefined); //populating computers table
