@@ -3,8 +3,9 @@ import { getRepository } from "typeorm";
 
 interface IComputer {
     computerId: number,
-    classroomName: string,
-    status: 'broken' | 'working' | 'hasReports'
+	classroomName: string,
+	isBroken: boolean,
+	hasReports: boolean,
 }
 
 export async function getComputersFromClassroom(classroomName: string){
@@ -14,24 +15,18 @@ export async function getComputersFromClassroom(classroomName: string){
 						.createQueryBuilder("computer")
 						.leftJoinAndSelect("computer.reports", "report",
 								"report.classroomName = computer.classroomName and report.fixed=0")
+						.leftJoinAndSelect("computer.classroomName", "classroom")
 						.where("computer.classroomName = :cName", {cName: classroomName})
 						.getMany();
 
 	const mappedComputers: IComputer[] = computers.map(comp=>{
-		let status: 'broken' | 'working' | 'hasReports';
-		if(comp.broken){
-			status = "broken";
-		}
-		else if(comp.reports.length > 0){
-			status = "hasReports";
-		}
-		else{
-			status = "working";
-		}
+		let isBroken: boolean = comp.broken ? true : false;
+		const hasReports = comp.reports.length > 0;
 		return {
 			computerId: comp.id,
 			classroomName: comp.classroomName.name,
-			status: status
+			isBroken: isBroken,
+			hasReports: hasReports,
 		}
 	});
 	return mappedComputers;
