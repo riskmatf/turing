@@ -1,5 +1,6 @@
 import express from 'express';
 import classroomsRouter from './routers/classroomsRouter';
+import reportsRouter from './routers/reportsRouter';
 const apiRouter = express.Router();
 
 apiRouter.get("/", (_req, res)=>{
@@ -7,5 +8,7 @@ apiRouter.get("/", (_req, res)=>{
 });
 
 apiRouter.use("/classrooms", classroomsRouter);
+
+apiRouter.use("/reports", reportsRouter);
 
 export {apiRouter};
