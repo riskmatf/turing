@@ -1,5 +1,5 @@
 import express from 'express';
-import { getReportsForComputerInClassroom } from '../db/Reports';
+import { getReportsForComputerInClassroom, getReportById } from '../db/Reports';
 
 const reportsRouter = express.Router();
 
@@ -13,5 +13,10 @@ reportsRouter.get("/", (req, resp)=>{
 	}
 	getReportsForComputerInClassroom(req.query.computerId, req.query.classroomName)
 									.then(reports=>{resp.send(reports)});
+})
+
+
+reportsRouter.get("/:id", (req, resp)=>{
+	getReportById(+req.params.id).then(report=>resp.send(report));
 })
 export default reportsRouter;
