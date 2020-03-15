@@ -1,5 +1,6 @@
 import {Entity, PrimaryColumn, OneToMany, ManyToOne, JoinColumn, Column} from 'typeorm';
 import { Classroom } from './Classroom';
+import { Report } from './Report';
 
 @Entity("computers", { schema: "turing" })
 export class Computer{
@@ -18,4 +19,10 @@ export class Computer{
 
 	@Column("tinyint", { name: "broken", width: 1, default: () => "'0'" })
 	broken: boolean;
+
+	@OneToMany(
+		()=>Report,
+		report => report.computerId
+	)
+	reports:Report[];
 }

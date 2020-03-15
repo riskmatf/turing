@@ -22,7 +22,7 @@ export class Report {
 
   @ManyToOne(
 	  ()=>Computer,
-	  computer => computer.id,
+	  computer => computer.reports,
 	  {onDelete: "RESTRICT", onUpdate: "RESTRICT"}
   )
   @JoinColumn([{name: "computerId", referencedColumnName: "id"}])

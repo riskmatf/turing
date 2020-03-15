@@ -1,5 +1,5 @@
 import express from 'express';
-import { router } from './router';
+import { apiRouter } from './apiRouter';
 import { createConnection } from 'typeorm';
 import path from 'path';
 import fs from 'fs';
@@ -33,7 +33,7 @@ createConnection().then( conn => {
 		next();
 	})
 	app.use("/static", express.static(path.join(__dirname, "public")));
-	app.use("/api/v1", router);
+	app.use("/api/v1", apiRouter);
 	app.listen(port, err => {
 		if (err) {
 			return console.error(err);
