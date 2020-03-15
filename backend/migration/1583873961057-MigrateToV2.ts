@@ -3,7 +3,7 @@ import {MigrationInterface, QueryRunner} from "typeorm";
 
 //creating INSERT query to populate computers table so that we can add foreign keys
 let arr : Array<[string, number]> = [
-	[ '704',  16 ] , [ '718',  21 ] , [ 'bim ', 21 ] , [ 'dlab', 11 ] , [ 'jag1', 21 ] ,
+	[ '704',  16 ] , [ '718',  21 ] , [ 'bim', 21 ] , [ 'dlab', 11 ] , [ 'jag1', 21 ] ,
 	[ 'jag2', 21 ] , [ 'rlab', 15 ]
 ];
 let sqlValuesPerClassroom = arr.map(([name, numOfComps])=>{
@@ -24,13 +24,22 @@ export class MigrateToV21583873961057 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query("ALTER TABLE `reports` DROP FOREIGN KEY `reports_ibfk_1`", undefined);
-        await queryRunner.query("ALTER TABLE `reports` DROP FOREIGN KEY `reports_ibfk_2`", undefined);
+		await queryRunner.query("ALTER TABLE `reports` DROP FOREIGN KEY `reports_ibfk_2`", undefined);
+		
+        await queryRunner.query("DROP TRIGGER IF EXISTS turing.reportsBU", undefined);
+        await queryRunner.query("DROP TRIGGER IF EXISTS turing.reportsBI", undefined);
+
         await queryRunner.query("CREATE TABLE `computers` (`id` int NOT NULL, `classroomName` varchar(255) NOT NULL, `broken` tinyint(1) NOT NULL DEFAULT '0', PRIMARY KEY (`id`, `classroomName`)) ENGINE=InnoDB", undefined);
 		await queryRunner.query("ALTER TABLE `classrooms` DROP COLUMN `numberOfComputers`", undefined);
 		
 		await queryRunner.query(sqlInsert, undefined); //populating computers table
 
-        await queryRunner.query("ALTER TABLE `reports` CHANGE `reportType` `isGeneral` tinyint(1)", undefined);
+		await queryRunner.query("ALTER TABLE `reports` CHANGE `reportType` `isGeneral` tinyint(1)", undefined);
+
+		//fixing isGeneral column
+        await queryRunner.query("UPDATE reports SET isGeneral=1 WHERE computerId IS NULL", undefined);
+		await queryRunner.query("UPDATE reports SET isGeneral=0 WHERE computerId IS NOT NULL", undefined);
+
         await queryRunner.query("ALTER TABLE `reports` CHANGE `computerID` `computerId` int NULL ", undefined);
         await queryRunner.query("ALTER TABLE `reports` CHANGE `reportComment` `description` varchar(1000) CHARACTER SET \"utf8mb4\" COLLATE \"utf8mb4_unicode_ci\" NULL", undefined);
         await queryRunner.query("ALTER TABLE `classrooms` CHANGE `location` `location` varchar(20) CHARACTER SET \"utf8mb4\" COLLATE \"utf8mb4_unicode_ci\" NOT NULL", undefined);
