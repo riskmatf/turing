@@ -41,7 +41,7 @@ export class MigrateToV21583873961057 implements MigrationInterface {
 		await queryRunner.query("UPDATE reports SET isGeneral=0 WHERE computerId IS NOT NULL", undefined);
 
         await queryRunner.query("ALTER TABLE `reports` CHANGE `computerID` `computerId` int NULL ", undefined);
-        await queryRunner.query("ALTER TABLE `reports` CHANGE `reportComment` `description` varchar(1000) CHARACTER SET \"utf8mb4\" COLLATE \"utf8mb4_unicode_ci\" NULL", undefined);
+        await queryRunner.query("ALTER TABLE `reports` CHANGE `reportComment` `description` varchar(1000) CHARACTER SET \"utf8mb4\" COLLATE \"utf8mb4_unicode_ci\" NOT NULL", undefined);
         await queryRunner.query("ALTER TABLE `classrooms` CHANGE `location` `location` varchar(20) CHARACTER SET \"utf8mb4\" COLLATE \"utf8mb4_unicode_ci\" NOT NULL", undefined);
         await queryRunner.query("ALTER TABLE `reports` CHANGE `classroomName` `classroomName` varchar(20) NULL", undefined);
         await queryRunner.query("CREATE UNIQUE INDEX `IDX_255475c4fda29aba18cda3534a` ON `admins` (`displayName`)", undefined);

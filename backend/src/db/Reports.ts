@@ -3,7 +3,7 @@ import { Report } from "../../entities/Report";
 
 interface IReport{
     reportId: number, 
-    description: string | null,
+    description: string,
     hasAdminComment: boolean,
     timestamp: number,
     urgent: boolean,
