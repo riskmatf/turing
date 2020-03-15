@@ -9,6 +9,7 @@ import {
 import { Classroom } from "./Classroom";
 import { Admin } from "./Admin";
 import { Computer } from "./Computer";
+import {BooleanTransformer} from '@anchan828/typeorm-transformers'
 
 @Index("classroomName", ["classroomName"], {})
 @Index("adminUsername", ["adminUsername"], {})
@@ -17,7 +18,11 @@ export class Report {
   @PrimaryGeneratedColumn({ type: "int", name: "reportId" })
   reportId: number;
 
-  @Column("tinyint", { name: "isGeneral", width: 1 })
+  @Column("tinyint", {
+			name: "isGeneral",
+			width: 1,
+			transformer: new BooleanTransformer(),
+		})
   isGeneral: boolean;
 
   @ManyToOne(
@@ -32,7 +37,12 @@ export class Report {
   			collation: "utf8mb4_unicode_ci" })
   description: string | null;
 
-  @Column("tinyint", { name: "fixed", width: 1, default: () => "'0'" })
+  @Column("tinyint", {
+		name: "fixed",
+		width: 1,
+		default: () => "'0'",
+		transformer: new BooleanTransformer(),
+	})
   fixed: boolean;
 
   @Column({	type: "varchar", name: "adminComment", nullable: true, length: 1000, charset:"utf8mb4",
@@ -42,7 +52,12 @@ export class Report {
   @Column("int", { name: "timestamp" })
   timestamp: number;
 
-  @Column("tinyint", { name: "urgent", width: 1, default: () => "'0'" })
+  @Column("tinyint", { 
+			  name: "urgent",
+			  width: 1,
+			  default: () => "'0'",
+			  transformer: new BooleanTransformer(),
+			})
   urgent: boolean;
 
   @ManyToOne(
