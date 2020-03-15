@@ -20,7 +20,7 @@ export async function getComputersFromClassroom(classroomName: string){
 						.getMany();
 
 	const mappedComputers: IComputer[] = computers.map(comp=>{
-		let isBroken: boolean = comp.broken ? true : false;
+		let isBroken: boolean = comp.broken;
 		const hasReports = comp.reports.length > 0;
 		return {
 			computerId: comp.id,
