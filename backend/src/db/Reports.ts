@@ -1,5 +1,6 @@
-import { getRepository } from "typeorm";
+import { getRepository, QueryFailedError } from "typeorm";
 import { Report } from "../../entities/Report";
+import { Classroom } from "../../entities/Classroom";
 
 interface IReportOverview{
     reportId: number, 
@@ -46,7 +47,6 @@ export async function getReportsForComputerInClassroom(computerId: number, class
 }
 
 export async function getReportById(reportId: number){
-	console.log(reportId);
 	const reportsRepo = getRepository(Report);
 	let report = await reportsRepo.find({
 		relations:["adminUsername", "classroomName"],
@@ -67,4 +67,32 @@ export async function getReportById(reportId: number){
 	};
 
 	return mappedReport;
+}
+
+export interface IReportData{
+	computerId?: number,
+    classroomName: string,
+    isGeneral: boolean,
+    description: string,
+    urgent: boolean
+}
+
+export async function addReport(data: IReportData){
+
+	const classroom = new Classroom();
+	classroom.name = data.classroomName;
+	let {classroomName, ...tmp} = data;
+	let report = new Report();
+	
+	report = {...report, ...tmp};
+	// report.computerId = data.computerId;
+	report.classroomName = classroom;
+	// report.isGeneral = data.isGeneral;
+	// report.description = data.description;
+	// report.urgent = data.urgent;
+	report.fixed = false;
+	report.timestamp = Math.floor((+ new Date) / 1000) ;
+
+	const repo = getRepository(Report);
+	return repo.save(report); //returning promise, error handling in caller code
 }
