@@ -8,7 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 
 Vue.config.productionTip = false
 
-Vue.use(Http, { baseUrl: 'http://turing.dev.matf.bg.ac.rs:3000/api/v1' })
+Vue.use(Http, { baseUrl: 'http://turing-api.dev.matf.bg.ac.rs:3000' })
 Vue.use(ElementUI)
 
 new Vue({
