@@ -1,6 +1,7 @@
 <template>
     <div>
-        {{JSON.stringify(request)}}
+        <breadcrumbs :paths="breadcrumbData"/>
+        <h1>This is classroom with id {{ $route.params.classroomId}}</h1>
     </div>
 </template>
 
@@ -9,17 +10,26 @@
 </style>
 
 <script>
-    import { mapActions, mapState } from 'vuex'
+    import Breadcrumbs from '@/components/_common/breadcrumbs'
+
     export default {
         name: 'classroom-page',
+        components: {
+            Breadcrumbs,
+        },
         computed: {
-            ...mapState('Classroom/Classroom', ['request']),
-        },
-        methods: {
-            ...mapActions('Classroom/Classroom', ['fetchClassroom']),
-        },
-        created() {
-            this.fetchClassroom({classroomId: this.$route.params.classroomId})
+            breadcrumbData() {
+                return [
+                    { name: 'classrooms', to: { name: 'classroomListPage' } }, 
+                    { 
+                        name: `${this.$route.params.classroomId}`, 
+                        to: { 
+                            name: 'classroomPage', 
+                            params: { classroomId: this.$route.params.classroomId } 
+                        }
+                    }
+                ]
+            },
         },
     }
 </script>
