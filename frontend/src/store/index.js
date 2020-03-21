@@ -1,15 +1,7 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import userStore from './userStore'
+import adminStore from './adminStore'
 
-Vue.use(Vuex)
-
-export default new Vuex.Store({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
-  modules: {
-  }
-})
+export {
+    userStore,
+    adminStore,
+}

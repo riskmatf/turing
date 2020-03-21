@@ -34,8 +34,11 @@
 <script>
     import { BaseLayout } from '@/components/_common/baseLayout'
     import { Button } from 'element-ui'
+    import { userStore } from '@/store'
+
     export default {
         name: 'user-base-layout',
+        store: userStore,
         components: {
             BaseLayout,
             ElButton: Button,
