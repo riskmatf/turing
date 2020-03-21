@@ -26,11 +26,11 @@ export default {
         }
     },
     getters: {
-        getClassroomsGroupedByLocation(state) {
+        classroomsGroupedByLocation(state) {
             if (state.request.status !== 'success') {
                 return null
             }
-            return _.groupBy(state.request.status, (classroom) => classroom.location)
+            return _.groupBy(state.request.response, (classroom) => classroom.location)
         }
     },
 }
