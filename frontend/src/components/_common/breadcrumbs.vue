@@ -1,25 +1,36 @@
 <template>
-    <div>
-        <template v-for="(path, index) in allPathsExceptLast"> 
-            <span :key="`sep-${index}`">/</span>
-            <span :key="`name-${index}`">
-                <router-link :to="path.to">{{path.name}}</router-link>
+    <div class="breadcrumb-container">
+        <el-card shadow="never">
+            <template v-for="(path, index) in allPathsExceptLast"> 
+                <span :key="`sep-${index}`">/</span>
+                <span :key="`name-${index}`">
+                    <router-link :to="path.to">{{path.name}}</router-link>
+                </span>
+            </template>
+            <span>/</span>
+            <span v-if="hasLastPath">
+                <router-link :to="lastPath.to">{{lastPath.name}}</router-link>
             </span>
-        </template>
-        <span>/</span>
-        <span v-if="hasLastPath">
-            <router-link :to="lastPath.to">{{lastPath.name}}</router-link>
-        </span>
+        </el-card>
     </div>
 </template>
 
 <style lang="sass" scoped>
-    // TODO: Style breadcrumb
+    .breadcrumb-container
+        display: flex
+        flex-direction: row
+        & ::v-deep .el-card__body
+            padding: 5px 15px 5px 5px
 </style>
 
 <script>
+    import { Card as ElCard } from 'element-ui' 
+
     export default {
         name: 'breadcrumbs', 
+        components: {
+            ElCard,
+        },
         props: {
             // [{to: Object, name: String}] 
             paths: {

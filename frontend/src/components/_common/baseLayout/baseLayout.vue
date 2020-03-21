@@ -18,7 +18,7 @@
             </mobile-drop-nav>
         </div>
 
-        <div class="column full">
+        <div class="column full body-padding">
             <slot name="body"></slot>
         </div>
     </div>
@@ -59,6 +59,9 @@
     .home-logo
         margin: 2px
         cursor: pointer
+    .body-padding
+        padding-left: 5px
+        padding-right: 5px
 </style>
 
 <style lang="sass">
