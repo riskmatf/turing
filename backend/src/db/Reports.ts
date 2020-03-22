@@ -1,8 +1,6 @@
-import { getRepository, QueryFailedError, EntityRepository, AbstractRepository, Column } from "typeorm";
+import { EntityRepository, AbstractRepository } from "typeorm";
 import { Report } from "../../entities/Report";
 import { Classroom } from "../../entities/Classroom";
-import { classroomsRepository } from "./Classrooms";
-import reportsRouter from "src/routers/reportsRouter";
 
 interface IReportOverview{
     reportId: number, 
@@ -27,7 +25,7 @@ interface IReport{
 }
 
 @EntityRepository(Report)
-export class reportsRepository extends AbstractRepository<Report>
+export class ReportsRepository extends AbstractRepository<Report>
 {
 	//TODO ovo treba u computer
 	public async getReportsForComputerInClassroom(computerId: number, classroomName: string){

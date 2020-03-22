@@ -1,5 +1,5 @@
 import { Computer} from "../../entities/Computer";
-import { getRepository, AbstractRepository } from "typeorm";
+import { AbstractRepository, EntityRepository } from "typeorm";
 
 interface IComputer {
     computerId: number,
@@ -8,6 +8,7 @@ interface IComputer {
 	hasReports: boolean,
 }
 
+@EntityRepository(Computer)
 export class ComputersRepository extends AbstractRepository<Computer>{
 	public async getComputersFromClassroom(classroomName: string){
 		let computers = await this.repository

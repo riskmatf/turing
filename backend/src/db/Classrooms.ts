@@ -1,4 +1,4 @@
-import { getRepository, AbstractRepository } from 'typeorm';
+import { getRepository, AbstractRepository, EntityRepository } from 'typeorm';
 import { Classroom } from '../../entities/Classroom';
 import { imagesPaths } from '../../src/index';
 interface IClassroom {
@@ -9,9 +9,10 @@ interface IClassroom {
         broken: number
     },
     imageUrl: string,
-    schemaUrl: string
+	schemaUrl: string
 }
-export class classroomsRepository extends AbstractRepository<Classroom>{
+@EntityRepository(Classroom)
+export class ClassroomsRepository extends AbstractRepository<Classroom>{
 	public async getClassroomByName(classroomName: string){
 		return this.repository.findOne(classroomName);
 	}

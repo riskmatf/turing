@@ -1,5 +1,5 @@
 import express from 'express';
-import {reportsRepository, IComputerReport} from '../db/Reports';
+import {ReportsRepository, IComputerReport} from '../db/Reports';
 import { Report } from '../../entities/Report';
 
 const reportsRouter = express.Router();
@@ -12,14 +12,14 @@ reportsRouter.get("/", (req, resp)=>{
 			return;
 		}
 	}
-	const repo = new reportsRepository();
+	const repo = new ReportsRepository();
 	repo.getReportsForComputerInClassroom(req.query.computerId, req.query.classroomName)
 									.then(reports=>{resp.send(reports)});
 })
 
 
 reportsRouter.get("/:id", (req, resp)=>{
-	const repo = new reportsRepository();
+	const repo = new ReportsRepository();
 	repo.getReportById(+req.params.id).then(report=>{
 						if(report){
 							resp.send(report);
@@ -32,7 +32,7 @@ reportsRouter.get("/:id", (req, resp)=>{
 
 
 reportsRouter.post("/", (req, resp)=>{
-	const repo = new reportsRepository();
+	const repo = new ReportsRepository();
 	const requiredParams = ["classroomName", "computerId", "description", "isGeneral", "urgent"];
 
 	for(const param of requiredParams){
