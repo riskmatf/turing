@@ -1,6 +1,8 @@
-import { getRepository, QueryFailedError } from "typeorm";
+import { getRepository, QueryFailedError, EntityRepository, AbstractRepository, Column } from "typeorm";
 import { Report } from "../../entities/Report";
 import { Classroom } from "../../entities/Classroom";
+import { classroomsRepository } from "./Classrooms";
+import reportsRouter from "src/routers/reportsRouter";
 
 interface IReportOverview{
     reportId: number, 
@@ -24,52 +26,94 @@ interface IReport{
 	adminDisplayName: string | null,
 }
 
-export async function getReportsForComputerInClassroom(computerId: number, classroomName: string){
-	const reportsRepo = getRepository(Report);
-	const reports = await reportsRepo.find({
-		where:{
-			classroomName: classroomName,
-			computerId: computerId,
-			fixed: false
-		}
-	});
+@EntityRepository(Report)
+export class reportsRepository extends AbstractRepository<Report>
+{
+	//TODO ovo treba u computer
+	public async getReportsForComputerInClassroom(computerId: number, classroomName: string){
+		const reports = await this.repository.find({
+			where:{
+				classroomName: classroomName,
+				computerId: computerId,
+				fixed: false
+			}
+		});
 
-	const mappedReports: IReportOverview[] = reports.map(rep=>{
-		return {
-			reportId: rep.reportId,
-			description: rep.description, 
-			hasAdminComment: rep.adminComment ? true : false,
-			timestamp: rep.timestamp, 
-			urgent: rep.urgent
-		}
-	})
-	return mappedReports;
-}
-
-export async function getReportById(reportId: number){
-	const reportsRepo = getRepository(Report);
-	let report = await reportsRepo.find({
-		relations:["adminUsername", "classroomName"],
-		where: {
-			reportId: reportId,
-		}
-	});
-	if(report.length === 0){
-		return null;
+		const mappedReports: IReportOverview[] = reports.map(rep=>{
+			return {
+				reportId: rep.reportId,
+				description: rep.description, 
+				hasAdminComment: rep.adminComment ? true : false,
+				timestamp: rep.timestamp, 
+				urgent: rep.urgent
+			}
+		})
+		return mappedReports;
 	}
-	const tmp = report[0];
-	const {classroomName, adminUsername, ...rest} = tmp;
-	const mappedReport: IReport = {
-		...rest,
-		hasAdminComment: tmp.adminComment ? true : false,
-		adminDisplayName: adminUsername ? adminUsername.displayName : null,
-		classroomName: classroomName.name
-	};
 
-	return mappedReport;
+	public async getReportById(reportId: number){
+		let report = await this.repository.findOne({
+			relations:["adminUsername", "classroomName"],
+			where: {
+				reportId: reportId,
+			}
+		});
+		//TODO testiraj ovo, promenjeno je sa find na findOne
+		if(report === undefined){
+			return null;
+		}
+		const {classroomName, adminUsername, ...rest} = report;
+		const mappedReport: IReport = {
+			...rest,
+			hasAdminComment: report.adminComment ? true : false,
+			adminDisplayName: adminUsername ? adminUsername.displayName : null,
+			classroomName: classroomName.name
+		};
+
+		return mappedReport;
+	}
+
+
+	public async addGeneralReport(data: IGeneralReport){
+		//can't use just if(!data.isGeneral) because that includes undefs and nulls
+		if(data.isGeneral === false){
+			throw new Error("Report not marked as general!");
+		}
+		let reportData: IReportData = data;
+
+		return this._addReport(reportData);
+	}
+
+	public async addComputerReport(data: IComputerReport){
+		return this._addReport(data);
+	}
+
+
+/*********************************************PRIVATE******************************************* */
+
+	private async _addReport(data: IReportData){
+		let report = this._reportDataToReport(data);
+		return this.repository.save(report);
+	}
+
+	private _reportDataToReport(data: IReportData){
+		let report: Report = new Report();
+		let classroom = new Classroom();
+
+		classroom.name = data.classroomName; // save fill fail if name is bad
+		report.classroomName = classroom;
+
+		let {classroomName, ...tmp} = data;
+		//this is shortcut for filling data, because tmp will have all the missing stuff that report needs
+		report = {...report, ...tmp};
+		report.fixed = false;
+		report.timestamp = Math.floor((+ new Date) / 1000);
+
+		return report;
+	}
 }
 
-export interface IReportData{
+interface IReportData{
 	computerId?: number,
     classroomName: string,
     isGeneral: boolean,
@@ -77,22 +121,17 @@ export interface IReportData{
     urgent: boolean
 }
 
-export async function addReport(data: IReportData){
+export interface IGeneralReport{
+	classroomName: string,
+	isGeneral: boolean, 
+	description: string, 
+	urgent: boolean,
+}
 
-	const classroom = new Classroom();
-	classroom.name = data.classroomName;
-	let {classroomName, ...tmp} = data;
-	let report = new Report();
-	
-	report = {...report, ...tmp};
-	// report.computerId = data.computerId;
-	report.classroomName = classroom;
-	// report.isGeneral = data.isGeneral;
-	// report.description = data.description;
-	// report.urgent = data.urgent;
-	report.fixed = false;
-	report.timestamp = Math.floor((+ new Date) / 1000) ;
-
-	const repo = getRepository(Report);
-	return repo.save(report); //returning promise, error handling in caller code
+export interface IComputerReport{
+	computerId: number,
+    classroomName: string,
+    isGeneral: boolean,
+    description: string,
+    urgent: boolean
 }
