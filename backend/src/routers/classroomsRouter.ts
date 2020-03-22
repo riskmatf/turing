@@ -1,12 +1,14 @@
 import express from 'express';
-import { getAllClassrooms } from '../db/Classrooms';
+// import { getAllClassrooms, getClassroomByName } from '../db/Classrooms';
 import { getComputersFromClassroom } from '../db/Computers';
+import { classroomsRepository } from 'src/db/Classrooms';
 const classroomsRouter = express.Router();
 
 
 classroomsRouter.get("/", (req, resp)=>{
 	const baseUrl = req.protocol + "://" + req.get("host") + "/";
-	getAllClassrooms(baseUrl).then(allClassrooms => resp.send(allClassrooms));
+	const repo = new classroomsRepository();
+	repo.getAllClassrooms(baseUrl).then(allClassrooms => resp.send(allClassrooms));
 });
 
 classroomsRouter.get("/:classroomName/computers", (req, resp)=>{
