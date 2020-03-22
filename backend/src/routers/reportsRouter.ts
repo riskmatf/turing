@@ -1,6 +1,7 @@
 import express from 'express';
-import {ReportsRepository, IComputerReport} from '../db/Reports';
+import {ReportsRepository} from '../db/Reports';
 import { Report } from '../../entities/Report';
+import { getCustomRepository } from 'typeorm';
 
 const reportsRouter = express.Router();
 
@@ -12,14 +13,14 @@ reportsRouter.get("/", (req, resp)=>{
 			return;
 		}
 	}
-	const repo = new ReportsRepository();
+	const repo = getCustomRepository(ReportsRepository);
 	repo.getReportsForComputerInClassroom(req.query.computerId, req.query.classroomName)
 									.then(reports=>{resp.send(reports)});
 })
 
 
 reportsRouter.get("/:id", (req, resp)=>{
-	const repo = new ReportsRepository();
+	const repo = getCustomRepository(ReportsRepository);
 	repo.getReportById(+req.params.id).then(report=>{
 						if(report){
 							resp.send(report);
@@ -32,7 +33,7 @@ reportsRouter.get("/:id", (req, resp)=>{
 
 
 reportsRouter.post("/", (req, resp)=>{
-	const repo = new ReportsRepository();
+	const repo = getCustomRepository(ReportsRepository);
 	const requiredParams = ["classroomName", "computerId", "description", "isGeneral", "urgent"];
 
 	for(const param of requiredParams){
