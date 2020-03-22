@@ -1,6 +1,6 @@
 import express from 'express';
 // import { getAllClassrooms, getClassroomByName } from '../db/Classrooms';
-import { getComputersFromClassroom } from '../db/Computers';
+import { ComputersRepository } from '../db/Computers';
 import { classroomsRepository } from 'src/db/Classrooms';
 const classroomsRouter = express.Router();
 
@@ -12,7 +12,8 @@ classroomsRouter.get("/", (req, resp)=>{
 });
 
 classroomsRouter.get("/:classroomName/computers", (req, resp)=>{
-	getComputersFromClassroom(req.params.classroomName).then(comps => {
+	const computerRepo = new ComputersRepository();
+	computerRepo.getComputersFromClassroom(req.params.classroomName).then(comps => {
 		if(comps.length > 0)
 			resp.send(comps)
 		else{
