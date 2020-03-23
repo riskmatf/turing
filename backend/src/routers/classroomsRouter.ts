@@ -10,7 +10,10 @@ const classroomsRouter = express.Router();
 classroomsRouter.get("/", (req, resp)=>{
 	const baseUrl = req.protocol + "://" + req.get("host") + "/";
 	const repo = getCustomRepository(ClassroomsRepository);
-	repo.getAllClassrooms(baseUrl).then(allClassrooms => resp.send(allClassrooms));
+	repo.getAllClassrooms(baseUrl).then(allClassrooms => {
+		allClassrooms.sort((c1, c2)=>{return c1.name < c2.name ? -1 : 1});
+		resp.send(allClassrooms)
+	});
 });
 
 classroomsRouter.get("/:classroomName/computers", (req, resp)=>{
