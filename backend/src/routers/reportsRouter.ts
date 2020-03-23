@@ -17,7 +17,13 @@ reportsRouter.get("/", (req, resp)=>{
 	}
 	const repo = getCustomRepository(ComputersRepository);
 	repo.getReportsForComputerInClassroom(req.query.computerId, req.query.classroomName)
-									.then(reports=>{resp.send(reports)})
+									.then(reports=>{
+											if(reports)
+												resp.send(reports)
+											else{
+												resp.status(404).send({message:"Given computer/classroom does not exist"});
+											}
+										})
 									.catch(err=>{serverError(err, resp)});
 })
 
