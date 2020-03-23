@@ -1,5 +1,5 @@
 import { Computer} from "../../entities/Computer";
-import { getRepository } from "typeorm";
+import { AbstractRepository, EntityRepository } from "typeorm";
 
 interface IComputer {
     computerId: number,
@@ -8,26 +8,59 @@ interface IComputer {
 	hasReports: boolean,
 }
 
-export async function getComputersFromClassroom(classroomName: string){
-	let computersRepo = getRepository(Computer);
+interface IReportOverview{
+    reportId: number, 
+    description: string,
+    hasAdminComment: boolean,
+    timestamp: number,
+    urgent: boolean,
+}
 
-	let computers = await computersRepo
-						.createQueryBuilder("computer")
-						.leftJoinAndSelect("computer.reports", "report",
-								"report.classroomName = computer.classroomName and report.fixed=0")
-						.leftJoinAndSelect("computer.classroomName", "classroom")
-						.where("computer.classroomName = :cName", {cName: classroomName})
-						.getMany();
+@EntityRepository(Computer)
+export class ComputersRepository extends AbstractRepository<Computer>{
+	public async getComputersFromClassroom(classroomName: string){
+		let computers = await this.repository
+							.createQueryBuilder("computer")
+							.leftJoinAndSelect("computer.reports", "report",
+									"report.classroomName = computer.classroomName and report.fixed=0")
+							.leftJoinAndSelect("computer.classroomName", "classroom")
+							.where("computer.classroomName = :cName", {cName: classroomName})
+							.getMany();
+		const mappedComputers: IComputer[] = computers.map(comp=>{
+			let isBroken: boolean = comp.broken;
+			const hasReports = comp.reports.length > 0;
+			return {
+				computerId: comp.id,
+				classroomName: comp.classroomName.name,
+				isBroken: isBroken,
+				hasReports: hasReports,
+			}
+		});
+		return mappedComputers;
+	}
 
-	const mappedComputers: IComputer[] = computers.map(comp=>{
-		let isBroken: boolean = comp.broken;
-		const hasReports = comp.reports.length > 0;
-		return {
-			computerId: comp.id,
-			classroomName: comp.classroomName.name,
-			isBroken: isBroken,
-			hasReports: hasReports,
+	public async getReportsForComputerInClassroom(computerId: number, classroomName: string){
+		const computer = await this.repository.findOne({
+			where:{
+				classroomName: classroomName,
+				computerId: computerId,
+				fixed: false
+			},
+			relations: ["reports"]
+		});
+		if(!computer){
+			return undefined;
 		}
-	});
-	return mappedComputers;
+
+		const mappedReports: IReportOverview[] = computer.reports.map(rep=>{
+			return {
+				reportId: rep.reportId,
+				description: rep.description, 
+				hasAdminComment: rep.adminComment ? true : false,
+				timestamp: rep.timestamp, 
+				urgent: rep.urgent
+			}
+		})
+		return mappedReports;
+	}
 }

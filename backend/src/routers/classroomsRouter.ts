@@ -1,16 +1,32 @@
 import express from 'express';
-import { getAllClassrooms } from '../db/Classrooms';
-import { getComputersFromClassroom } from '../db/Computers';
+// import { getAllClassrooms, getClassroomByName } from '../db/Classrooms';
+import { ComputersRepository } from '../db/Computers';
+import { ClassroomsRepository } from '../db/Classrooms';
+import { getCustomRepository } from 'typeorm';
+import { serverError } from '../apiRouter';
 const classroomsRouter = express.Router();
 
 
 classroomsRouter.get("/", (req, resp)=>{
 	const baseUrl = req.protocol + "://" + req.get("host") + "/";
-	getAllClassrooms(baseUrl).then(allClassrooms => resp.send(allClassrooms));
+	const repo = getCustomRepository(ClassroomsRepository);
+	repo.getAllClassrooms(baseUrl).then(allClassrooms => resp.send(allClassrooms));
 });
 
 classroomsRouter.get("/:classroomName/computers", (req, resp)=>{
-	getComputersFromClassroom(req.params.classroomName).then(comps => resp.send(comps));
+	const computerRepo = getCustomRepository(ComputersRepository);
+	computerRepo.getComputersFromClassroom(req.params.classroomName)
+				.then(comps => {
+					if(comps.length > 0)
+						resp.send(comps)
+					else{
+						resp.status(404).send({message:"Classroom not found"});
+					}
+				})
+				.catch(err=>{
+					serverError(err, resp);
+				})
+				
 })
 
 export default classroomsRouter;
