@@ -56,9 +56,8 @@ export class ReportsRepository extends AbstractRepository<Report>
 				reportId: reportId,
 			}
 		});
-		//TODO testiraj ovo, promenjeno je sa find na findOne
 		if(report === undefined){
-			return null;
+			return undefined;
 		}
 		const {classroomName, adminUsername, ...rest} = report;
 		const mappedReport: IReport = {

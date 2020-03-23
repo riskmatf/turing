@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Response } from 'express';
 import classroomsRouter from './routers/classroomsRouter';
 import reportsRouter from './routers/reportsRouter';
 import bodyParser from 'body-parser';
@@ -17,3 +17,9 @@ apiRouter.use("/classrooms", classroomsRouter);
 apiRouter.use("/reports", reportsRouter);
 
 export {apiRouter};
+
+
+export function serverError(error : any, response: Response){
+	console.log(error)
+	response.status(500).send({message:"UNKNOWN SERVER ERROR"});
+}

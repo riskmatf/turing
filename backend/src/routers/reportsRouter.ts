@@ -2,6 +2,7 @@ import express from 'express';
 import {ReportsRepository} from '../db/Reports';
 import { Report } from '../../entities/Report';
 import { getCustomRepository } from 'typeorm';
+import { serverError } from '../apiRouter';
 
 const reportsRouter = express.Router();
 
@@ -15,7 +16,8 @@ reportsRouter.get("/", (req, resp)=>{
 	}
 	const repo = getCustomRepository(ReportsRepository);
 	repo.getReportsForComputerInClassroom(req.query.computerId, req.query.classroomName)
-									.then(reports=>{resp.send(reports)});
+									.then(reports=>{resp.send(reports)})
+									.catch(err=>{serverError(err, resp)});
 })
 
 
@@ -70,9 +72,8 @@ reportsRouter.post("/", (req, resp)=>{
 		//TODO: send email
 		resp.send({message:"Report successfully added"});
 	}).catch(
-		_err=>{
-			console.error(`ERROR IN ADDING REPORT!\nParams: ${JSON.stringify(req.body)}`);
-			resp.status(400).send("Error in writing to DB!");
+		err=>{
+			serverError(err, resp);
 		})
 })
 

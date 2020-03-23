@@ -18,7 +18,6 @@ export class ComputersRepository extends AbstractRepository<Computer>{
 							.leftJoinAndSelect("computer.classroomName", "classroom")
 							.where("computer.classroomName = :cName", {cName: classroomName})
 							.getMany();
-
 		const mappedComputers: IComputer[] = computers.map(comp=>{
 			let isBroken: boolean = comp.broken;
 			const hasReports = comp.reports.length > 0;
