@@ -4,9 +4,8 @@ import reportsRouter from './routers/reportsRouter';
 import bodyParser from 'body-parser';
 const apiRouter = express.Router();
 
-//TODO: refator code to use .catch properly
-//TODO: fix this
-apiRouter.use(bodyParser());
+apiRouter.use(bodyParser.json());
+apiRouter.use(bodyParser.urlencoded({extended: true}));
 
 apiRouter.get("/", (_req, res)=>{
 	res.send("Hello from the otter side");
