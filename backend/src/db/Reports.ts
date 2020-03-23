@@ -2,13 +2,6 @@ import { EntityRepository, AbstractRepository } from "typeorm";
 import { Report } from "../../entities/Report";
 import { Classroom } from "../../entities/Classroom";
 
-interface IReportOverview{
-    reportId: number, 
-    description: string,
-    hasAdminComment: boolean,
-    timestamp: number,
-    urgent: boolean,
-}
 
 interface IReport{
     reportId: number, 
@@ -27,28 +20,6 @@ interface IReport{
 @EntityRepository(Report)
 export class ReportsRepository extends AbstractRepository<Report>
 {
-	//TODO ovo treba u computer
-	public async getReportsForComputerInClassroom(computerId: number, classroomName: string){
-		const reports = await this.repository.find({
-			where:{
-				classroomName: classroomName,
-				computerId: computerId,
-				fixed: false
-			}
-		});
-
-		const mappedReports: IReportOverview[] = reports.map(rep=>{
-			return {
-				reportId: rep.reportId,
-				description: rep.description, 
-				hasAdminComment: rep.adminComment ? true : false,
-				timestamp: rep.timestamp, 
-				urgent: rep.urgent
-			}
-		})
-		return mappedReports;
-	}
-
 	public async getReportById(reportId: number){
 		let report = await this.repository.findOne({
 			relations:["adminUsername", "classroomName"],

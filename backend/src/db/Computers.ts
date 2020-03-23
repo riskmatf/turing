@@ -8,6 +8,14 @@ interface IComputer {
 	hasReports: boolean,
 }
 
+interface IReportOverview{
+    reportId: number, 
+    description: string,
+    hasAdminComment: boolean,
+    timestamp: number,
+    urgent: boolean,
+}
+
 @EntityRepository(Computer)
 export class ComputersRepository extends AbstractRepository<Computer>{
 	public async getComputersFromClassroom(classroomName: string){
@@ -29,5 +37,30 @@ export class ComputersRepository extends AbstractRepository<Computer>{
 			}
 		});
 		return mappedComputers;
+	}
+
+	public async getReportsForComputerInClassroom(computerId: number, classroomName: string){
+		const computer = await this.repository.findOne({
+			where:{
+				classroomName: classroomName,
+				computerId: computerId,
+				fixed: false
+			},
+			relations: ["reports"]
+		});
+		if(!computer){
+			return undefined;
+		}
+
+		const mappedReports: IReportOverview[] = computer.reports.map(rep=>{
+			return {
+				reportId: rep.reportId,
+				description: rep.description, 
+				hasAdminComment: rep.adminComment ? true : false,
+				timestamp: rep.timestamp, 
+				urgent: rep.urgent
+			}
+		})
+		return mappedReports;
 	}
 }

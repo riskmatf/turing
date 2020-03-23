@@ -3,6 +3,7 @@ import {ReportsRepository} from '../db/Reports';
 import { Report } from '../../entities/Report';
 import { getCustomRepository } from 'typeorm';
 import { serverError } from '../apiRouter';
+import { ComputersRepository } from '../db/Computers';
 
 const reportsRouter = express.Router();
 
@@ -14,7 +15,7 @@ reportsRouter.get("/", (req, resp)=>{
 			return;
 		}
 	}
-	const repo = getCustomRepository(ReportsRepository);
+	const repo = getCustomRepository(ComputersRepository);
 	repo.getReportsForComputerInClassroom(req.query.computerId, req.query.classroomName)
 									.then(reports=>{resp.send(reports)})
 									.catch(err=>{serverError(err, resp)});
