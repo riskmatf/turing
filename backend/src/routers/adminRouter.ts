@@ -87,6 +87,26 @@ adminRouter.get('/whoami', ((req, res) =>{
     }
 ));
 
+adminRouter.post('/signup', (req, res)=>{
+    console.log("lalalalla");
+    const requiredParams = ["username", "displayName", "password"];
+    for(const param of requiredParams){
+        if(!req.body[param]){
+            res.status(400).send({message: `MISSING REQUIRED PARAM: ${param}`});
+            return;
+        }
+    }
+    const adminRepo = getCustomRepository(AdminRepository);
+    adminRepo.addUser(req.body.username, req.body.password, req.body.displayName)
+        .then((_user)=>{
+            res.send("USER ADDED");
+        })
+        .catch(err=>{
+            console.error(JSON.stringify(err));
+            res.status(500).send("SIGNUP FAILED. CONTACT ADMIN.");
+        })
+});
+
 
 export default adminRouter;
 
