@@ -2,6 +2,7 @@ import express, { Response } from 'express';
 import classroomsRouter from './routers/classroomsRouter';
 import reportsRouter from './routers/reportsRouter';
 import bodyParser from 'body-parser';
+import adminRouter from "./routers/adminRouter";
 const apiRouter = express.Router();
 
 apiRouter.use(bodyParser.json());
@@ -15,10 +16,12 @@ apiRouter.use("/classrooms", classroomsRouter);
 
 apiRouter.use("/reports", reportsRouter);
 
+apiRouter.use("/admin", adminRouter);
+
 export {apiRouter};
 
 
 export function serverError(error : any, response: Response){
-	console.log(error)
+	console.log(error);
 	response.status(500).send({message:"UNKNOWN SERVER ERROR"});
 }

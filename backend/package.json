@@ -5,21 +5,41 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node src/index.ts"
+    "start": "ts-node src/index.ts",
+    "watch": "nodemon"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.17.2",
+    "nodemon": "^2.0.2",
     "ts-node": "^8.6.2",
     "tslint": "^6.0.0",
     "typescript": "^3.8.3"
   },
   "dependencies": {
     "@anchan828/typeorm-transformers": "^0.3.42",
+    "@types/express-session": "^1.17.0",
     "body-parser": "^1.18.1",
     "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "memorystore": "^1.6.2",
     "mysql": "^2.14.1",
+    "ts-md5": "^1.2.7",
     "typeorm": "^0.2.6"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "node_modules/*",
+      "migration/*",
+      "entities/*",
+      ".git"
+    ],
+    "watch": [
+      "src"
+    ],
+    "ext": "ts",
+    "exec": "npm start",
+    "delay": 1500
   }
 }
