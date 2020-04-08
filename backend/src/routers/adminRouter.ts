@@ -18,9 +18,9 @@ const sessionOptions: session.SessionOptions = {
 };
 adminRouter.use(session(sessionOptions));
 
-function checkLogin(username: string, password: string,
-                    successCallback: (uname: string, displayName: string) => void,
-                    failureCallback: (message: string)=>void) {
+function checkLogin(username: string, password: string, successCallback: (username: string, displayName: string) => void,
+                    failureCallback: (message: string)=>void)
+{
     const adminRepo = getCustomRepository(AdminRepository);
     console.log(`got user ${username} with pass ${password}`);
     adminRepo.findByUsername(username)
@@ -41,7 +41,10 @@ function checkLogin(username: string, password: string,
 }
 
 adminRouter.post("/login", (req, res)=>{
-    console.log(req.body);
+    if(req.session && req.session.username){
+        res.status(400).send("ALREADY LOGGED IN");
+        return;
+    }
     checkLogin(req.body.username, req.body.password,
         (username, displayName)=>{
                 if(!req.session){
@@ -49,6 +52,7 @@ adminRouter.post("/login", (req, res)=>{
                     res.status(500).send();
                     throw Error("SESSION NOT INITIALIZED");
                 }
+                // setting data in session to mark user as logged in
                 req.session.username = username;
                 req.session.displayName = displayName;
                 res.send("SUCCESS");
@@ -64,7 +68,7 @@ adminRouter.post("/logout", (req, res)=>{
             res.send("SUCCESS");
         });
     }else{
-        res.send("ERROR, not logged in, can't logout");
+        res.send("ERROR, not logged in, can't logout.");
     }
 });
 
@@ -98,8 +102,12 @@ adminRouter.post('/signup', (req, res)=>{
     }
     const adminRepo = getCustomRepository(AdminRepository);
     adminRepo.addUser(req.body.username, req.body.password, req.body.displayName)
-        .then((_user)=>{
-            res.send("USER ADDED");
+        .then((user)=>{
+            if(user)
+                res.send("USER ADDED");
+            else{
+                res.status(400).send({message: "USER EXISTS"});
+            }
         })
         .catch(err=>{
             console.error(JSON.stringify(err));

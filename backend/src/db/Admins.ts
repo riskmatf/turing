@@ -10,6 +10,10 @@ export class AdminRepository extends AbstractRepository<Admin>
     }
 
     public async addUser(username: string, password: string, displayName: string){
+        const userExists = (await this.findByUsername(username)) !== undefined;
+        if(userExists){
+            return undefined;
+        }
         const newAdmin = new Admin();
         newAdmin.username = username;
         newAdmin.password = Md5.hashStr(password).toString();
