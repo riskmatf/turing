@@ -1,6 +1,6 @@
 
 const authConf = {
-    jwtSecret: "trla baba lan"
+    secret: "trla baba lan"
 };
 
 export default authConf;

@@ -5,11 +5,12 @@ import session from 'express-session';
 import {AdminRepository} from "../db/Admins";
 import {getCustomRepository} from "typeorm";
 import {Md5} from "ts-md5";
+import authConf from "../auth/authConfig";
 
 const adminRouter = express.Router();
 
 const sessionOptions: session.SessionOptions = {
-    secret: "trla baba lan",
+    secret: authConf.secret,
     cookie:{
         secure: false,
     },
@@ -92,7 +93,6 @@ adminRouter.get('/whoami', ((req, res) =>{
 ));
 
 adminRouter.post('/signup', (req, res)=>{
-    console.log("lalalalla");
     const requiredParams = ["username", "displayName", "password"];
     for(const param of requiredParams){
         if(!req.body[param]){
