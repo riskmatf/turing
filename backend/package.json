@@ -19,16 +19,27 @@
   },
   "dependencies": {
     "@anchan828/typeorm-transformers": "^0.3.42",
+    "@types/express-session": "^1.17.0",
     "body-parser": "^1.18.1",
     "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "memorystore": "^1.6.2",
     "mysql": "^2.14.1",
+    "ts-md5": "^1.2.7",
     "typeorm": "^0.2.6"
   },
   "nodemonConfig": {
-    "ignore": ["node_modules/*", "migration/*", "entities/*", ".git"],
-    "watch": ["src"],
+    "ignore": [
+      "node_modules/*",
+      "migration/*",
+      "entities/*",
+      ".git"
+    ],
+    "watch": [
+      "src"
+    ],
     "ext": "ts",
     "exec": "npm start",
-    "delay": 3000
+    "delay": 1500
   }
 }
