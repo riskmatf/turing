@@ -20,4 +20,21 @@ export class AdminRepository extends AbstractRepository<Admin>
         newAdmin.displayName = displayName;
         return this.repository.save(newAdmin);
     }
+
+    public async changePassword(username: string, newPassword: string){
+        const user = await this.findByUsername(username);
+        if(!user){
+            return undefined;
+        }
+        user.password = Md5.hashStr(newPassword).toString();
+        return this.repository.save(user);
+    }
+    public async changeDisplayName(username: string, newDisplayName: string){
+        const user = await this.findByUsername(username);
+        if(!user){
+            return undefined;
+        }
+        user.displayName = newDisplayName;
+        return this.repository.save(user);
+    }
 }

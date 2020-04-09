@@ -2,7 +2,7 @@ import express, { Response } from 'express';
 import classroomsRouter from './routers/classroomsRouter';
 import reportsRouter from './routers/reportsRouter';
 import bodyParser from 'body-parser';
-import adminRouter from "./routers/adminRouter";
+import adminRouter from "./routers/adminRouters/adminRouter";
 const apiRouter = express.Router();
 
 apiRouter.use(bodyParser.json());
