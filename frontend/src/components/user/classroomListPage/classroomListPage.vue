@@ -19,9 +19,9 @@
         <template v-else-if="request.status === 'loading'">
             Loading... 
         </template>
-        <template v-else-if="request.status === 'error'">
-            Error
-        </template>
+        <div v-else-if="request.status === 'error'" class="text-danger">
+            Error: {{ request.message }}
+        </div>
     </div>
 </template>
 

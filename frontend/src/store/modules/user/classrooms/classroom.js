@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import _ from 'lodash'
 
 export default {
     namespaced: true,
@@ -14,14 +15,15 @@ export default {
         async fetchClassroom({ rootState, commit, dispatch }, { classroomId }) {
             let classroomListData = null
 
+            commit('setResponse', { request: { status: 'loading' } })
             try {
                 if (rootState.Classroom.AllClassrooms.request.status !== 'success') {
-                    classroomListData = await dispatch('Classroom/AllClassrooms/fetchAllClassrooms', null,{root: true})
+                    classroomListData = await dispatch('Classroom/AllClassrooms/fetchAllClassrooms', null, { root: true })
                 } else {
                     classroomListData = rootState.Classroom.AllClassrooms.request.response
                 }
             } catch (e) {
-                commit('setResponse', { response: { status: 'error', message: 'Failed' } })
+                commit('setResponse', { response: { status: 'error', message: _.get(e, 'message', 'Failed') } })
                 throw e
             }
 
@@ -45,8 +47,7 @@ export default {
                         }
                 })
             } catch (e) {
-                commit('setResponse', { response: { status: 'error', message: 'Failed' } })
-                console.log(e)
+                commit('setResponse', { response: { status: 'error', message: _.get(e, 'message', 'Filed') } })
                 throw e
             }
         }

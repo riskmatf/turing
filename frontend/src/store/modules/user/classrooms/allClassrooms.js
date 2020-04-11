@@ -14,23 +14,22 @@ export default {
     actions: {
         async fetchAllClassrooms({ commit }) {
             try {
+                commit('setResponse', { request: { status: 'loading' } })
                 let response = await Vue.$http.get('/api/v1/classrooms')
                 commit('setResponse', { request: { status: 'success', response: response.data } })
                 return response.data
             } catch (e) {
-                console.log(e)
-                commit('setResponse', { request: { status: 'error', message: 'Failed' } })
+                commit('setResponse', { request: { status: 'error', message: _.get(e, 'message', 'Failed') } })
                 throw e
             }
-
         }
     },
     getters: {
         classroomsGroupedByLocation(state) {
-            if (state.request.status !== 'success') {
-                return null
+            if (state.request.status === 'success') {
+                return _.groupBy(state.request.response, (classroom) => classroom.location)
             }
-            return _.groupBy(state.request.response, (classroom) => classroom.location)
+            return null
         }
     },
 }
