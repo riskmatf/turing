@@ -57,7 +57,10 @@
         },
         computed: {
             breadcrumbData() {
-                return [{ name: 'classrooms', to: { name: 'classroomListPage' } }]
+                return [
+                        { name: 'home', to: {name: 'homePage'}},
+                        { name: 'classrooms', to: { name: 'classroomListPage' } }
+                       ]
             },
             ...mapGetters('Classroom/AllClassrooms', ['classroomsGroupedByLocation']),
             ...mapState('Classroom/AllClassrooms', ['request']),
