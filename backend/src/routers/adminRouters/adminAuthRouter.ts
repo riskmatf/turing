@@ -40,20 +40,20 @@ function checkLogin(username: string, password: string, successCallback: (userna
 
 authRouter.post("/login", (req, res)=>{
     if(req.session && req.session.username){
-        res.status(400).send("ALREADY LOGGED IN");
+        res.status(400).send({message: "ALREADY LOGGED IN"});
         return;
     }
     checkLogin(req.body.username, req.body.password,
         (username, displayName)=>{
             if(!req.session){
                 console.error("SESSION NOT INITIALIZED");
-                res.status(500).send();
+                res.status(500).send({});
                 throw Error("SESSION NOT INITIALIZED");
             }
             // setting data in session to mark user as logged in
             req.session.username = username;
             req.session.displayName = displayName;
-            res.send("SUCCESS");
+            res.send({message: "SUCCESS"});
         },
         (msg: string)=>{
             res.status(401).send({message: msg});
@@ -63,10 +63,10 @@ authRouter.post("/login", (req, res)=>{
 authRouter.post("/logout", (req, res)=>{
     if(req.session && req.session.username) {
         req.session.destroy(() => {
-            res.send("SUCCESS");
+            res.send({message:"SUCCESS"});
         });
     }else{
-        res.send("ERROR, not logged in, can't logout.");
+        res.send({message: "ERROR, not logged in, can't logout."});
     }
 });
 export default authRouter;

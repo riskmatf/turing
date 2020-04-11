@@ -9,7 +9,7 @@ apiRouter.use(bodyParser.json());
 apiRouter.use(bodyParser.urlencoded({extended: true}));
 
 apiRouter.get("/", (_req, res)=>{
-	res.send("Hello from the otter side");
+	res.send({message: "Hello from the otter side"});
 });
 
 apiRouter.use("/classrooms", classroomsRouter);
