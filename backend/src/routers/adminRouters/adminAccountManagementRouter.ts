@@ -1,6 +1,7 @@
 import express from 'express';
 import {getCustomRepository} from "typeorm";
 import {AdminRepository} from "../../db/Admins";
+// import adminRouter from "./adminRouter";
 
 const accountManagementRouter = express.Router();
 
@@ -13,7 +14,7 @@ accountManagementRouter.put("/password", (req, res)=>{
     adminRepo.changePassword(req.params.username, req.body.password)
         .then(user=>{
             if(user){
-                res.send("SUCCESS");
+                res.send({message: "SUCCESS"});
             }
             else{
                 console.error(`ERROR TRYING TO CHANGE PASSWORD FOR USER ${req.params.username}.
@@ -37,7 +38,7 @@ accountManagementRouter.put('/displayName', (req, res)=>{
     adminRepo.changeDisplayName(req.params.username, req.body.displayName)
         .then(user=>{
             if(user){
-                res.send("SUCCESS");
+                res.send({message: "SUCCESS"});
             }
             else{
                 console.error(`ERROR TRYING TO CHANGE DISPLAY NAME FOR USER ${req.params.username}.

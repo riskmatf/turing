@@ -19,13 +19,13 @@ reportsRouter.get("/", (req, resp)=>{
 	repo.getReportsForComputerInClassroom(req.query.computerId, req.query.classroomName)
 									.then(reports=>{
 											if(reports)
-												resp.send(reports)
+												resp.send(reports);
 											else{
 												resp.status(404).send({message:"Given computer/classroom does not exist"});
 											}
 										})
 									.catch(err=>{serverError(err, resp)});
-})
+});
 
 
 reportsRouter.get("/:id", (req, resp)=>{
@@ -35,7 +35,7 @@ reportsRouter.get("/:id", (req, resp)=>{
 							resp.send(report);
 						}
 						else{
-							resp.status(404).send("Report not found");
+							resp.status(404).send({message: "Report not found"});
 						}
 					});
 });
@@ -60,7 +60,7 @@ reportsRouter.post("/", (req, resp)=>{
 		}
 		promise = repo.addComputerReport({
 			classroomName : req.body.classroomName,
-			computerId: computerId,
+			computerId,
 			description: req.body.description,
 			isGeneral: req.body.isGeneral,
 			urgent: req.body.urgent
@@ -76,12 +76,12 @@ reportsRouter.post("/", (req, resp)=>{
 	}
 
 	promise.then(_res=>{
-		//TODO: send email
+		// TODO: send email
 		resp.send({message:"Report successfully added"});
 	}).catch(
 		err=>{
 			serverError(err, resp);
 		})
-})
+});
 
 export default reportsRouter;

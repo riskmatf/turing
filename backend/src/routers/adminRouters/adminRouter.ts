@@ -14,7 +14,7 @@ adminRouter.use(authRouter);
 // middleware for protecting routes
 adminRouter.use( (req, res, next)=>{
     if(!req.session || !req.session.username){
-        res.status(401).send("NOT LOGGED IN");
+        res.status(401).send({message: "NOT LOGGED IN"});
         return;
     }
     else{
@@ -46,7 +46,7 @@ adminRouter.post('/signup', (req, res)=>{
     adminRepo.addUser(req.body.username, req.body.password, req.body.displayName)
         .then((user)=>{
             if(user)
-                res.send("USER ADDED");
+                res.send({message: "USER ADDED"});
             else{
                 res.status(400).send({message: "USER EXISTS"});
             }
@@ -55,12 +55,49 @@ adminRouter.post('/signup', (req, res)=>{
         .catch(err=>{
             console.error(JSON.stringify(err));
             if(err.errno && err.errno === 1062){
-                res.status(400).send("Display name already exists");
+                res.status(400).send({message: "Display name already exists"});
             }
             else{
-                res.status(500).send("SIGNUP FAILED. CONTACT ADMIN.");
+                res.status(500).send({message: "SIGNUP FAILED. CONTACT ADMIN."});
             }
         })
+});
+adminRouter.head('/displayName', (req, res)=>{
+    if(req.query && req.query.displayName){
+        const adminRepo = getCustomRepository(AdminRepository);
+        adminRepo.findByDisplayName(req.query.displayName)
+            .then(user=>{
+                if(user){
+                    res.send();
+                }
+                else{
+                    res.status(404).send();
+                }
+            })
+            .catch(err=>{
+                console.error(JSON.stringify(err));
+                res.status(500).send({message: "Nepoznata greska na serveru. Obratite se administratoru"});
+            })
+    }
+});
+
+adminRouter.head('/username', (req, res)=>{
+    if(req.query && req.query.username){
+        const adminRepo = getCustomRepository(AdminRepository);
+        adminRepo.findByUsername(req.query.username)
+            .then(user=>{
+                if(user){
+                    res.send();
+                }
+                else{
+                    res.status(404).send();
+                }
+            })
+            .catch(err=>{
+                console.error(JSON.stringify(err));
+                res.status(500).send({message: "Nepoznata greska na serveru. Obratite se administratoru"});
+            })
+    }
 });
 // middleware for protecting account management routes
 // this has to go here because it uses req.params ant that cant go without a route

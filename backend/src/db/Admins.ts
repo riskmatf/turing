@@ -8,7 +8,9 @@ export class AdminRepository extends AbstractRepository<Admin>
     public async findByUsername(username: string){
         return this.repository.findOne(username);
     }
-
+    public async findByDisplayName(displayName: string) {
+        return this.repository.findOne({displayName});
+    }
     public async addUser(username: string, password: string, displayName: string){
         const userExists = (await this.findByUsername(username)) !== undefined;
         if(userExists){
