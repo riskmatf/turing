@@ -15,8 +15,11 @@ adminRouter.use(authRouter);
 adminRouter.use( (req, res, next)=>{
     if(!req.session || !req.session.username){
         res.status(401).send("NOT LOGGED IN");
+        return;
     }
-    next();
+    else{
+        next();
+    }
 });
 
 // ###################################### bellow are protected routes ########################################
@@ -47,10 +50,16 @@ adminRouter.post('/signup', (req, res)=>{
             else{
                 res.status(400).send({message: "USER EXISTS"});
             }
+            return;
         })
         .catch(err=>{
             console.error(JSON.stringify(err));
-            res.status(500).send("SIGNUP FAILED. CONTACT ADMIN.");
+            if(err.errno && err.errno === 1062){
+                res.status(400).send("Display name already exists");
+            }
+            else{
+                res.status(500).send("SIGNUP FAILED. CONTACT ADMIN.");
+            }
         })
 });
 // middleware for protecting account management routes
