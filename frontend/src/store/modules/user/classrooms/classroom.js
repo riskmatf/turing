@@ -53,6 +53,8 @@ export default {
         }
     },
     getters: {
-
+        classroom(state) {
+            return _.get(state.request, 'response', null)
+        }
     },
 }

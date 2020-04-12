@@ -3,6 +3,7 @@ import HomePage from './homePage'
 import TutorialPage from './tutorialPage'
 import { ClassroomListPage } from './classroomListPage'
 import { ClassroomPage } from './classroomPage'
+import ComputerPage from './computerPage'
 
 
 export {
@@ -11,4 +12,5 @@ export {
     ClassroomListPage,
     ClassroomPage,
     TutorialPage,
+    ComputerPage,
 }

@@ -11,6 +11,8 @@ import {
     ClassroomListPage,
     ClassroomPage,
     TutorialPage,
+    ComputerPage,
+
 } from '@/components/user'
 
 Vue.use(VueRouter)
@@ -33,6 +35,7 @@ const routes = [
                         component: RouterView,
                         children: [
                             { path: '', name: 'classroomPage', component: ClassroomPage},
+                            { path: ':computerId', name: 'computerPage', component: ComputerPage }
                         ]
                     },
                 ]
