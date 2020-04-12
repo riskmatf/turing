@@ -16,7 +16,9 @@ reportsRouter.get("/", (req, resp)=>{
 		}
 	}
 	const repo = getCustomRepository(ComputersRepository);
-	repo.getReportsForComputerInClassroom(req.query.computerId, req.query.classroomName)
+
+	const compId: number = +req.query.computerId;
+	repo.getReportsForComputerInClassroom(compId, req.query.classroomName.toString())
 									.then(reports=>{
 											if(reports)
 												resp.send(reports);

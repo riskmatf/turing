@@ -65,7 +65,7 @@ adminRouter.post('/signup', (req, res)=>{
 adminRouter.head('/displayName', (req, res)=>{
     if(req.query && req.query.displayName){
         const adminRepo = getCustomRepository(AdminRepository);
-        adminRepo.findByDisplayName(req.query.displayName)
+        adminRepo.findByDisplayName(req.query.displayName.toString())
             .then(user=>{
                 if(user){
                     res.send();
@@ -84,7 +84,7 @@ adminRouter.head('/displayName', (req, res)=>{
 adminRouter.head('/username', (req, res)=>{
     if(req.query && req.query.username){
         const adminRepo = getCustomRepository(AdminRepository);
-        adminRepo.findByUsername(req.query.username)
+        adminRepo.findByUsername(req.query.username.toString())
             .then(user=>{
                 if(user){
                     res.send();
