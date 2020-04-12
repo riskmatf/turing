@@ -9,7 +9,7 @@ interface IComputer {
 }
 
 interface IReportOverview{
-    reportId: number, 
+    reportId: number,
     description: string,
     hasAdminComment: boolean,
     timestamp: number,
@@ -19,7 +19,7 @@ interface IReportOverview{
 @EntityRepository(Computer)
 export class ComputersRepository extends AbstractRepository<Computer>{
 	public async getComputersFromClassroom(classroomName: string){
-		let computers = await this.repository
+		const computers = await this.repository
 							.createQueryBuilder("computer")
 							.leftJoinAndSelect("computer.reports", "report",
 									"report.classroomName = computer.classroomName and report.fixed=0")
@@ -27,13 +27,13 @@ export class ComputersRepository extends AbstractRepository<Computer>{
 							.where("computer.classroomName = :cName", {cName: classroomName})
 							.getMany();
 		const mappedComputers: IComputer[] = computers.map(comp=>{
-			let isBroken: boolean = comp.broken;
+			const isBroken: boolean = comp.broken;
 			const hasReports = comp.reports.length > 0;
 			return {
 				computerId: comp.id,
 				classroomName: comp.classroomName.name,
-				isBroken: isBroken,
-				hasReports: hasReports,
+				isBroken,
+				hasReports,
 			}
 		});
 		return mappedComputers;
@@ -42,8 +42,8 @@ export class ComputersRepository extends AbstractRepository<Computer>{
 	public async getReportsForComputerInClassroom(computerId: number, classroomName: string){
 		const computer = await this.repository.findOne({
 			where:{
-				classroomName: classroomName,
-				computerId: computerId,
+				classroomName,
+				computerId,
 				fixed: false
 			},
 			relations: ["reports"]
@@ -55,12 +55,12 @@ export class ComputersRepository extends AbstractRepository<Computer>{
 		const mappedReports: IReportOverview[] = computer.reports.map(rep=>{
 			return {
 				reportId: rep.reportId,
-				description: rep.description, 
-				hasAdminComment: rep.adminComment ? true : false,
-				timestamp: rep.timestamp, 
+				description: rep.description,
+				hasAdminComment: !!rep.adminComment,
+				timestamp: rep.timestamp,
 				urgent: rep.urgent
 			}
-		})
+		});
 		return mappedReports;
 	}
 }

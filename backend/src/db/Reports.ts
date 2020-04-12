@@ -4,7 +4,7 @@ import { Classroom } from "../../entities/Classroom";
 
 
 interface IReport{
-    reportId: number, 
+    reportId: number,
     computerId: number | null,
     classroomName: string,
     isGeneral: boolean,
@@ -21,10 +21,10 @@ interface IReport{
 export class ReportsRepository extends AbstractRepository<Report>
 {
 	public async getReportById(reportId: number){
-		let report = await this.repository.findOne({
+		const report = await this.repository.findOne({
 			relations:["adminUsername", "classroomName"],
 			where: {
-				reportId: reportId,
+				reportId,
 			}
 		});
 		if(report === undefined){
@@ -33,7 +33,7 @@ export class ReportsRepository extends AbstractRepository<Report>
 		const {classroomName, adminUsername, ...rest} = report;
 		const mappedReport: IReport = {
 			...rest,
-			hasAdminComment: report.adminComment ? true : false,
+			hasAdminComment: !!report.adminComment,
 			adminDisplayName: adminUsername ? adminUsername.displayName : null,
 			classroomName: classroomName.name
 		};
@@ -43,11 +43,11 @@ export class ReportsRepository extends AbstractRepository<Report>
 
 
 	public async addGeneralReport(data: IGeneralReport){
-		//can't use just if(!data.isGeneral) because that includes undefs and nulls
-		if(data.isGeneral === false){
+		// can't use just if(!data.isGeneral) because that includes undefs and nulls
+		if(!data.isGeneral){
 			throw new Error("Report not marked as general!");
 		}
-		let reportData: IReportData = data;
+		const reportData: IReportData = data;
 
 		return this._addReport(reportData);
 	}
@@ -60,22 +60,22 @@ export class ReportsRepository extends AbstractRepository<Report>
 /*********************************************PRIVATE******************************************* */
 
 	private async _addReport(data: IReportData){
-		let report = this._reportDataToReport(data);
+		const report = ReportsRepository._reportDataToReport(data);
 		return this.repository.save(report);
 	}
 
-	private _reportDataToReport(data: IReportData){
+	private static _reportDataToReport(data: IReportData){
 		let report: Report = new Report();
-		let classroom = new Classroom();
+		const classroom = new Classroom();
 
 		classroom.name = data.classroomName; // save fill fail if name is bad
 		report.classroomName = classroom;
 
-		let {classroomName, ...tmp} = data;
-		//this is shortcut for filling data, because tmp will have all the missing stuff that report needs
+		const {classroomName, ...tmp} = data;
+		// this is shortcut for filling data, because tmp will have all the missing stuff that report needs
 		report = {...report, ...tmp};
 		report.fixed = false;
-		report.timestamp = Math.floor((+ new Date) / 1000);
+		report.timestamp = Math.floor((+ new Date()) / 1000);
 
 		return report;
 	}
@@ -91,8 +91,8 @@ interface IReportData{
 
 export interface IGeneralReport{
 	classroomName: string,
-	isGeneral: boolean, 
-	description: string, 
+	isGeneral: boolean,
+	description: string,
 	urgent: boolean,
 }
 

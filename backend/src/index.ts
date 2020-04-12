@@ -15,7 +15,7 @@ createConnection().then( _conn => {
 	const app = express();
 	const port = 3000;
 
-	
+
 	fs.readdir(path.join(__dirname, "public/images"),
 				(err, files)=>{
 					if(err){
@@ -29,7 +29,7 @@ createConnection().then( _conn => {
 						}
 					});
 				});
-	
+
 
 	/*Adding cors support for all routes*/
 	app.use('', (req, resp, next) => {

@@ -21,7 +21,7 @@ classroomsRouter.get("/:classroomName/computers", (req, resp)=>{
 	computerRepo.getComputersFromClassroom(req.params.classroomName)
 				.then(comps => {
 					if(comps.length > 0)
-						resp.send(comps)
+						resp.send(comps);
 					else{
 						resp.status(404).send({message:"Classroom not found"});
 					}
@@ -29,7 +29,7 @@ classroomsRouter.get("/:classroomName/computers", (req, resp)=>{
 				.catch(err=>{
 					serverError(err, resp);
 				})
-				
-})
+
+});
 
 export default classroomsRouter;
