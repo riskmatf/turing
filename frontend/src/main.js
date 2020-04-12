@@ -8,7 +8,7 @@ import './assets/styles/global.sass'
 
 Vue.config.productionTip = false
 
-Vue.use(Http, { baseUrl: 'http://turing-api.dev.matf.bg.ac.rs:3000' })
+Vue.use(Http, { baseUrl: '' })
 Vue.use(ElementUI)
 
 new Vue({

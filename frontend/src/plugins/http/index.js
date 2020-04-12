@@ -1,9 +1,10 @@
 import axios from 'axios'
+import _ from 'lodash'
 
 
 export const Http = {
     install(Vue, options) {
-        if (!options.baseUrl) {
+        if (_.isNil(options.baseUrl)) {
             throw new Error('Plugin http needs baseUrl option')
         }
 
