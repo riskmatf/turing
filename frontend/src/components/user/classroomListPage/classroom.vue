@@ -20,6 +20,9 @@
         flex-direction: column
     .clickable
         cursor: pointer
+    .box-card
+        & ::v-deep .el-card__header
+            padding: 7.5px 15px!important
 </style>
 
 <script>
