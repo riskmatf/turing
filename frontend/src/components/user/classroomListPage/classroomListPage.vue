@@ -26,20 +26,34 @@
 </template>
 
 <style lang="sass">
+    @import "./src/assets/styles/breakPoints"
+
     .location-container
         display: flex
         flex-direction: column
         align-content: center
         .collapse
             width: 77%
-            padding-left: 10px 
+            padding-left: 10px
+            padding-bottom: 5px
             align-self: center
             .classroom-grid
                 padding-left: 10px
+                justify-content: center
             .classroom
-                width: 32%
+                width: 30%
                 margin-right: 10px
-                margin-top: 10px 
+                margin-top: 10px
+                @media ($mobileBreakPoint)
+                    width: 95%
+                @media ($middleScreenBreakPoint)
+                    width: 45%
+        .el-collapse-item__header
+            padding-left: 15px
+            font-size: 14px
+            font-weight: bold
+
+                
 </style>
 
 <script>
