@@ -1,4 +1,4 @@
-import { EntityRepository, AbstractRepository } from "typeorm";
+import {EntityRepository, AbstractRepository, In, WhereExpression, FindOperator} from "typeorm";
 import { Report } from "../../entities/Report";
 import { Classroom } from "../../entities/Classroom";
 
@@ -17,9 +17,35 @@ interface IReport{
 	adminDisplayName: string | null,
 }
 
+
+export interface IFilter{
+    whereParams: {
+		locations?: FindOperator<string>;
+		urgent?: boolean;
+		fixed?: boolean;
+		comments?: boolean;
+		broken?: boolean;
+		classrooms? : FindOperator<string>,
+	}
+	take : number,
+	skip: number
+}
+export const PAGE_SIZE = 5;
 @EntityRepository(Report)
 export class ReportsRepository extends AbstractRepository<Report>
 {
+	public async getReportsWithFilters(params : IFilter){
+		const reports = await this.repository.find({
+			relations:["adminUsername", "classroomName"],
+			where:{
+				...params.whereParams,
+			},
+			take: params.take,
+			skip: params.skip
+
+		});
+		return reports;
+	}
 	public async getReportById(reportId: number){
 		const report = await this.repository.findOne({
 			relations:["adminUsername", "classroomName"],
@@ -79,6 +105,7 @@ export class ReportsRepository extends AbstractRepository<Report>
 
 		return report;
 	}
+
 }
 
 interface IReportData{

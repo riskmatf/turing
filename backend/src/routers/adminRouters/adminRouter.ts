@@ -5,6 +5,7 @@ import {AdminRepository} from "../../db/Admins";
 import {getCustomRepository} from "typeorm";
 import accountManagementRouter from "./adminAccountManagementRouter";
 import authRouter from "./adminAuthRouter";
+import adminReportsRouter from "./adminReportsRoutes";
 
 const adminRouter = express.Router();
 
@@ -81,6 +82,8 @@ adminRouter.head('/displayName', (req, res)=>{
     }
 });
 
+adminRouter.use("/reports", adminReportsRouter);
+
 adminRouter.head('/username', (req, res)=>{
     if(req.query && req.query.username){
         const adminRepo = getCustomRepository(AdminRepository);
@@ -121,6 +124,7 @@ adminRouter.use('/:username', (req, res, next)=>{
 });
 
 adminRouter.use('/:username', accountManagementRouter);
+
 
 
 export default adminRouter;
