@@ -27,19 +27,29 @@
 </template>
 
 <style lang="sass" scoped>
+    @import "./src/assets/styles/breakPoints"
+
     .classroom-container
         display: flex
         flex-direction: column
         height: 100%
+        font-size: 13pt
+        @media ($mobileBreakPoint)
+            font-size: 10pt
         .schema
             width: 90%
             align-self: center
             margin-bottom: 10px
             min-height: 0
             min-width: 0
+            @media ($mobileBreakPoint)
+                width: 100%
         .legend
             width: 90%
             align-self: center
+            @media ($mobileBreakPoint)
+                width: 100%
+        
 </style>
 
 <script>
