@@ -3,7 +3,7 @@
         <el-menu
             :default-active="$route.meta.index"
             mode="horizontal"
-            route
+            router
             class="desktop topBar"
             active-text-color="#409EFF"
         >
