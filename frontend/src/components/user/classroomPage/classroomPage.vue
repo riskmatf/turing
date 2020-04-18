@@ -1,7 +1,7 @@
 <template>
     <div class="classroom-container">
         <template v-if="requestStatus === 'success'">
-            <div>
+            <div class="breadcrumbs">
                 <breadcrumbs :paths="breadcrumbData"/>
             </div>
             <div class="schema">
@@ -36,20 +36,21 @@
         font-size: 13pt
         @media ($mobileBreakPoint)
             font-size: 10pt
+        .breadcrumbs
+            margin-top: 5px
         .schema
             width: 90%
             align-self: center
             margin-bottom: 10px
             min-height: 0
             min-width: 0
+            margin-top: 5px
             @media ($mobileBreakPoint)
                 width: 100%
         .legend
-            width: 90%
             align-self: center
-            @media ($mobileBreakPoint)
-                width: 100%
-        
+            margin-top: 5px
+
 </style>
 
 <script>
@@ -104,10 +105,10 @@
             ...mapActions('Classroom/Classroom', ['fetchClassroom']),
             ...mapActions('Classroom/AllClassrooms', ["fetchAllClassrooms"]),
             computerClick(computerId) {
-                this.$router.push({ name: 'computerPage', params: { computerId: computerId } })
+                this.$router.push({ name: 'reportListPage', params: { computerId: computerId } })
             },
             generalClick() {
-                this.$router.push({ name: 'computerPage', params: { computerId: 'general'} })
+                this.$router.push({ name: 'reportListPage', params: { computerId: 'general'} })
             },
             getData() {
                 if (['error', 'notInitialized'].includes(this.allClassroomsRequest.status)) {

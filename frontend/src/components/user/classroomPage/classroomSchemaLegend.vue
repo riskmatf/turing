@@ -1,7 +1,5 @@
 <template>
-    <el-card>
-        <schema-legend/>
-    </el-card>
+    <schema-legend/>
 </template>
 
 <style lang="sass" scoped>

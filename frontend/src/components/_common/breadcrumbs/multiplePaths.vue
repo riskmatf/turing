@@ -27,7 +27,7 @@
         },
         props: {
             paths: Array,
-            currentLabel: String,
+            currentLabel: [String, Number],
         },
         data() {
             return { currentSelected: null}

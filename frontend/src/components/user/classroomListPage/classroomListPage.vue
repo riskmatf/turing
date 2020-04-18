@@ -1,6 +1,6 @@
 <template>
     <div>
-        <breadcrumbs :paths="breadcrumbData"/>
+        <breadcrumbs :paths="breadcrumbData" class="breadcrumbs"/>
         <div v-if="request.status === 'success'" class="location-container">
             <el-collapse 
                 v-for="(classrooms, location) in classroomsGroupedByLocation" 
@@ -28,10 +28,13 @@
 <style lang="sass">
     @import "./src/assets/styles/breakPoints"
 
+    .breadcrumbs
+        margin-top: 5px
     .location-container
         display: flex
         flex-direction: column
         align-content: center
+        margin-top: 5px
         .collapse
             width: 77%
             padding-left: 10px
@@ -72,8 +75,8 @@
         computed: {
             breadcrumbData() {
                 return [
-                        { name: 'home', to: {name: 'homePage'}},
-                        { name: 'classrooms', to: { name: 'classroomListPage' } }
+                        { name: 'pocetna', to: {name: 'homePage'}},
+                        { name: 'ucionice', to: { name: 'classroomListPage' } }
                        ]
             },
             ...mapGetters('Classroom/AllClassrooms', ['classroomsGroupedByLocation']),

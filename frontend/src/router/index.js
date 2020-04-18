@@ -35,7 +35,7 @@ const routes = [
                         component: RouterView,
                         children: [
                             { path: '', name: 'classroomPage', component: ClassroomPage, meta: { index: '2' }},
-                            { path: ':computerId', name: 'computerPage', component: ReportListPage, meta: { index: '2' } }
+                            { path: ':computerId', name: 'reportListPage', component: ReportListPage, meta: { index: '2' } }
                         ]
                     },
                 ]
