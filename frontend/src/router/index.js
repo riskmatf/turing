@@ -11,7 +11,7 @@ import {
     ClassroomListPage,
     ClassroomPage,
     TutorialPage,
-    ComputerPage,
+    ReportListPage,
 
 } from '@/components/user'
 
@@ -35,7 +35,7 @@ const routes = [
                         component: RouterView,
                         children: [
                             { path: '', name: 'classroomPage', component: ClassroomPage},
-                            { path: ':computerId', name: 'computerPage', component: ComputerPage }
+                            { path: ':computerId', name: 'computerPage', component: ReportListPage }
                         ]
                     },
                 ]

@@ -1,6 +1,6 @@
 <template>
     <div class="classroom-container">
-        <template v-if="request.status === 'success'">
+        <template v-if="requestStatus === 'success'">
             <div>
                 <breadcrumbs :paths="breadcrumbData"/>
             </div>
@@ -17,10 +17,10 @@
                 <classroom-schema-legend/>
             </div>
         </template>
-        <template v-else-if="request.status === 'loading'">
+        <template v-else-if="requestStatus === 'loading'">
             Loading...
         </template>
-        <template v-else-if="request.status === 'error'">
+        <template v-else-if="requestStatus === 'error'">
             <span class="text-danger">Error: {{ request.message }}</span>
         </template>
     </div>
@@ -53,10 +53,11 @@
 </style>
 
 <script>
-    import Breadcrumbs from '@/components/_common/breadcrumbs'
+    import Breadcrumbs from '@/components/_common/breadcrumbs/breadcrumbs'
     import ClassroomSchemaCard from './classroomSchemaCard'
     import ClassroomSchemaLegend from './classroomSchemaLegend'
     import { mapState, mapActions, mapGetters } from 'vuex'
+    import _ from 'lodash'
 
     export default {
         name: 'classroom-page',
@@ -66,40 +67,75 @@
             ClassroomSchemaLegend,
         },
         computed: {
-            ...mapState('Classroom/Classroom', ['request']),
+            ...mapState('Classroom/Classroom', {classroomRequest: 'request'}),
             ...mapGetters('Classroom/Classroom', ['classroom']),
+            ...mapState('Classroom/AllClassrooms', {allClassroomsRequest: 'request'}),
+            ...mapGetters('Classroom/AllClassrooms', ['allClassrooms']),
             breadcrumbData() {
                 return [
-                    { name: 'home', to: { name: 'homePage' } },
-                    { name: 'classrooms', to: { name: 'classroomListPage' } }, 
-                    { 
-                        name: `${this.classroomId}`,
-                        to: { 
-                            name: 'classroomPage', 
-                            params: { classroomId: this.$route.params.classroomId } 
-                        }
-                    }
+                    { name: 'pocetna', to: { name: 'homePage' } },
+                    { name: 'ucionice', to: { name: 'classroomListPage' } },
+                    {
+                        children: _.map(this.allClassrooms, ({ name }) => {
+                            return { name: name, to: { name: 'classroomPage', params: { classroomId: name } } }
+                        }),
+                        currentName: this.classroomId,
+                    },
                 ]
             },
             classroomId() {
                 return this.$route.params.classroomId
             },
+            requestStatus() {
+                if (this.classroomRequest.status === 'error' || this.allClassroomsRequest.status === 'error') {
+                    return 'error'
+                }
+                if (this.classroomRequest.status === 'loading' || this.allClassroomsRequest.status === 'loading') {
+                    return 'loading'
+                }
+                if (this.classroomRequest.status === 'notInitialized' || this.allClassroomsRequest.status === 'notInitialized') {
+                    return 'notInitialized'
+                }
+
+                return 'success'
+            }
         },
         methods: {
             ...mapActions('Classroom/Classroom', ['fetchClassroom']),
+            ...mapActions('Classroom/AllClassrooms', ["fetchAllClassrooms"]),
             computerClick(computerId) {
                 this.$router.push({ name: 'computerPage', params: { computerId: computerId } })
             },
             generalClick() {
                 this.$router.push({ name: 'computerPage', params: { computerId: 'general'} })
-            }
-        },
-        created() {
-            if (this.request.status === 'loading') {
-                return
-            }
+            },
+            getData() {
+                if (['error', 'notInitialized'].includes(this.allClassroomsRequest.status)) {
+                    this.fetchAllClassrooms()
+                }
 
-            this.fetchClassroom({ classroomId: this.classroomId })
+                if (this.classroomRequest.status === 'loading') return
+
+                this.fetchClassroom({ classroomId: this.classroomId })
+            }
         },
+        watch: {
+            $route: {
+                immediate: true,
+                handler(currentRoute, prevRoute) {
+                    if (_.isNil(prevRoute))  {
+                        this.getData()
+                        return
+                    }
+
+                    if (
+                        prevRoute.name === currentRoute.name &&
+                        prevRoute.params.classroomId !== currentRoute.params.classroomId
+                    ) {
+                        this.getData()
+                    }
+                }
+            }
+        }
     }
 </script>

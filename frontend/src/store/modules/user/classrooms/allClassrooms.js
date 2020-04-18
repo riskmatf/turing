@@ -30,6 +30,9 @@ export default {
                 return _.groupBy(state.request.response, (classroom) => classroom.location)
             }
             return null
+        },
+        allClassrooms(state) {
+            return _.get(state.request, 'response', null)
         }
     },
 }

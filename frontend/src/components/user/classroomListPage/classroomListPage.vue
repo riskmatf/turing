@@ -57,7 +57,7 @@
 </style>
 
 <script>
-    import Breadcrumbs from '@/components/_common/breadcrumbs'
+    import Breadcrumbs from '@/components/_common/breadcrumbs/breadcrumbs'
     import Classroom from './classroom'
     import { mapGetters, mapActions, mapState } from 'vuex' 
     import ClassroomGrid from '@/components/_common/classroomGrid'
