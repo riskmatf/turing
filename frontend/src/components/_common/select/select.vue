@@ -9,7 +9,7 @@
 
         <div class="column">
             <span class="close-button" @click="isOpen = false">X</span>
-            <el-input v-model="searchText" size="mini"/>
+            <el-input v-model="searchText" size="mini" placeholder="Pretraga..." ref="inputElement"/>
             <el-divider class="divider"/>
             <div class="column items">
                 <div
@@ -130,6 +130,14 @@
             selectItem(item) {
                 this.model = item.item
                 this.isOpen = false
+            }
+        },
+        watch: {
+            isOpen() {
+                if (this.isOpen && !_.isNil(this.$refs.inputElement)) {
+                    this.$nextTick(() => this.$refs.inputElement.focus())
+
+                }
             }
         }
     }
