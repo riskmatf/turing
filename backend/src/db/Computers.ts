@@ -43,7 +43,7 @@ export class ComputersRepository extends AbstractRepository<Computer>{
 		const computer = await this.repository.findOne({
 			where:{
 				classroomName,
-				computerId,
+				id: computerId,
 				fixed: false
 			},
 			relations: ["reports"]

@@ -11,7 +11,7 @@ reportsRouter.get("/", (req, resp)=>{
 	const requiredParams : string[] = ["classroomName", "computerId"];
 	for (const param of requiredParams) {
 		if(!req.query[param]){
-			resp.status(400).send(`Missing required param ${param}`);
+			resp.status(400).send({message: `Missing required param ${param}`});
 			return;
 		}
 	}
