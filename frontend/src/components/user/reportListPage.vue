@@ -1,76 +1,33 @@
 <template>
-    <div class="classroom-container">
+    <div>
         <template v-if="requestStatus === 'success'">
-            <div class="breadcrumbs">
-                <breadcrumbs :paths="breadcrumbData"/>
-            </div>
-            <div class="schema">
-                <classroom-schema-card
-                    :classroom-name="classroom.name"
-                    :schema-url="classroom.schemaUrl"
-                    :computers="classroom.computers"
-                    @computerClick="computerClick"
-                    @generalClick="generalClick"
-                />
-            </div>
-            <div class="legend">
-                <classroom-schema-legend/>
-            </div>
-        </template>
-        <template v-else-if="requestStatus === 'loading'">
-            Loading...
-        </template>
-        <template v-else-if="requestStatus === 'error'">
-            <span class="text-danger">Error: {{ request.message }}</span>
+            <breadcrumbs
+                    :paths="breadcrumbData"
+                    class="breadcrumbs"
+            />
         </template>
     </div>
 </template>
 
 <style lang="sass" scoped>
-    @import "./src/assets/styles/breakPoints"
-
-    .classroom-container
-        display: flex
-        flex-direction: column
-        height: 100%
-        font-size: 13pt
-        @media ($mobileBreakPoint)
-            font-size: 10pt
-        .breadcrumbs
-            margin-top: 5px
-        .schema
-            width: 90%
-            align-self: center
-            margin-bottom: 10px
-            min-height: 0
-            min-width: 0
-            margin-top: 5px
-            @media ($mobileBreakPoint)
-                width: 100%
-        .legend
-            align-self: center
-            margin-top: 5px
-
+    .breadcrumbs
+        margin-top: 5px
 </style>
 
 <script>
-    import Breadcrumbs from '@/components/_common/breadcrumbs/breadcrumbs'
-    import ClassroomSchemaCard from './classroomSchemaCard'
-    import ClassroomSchemaLegend from './classroomSchemaLegend'
+    import { Breadcrumbs } from '@/components/_common/breadcrumbs'
     import { mapState, mapActions, mapGetters } from 'vuex'
-    import _ from 'lodash'
+    import _ from "lodash";
 
     export default {
-        name: 'classroom-page',
+        name: 'report-list-page',
         components: {
             Breadcrumbs,
-            ClassroomSchemaCard,
-            ClassroomSchemaLegend,
         },
         computed: {
-            ...mapState('Classroom/Classroom', {classroomRequest: 'request'}),
+            ...mapState('Classroom/Classroom', { classroomRequest: 'request' }),
             ...mapGetters('Classroom/Classroom', ['classroom']),
-            ...mapState('Classroom/AllClassrooms', {allClassroomsRequest: 'request'}),
+            ...mapState('Classroom/AllClassrooms', { allClassroomsRequest: 'request' }),
             ...mapGetters('Classroom/AllClassrooms', ['allClassrooms']),
             breadcrumbData() {
                 return [
@@ -82,10 +39,22 @@
                         }),
                         currentName: this.classroomId,
                     },
+                    {
+                       children: [
+                           { name: 'opsti', to: { name: 'reportListPage', params: { computerId: 'general' } } },
+                           ..._.map(this.classroom.computers, ({ computerId }) => {
+                               return { name: computerId, to: { name: 'reportListPage', params: { computerId: computerId } } }
+                           }),
+                       ],
+                        currentName: this.computerId === 'general' ? 'opsti' : this.computerId
+                    }
                 ]
             },
             classroomId() {
                 return this.$route.params.classroomId
+            },
+            computerId() {
+                return this.$route.params.computerId
             },
             requestStatus() {
                 if (this.classroomRequest.status === 'error' || this.allClassroomsRequest.status === 'error') {
@@ -100,16 +69,11 @@
 
                 return 'success'
             }
+
         },
         methods: {
             ...mapActions('Classroom/Classroom', ['fetchClassroom']),
             ...mapActions('Classroom/AllClassrooms', ["fetchAllClassrooms"]),
-            computerClick(computerId) {
-                this.$router.push({ name: 'reportListPage', params: { computerId: computerId } })
-            },
-            generalClick() {
-                this.$router.push({ name: 'reportListPage', params: { computerId: 'general'} })
-            },
             getData() {
                 if (['error', 'notInitialized'].includes(this.allClassroomsRequest.status)) {
                     this.fetchAllClassrooms()
@@ -118,7 +82,7 @@
                 if (this.classroomRequest.status === 'loading') return
 
                 this.fetchClassroom({ classroomId: this.classroomId })
-            }
+            },
         },
         watch: {
             $route: {
@@ -130,8 +94,10 @@
                     }
 
                     if (
-                        prevRoute.name === currentRoute.name &&
-                        prevRoute.params.classroomId !== currentRoute.params.classroomId
+                        prevRoute.name === currentRoute.name && (
+                            prevRoute.params.classroomId !== currentRoute.params.classroomId &&
+                            prevRoute.params.computerId !== currentRoute.params.computerId
+                        )
                     ) {
                         this.getData()
                     }
