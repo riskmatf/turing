@@ -4,6 +4,7 @@ import TutorialPage from './tutorialPage'
 import { ClassroomListPage } from './classroomListPage'
 import { ClassroomPage } from './classroomPage'
 import ReportListPage from './reportListPage'
+import NotFoundPage from '@/components/_common/notFoundPage'
 
 
 export {
@@ -13,4 +14,5 @@ export {
     ClassroomPage,
     TutorialPage,
     ReportListPage,
+    NotFoundPage,
 }

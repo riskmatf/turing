@@ -1,9 +1,21 @@
 <template>
     <div class="classroom-container">
         <template v-if="requestStatus === 'success'">
-            <div class="breadcrumbs">
-                <breadcrumbs :paths="breadcrumbData"/>
-            </div>
+            <page-header class="page-header">
+                <div class="breadcrumbs">
+                    <breadcrumbs :paths="breadcrumbData"/>
+                </div>
+                <div class="row">
+                    <classroom-name :classroom-name="classroom.name"/>
+                    <el-button
+                            size="mini"
+                            @click="generalClick"
+                    >
+                        Opsti kvarovi
+                    </el-button>
+                </div>
+            </page-header>
+
             <div class="schema">
                 <classroom-schema-card
                     :classroom-name="classroom.name"
@@ -45,11 +57,19 @@
             min-height: 0
             min-width: 0
             margin-top: 5px
+            flex-grow: 1
             @media ($mobileBreakPoint)
                 width: 100%
         .legend
             align-self: center
             margin-top: 5px
+        .pager-header
+            display: flex
+            flex-direction: column
+            .row
+                display: flex
+                flex-direction: row
+                justify-content: space-between
 
 </style>
 
@@ -57,6 +77,8 @@
     import Breadcrumbs from '@/components/_common/breadcrumbs/breadcrumbs'
     import ClassroomSchemaCard from './classroomSchemaCard'
     import ClassroomSchemaLegend from './classroomSchemaLegend'
+    import PageHeader from '@/components/_common/pageHeader'
+    import { ClassroomName } from '@/components/_common/classroom'
     import { mapState, mapActions, mapGetters } from 'vuex'
     import _ from 'lodash'
 
@@ -66,6 +88,8 @@
             Breadcrumbs,
             ClassroomSchemaCard,
             ClassroomSchemaLegend,
+            PageHeader,
+            ClassroomName,
         },
         computed: {
             ...mapState('Classroom/Classroom', {classroomRequest: 'request'}),
@@ -105,6 +129,16 @@
             ...mapActions('Classroom/Classroom', ['fetchClassroom']),
             ...mapActions('Classroom/AllClassrooms', ["fetchAllClassrooms"]),
             computerClick(computerId) {
+                const computer = this.classroom.computers.find(({ computerId:cId }) => cId === computerId)
+                if (computer !== undefined && computer.isBroken) {
+                    this.$message({
+                        message: `Racunar ${computerId} nije u funkciji`,
+                        type: 'error',
+                        duration: '1500',
+                    })
+                    return
+                }
+
                 this.$router.push({ name: 'reportListPage', params: { computerId: computerId } })
             },
             generalClick() {

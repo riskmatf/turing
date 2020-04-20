@@ -7,19 +7,19 @@ export default {
         request: { status: 'notInitialized' },
     },
     mutations: {
-        setResponse(state, { request }) {
+        setRequest(state, { request }) {
             state.request = request
         },
     },
     actions: {
         async fetchAllClassrooms({ commit }) {
             try {
-                commit('setResponse', { request: { status: 'loading' } })
+                commit('setRequest', { request: { status: 'loading' } })
                 let response = await Vue.$http.get('/api/v1/classrooms')
-                commit('setResponse', { request: { status: 'success', response: response.data } })
+                commit('setRequest', { request: { status: 'success', response: response.data } })
                 return response.data
             } catch (e) {
-                commit('setResponse', { request: { status: 'error', message: _.get(e, 'message', 'Failed') } })
+                commit('setRequest', { request: { status: 'error', message: _.get(e, 'message', 'Failed') } })
                 throw e
             }
         }

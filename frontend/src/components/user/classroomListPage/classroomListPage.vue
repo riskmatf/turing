@@ -1,6 +1,8 @@
 <template>
     <div>
-        <breadcrumbs :paths="breadcrumbData" class="breadcrumbs"/>
+        <page-header>
+            <breadcrumbs :paths="breadcrumbData" class="breadcrumbs"/>
+        </page-header>
         <div v-if="request.status === 'success'" class="location-container">
             <el-collapse 
                 v-for="(classrooms, location) in classroomsGroupedByLocation" 
@@ -62,8 +64,9 @@
 <script>
     import Breadcrumbs from '@/components/_common/breadcrumbs/breadcrumbs'
     import Classroom from './classroom'
-    import { mapGetters, mapActions, mapState } from 'vuex' 
     import ClassroomGrid from '@/components/_common/classroomGrid'
+    import PageHeader from '@/components/_common/pageHeader'
+    import { mapGetters, mapActions, mapState } from 'vuex'
 
     export default {
         name: 'classroom-list-page',
@@ -71,6 +74,7 @@
             Breadcrumbs,
             ClassroomGrid,
             Classroom,
+            PageHeader,
         },
         computed: {
             breadcrumbData() {
