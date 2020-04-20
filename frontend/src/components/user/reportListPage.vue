@@ -16,10 +16,14 @@
             <div class="content">
                 <el-card
                         class="card-left"
-                        :class="{active: currentSelectedReport === null}"
+                        :class="{active: !isReportSelected}"
                         body-style="display: flex; flex-direction: column; flex-grow: 1; min-height: 0"
                 >
-                    <report-list v-model="currentSelectedReport" :reports="reports">
+                    <report-list
+                        :value="currentSelectedReport"
+                        :reports="reports"
+                        @input="(reportt) => {selectReport(reportt)}"
+                    >
                         <template v-slot="{ report }">
                             <report-short-format
                                     :report="report"
@@ -30,12 +34,12 @@
                 </el-card>
 
                 <el-card class="card-right">
-                    <template v-if="currentSelectedReport === null">
+                    <template v-if="!isReportSelected">
                         Odaberite kvar
                     </template>
                     <div v-else class="column">
                         <template v-if="reportRequest.status === 'success'">
-                            <i class="el-icon-arrow-left back-button" @click="currentSelectedReport=null"/>
+                            <i class="el-icon-arrow-left back-button" @click="selectReport(null)"/>
                             <report-details :report="report"/>
                         </template>
                         <template v-else-if="reportRequest.status === 'loading'">
@@ -128,7 +132,6 @@
         },
         data() {
             return {
-                currentSelectedReport: null,
             }
         },
         computed: {
@@ -200,6 +203,21 @@
 
                 return null
             },
+            isReportSelected() {
+                return !_.isNil(this.selectedReportId)
+            },
+            selectedReportId() {
+                let reportId = _.get(this.$route.query, 'reportId', null)
+                if (!_.isNil(reportId)) {
+                    reportId = parseInt(reportId, 10)
+                }
+
+                return isNaN(reportId) ? null : reportId
+            },
+            currentSelectedReport() {
+                const report = _.find(this.reports, (report) => report.reportId === this.selectedReportId)
+                return report || null
+            }
         },
         methods: {
             ...mapActions('Classroom/Classroom', ['fetchClassroom']),
@@ -226,6 +244,13 @@
                     }, 300)
                 }
                 this.debuncedMethod(reportId)
+            },
+            selectReport(report) {
+                if (_.isNil(report)) {
+                    this.$router.replace({})
+                } else {
+                    this.$router.replace({ query: { reportId: report.reportId } })
+                }
             }
         },
         watch: {
@@ -248,9 +273,6 @@
                     }
                 }
             },
-            currentSelectedReport() {
-                    this.$router.replace({ query: { reportId: this.currentSelectedReport.reportId } } )
-            }
         }
     }
 </script>
