@@ -52,7 +52,7 @@ export class Report {
   @Column("int", { name: "timestamp" })
   timestamp: number;
 
-  @Column("tinyint", { 
+  @Column("tinyint", {
 			  name: "urgent",
 			  width: 1,
 			  default: () => "'0'",

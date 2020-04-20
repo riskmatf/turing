@@ -1,9 +1,9 @@
-import {EntityRepository, AbstractRepository, In, WhereExpression, FindOperator} from "typeorm";
-import { Report } from "../../entities/Report";
-import { Classroom } from "../../entities/Classroom";
+import {AbstractRepository, EntityRepository, FindOperator, In} from "typeorm";
+import {Report} from "../../entities/Report";
+import {Classroom} from "../../entities/Classroom";
 
 
-interface IReport{
+export interface IReportForSending{
     reportId: number,
     computerId: number | null,
     classroomName: string,
@@ -15,6 +15,7 @@ interface IReport{
     timestamp: number,
     urgent: boolean,
 	adminDisplayName: string | null,
+	canChangeComment?: boolean
 }
 
 
@@ -34,7 +35,7 @@ export const PAGE_SIZE = 5;
 @EntityRepository(Report)
 export class ReportsRepository extends AbstractRepository<Report>
 {
-	public async getReportsWithFilters(params : IFilter){
+	public async getReportsWithFilters(params : IFilter, loggedUser: string){
 		const reports = await this.repository.find({
 			relations:["adminUsername", "classroomName"],
 			where:{
@@ -44,7 +45,9 @@ export class ReportsRepository extends AbstractRepository<Report>
 			skip: params.skip
 
 		});
-		return reports;
+		return reports.map(report => {
+			return ReportsRepository._mapReport(report, loggedUser);
+		});
 	}
 	public async getReportById(reportId: number){
 		const report = await this.repository.findOne({
@@ -56,17 +59,27 @@ export class ReportsRepository extends AbstractRepository<Report>
 		if(report === undefined){
 			return undefined;
 		}
+		return ReportsRepository._mapReport(report);
+	}
+
+	public async getMaxNumberOfPages(params : IFilter){
+		console.log(params.whereParams);
+		const tmp = await this.repository.findAndCount({where:{classroomName: In(["718"])}});
+		console.log(tmp[0]);
+		return Math.floor(tmp[1]/PAGE_SIZE);
+	}
+
+	private static _mapReport(report: Report, loggedUser: string = ""){
 		const {classroomName, adminUsername, ...rest} = report;
-		const mappedReport: IReport = {
+		const mappedReport: IReportForSending = {
 			...rest,
 			hasAdminComment: !!report.adminComment,
 			adminDisplayName: adminUsername ? adminUsername.displayName : null,
-			classroomName: classroomName.name
+			classroomName: classroomName.name,
+			canChangeComment: adminUsername? adminUsername.username === loggedUser : false
 		};
-
 		return mappedReport;
 	}
-
 
 	public async addGeneralReport(data: IGeneralReport){
 		// can't use just if(!data.isGeneral) because that includes undefs and nulls

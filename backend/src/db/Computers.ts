@@ -1,5 +1,6 @@
 import { Computer} from "../../entities/Computer";
-import { AbstractRepository, EntityRepository } from "typeorm";
+import {AbstractRepository, EntityRepository, getCustomRepository} from "typeorm";
+import {ClassroomsRepository} from "./Classrooms";
 
 interface IComputer {
     computerId: number,

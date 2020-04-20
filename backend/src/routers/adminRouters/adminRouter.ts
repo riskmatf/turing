@@ -8,7 +8,13 @@ import authRouter from "./adminAuthRouter";
 import adminReportsRouter from "./adminReportsRoutes";
 
 const adminRouter = express.Router();
-
+declare global {
+    namespace Express {
+        interface Request {
+            username: string
+        }
+    }
+}
 // router for login logout and session
 adminRouter.use(authRouter);
 
@@ -19,6 +25,7 @@ adminRouter.use( (req, res, next)=>{
         return;
     }
     else{
+        req.username = req.session.username;
         next();
     }
 });
