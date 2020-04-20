@@ -4,7 +4,7 @@
 
 <style lang="sass" scoped>
     .not-active
-        color: #F3F3F3
+        color: #A3A3A3
 </style>
 
 <script>

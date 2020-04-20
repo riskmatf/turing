@@ -2,7 +2,7 @@
     <div class="column">
         <div class="row">
             <report-id class="report-id" :report-id="report.reportId"/>
-            <report-urgent-icon :is-urgent="report.urgent"/>
+            <report-urgent-icon style="padding-right: 10px" :is-urgent="report.urgent"/>
             <report-message-icon :has-message="report.hasAdminComment"/>
 
         </div>
@@ -21,6 +21,7 @@
             flex-direction: row
             .report-id
                 flex-grow: 1
+                font-size: 16pt
 
 
 

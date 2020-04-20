@@ -57,7 +57,10 @@
                             />
                         </template>
                         <template v-else-if="reportRequest.status === 'loading'">
-                            Loading...
+                            <div class="loader">
+                                Loading...
+                                <i class="el-icon-loading"></i>
+                            </div>
                         </template>
                         <template v-else-if="reportRequest.status === 'error'">
                             {{ reportRequest.message }}
@@ -67,7 +70,10 @@
             </div>
         </template>
         <template v-else-if="requestStatus === 'loading'">
-            Loading...
+            <div class="loader">
+                Loading...
+                <i class="el-icon-loading"></i>
+            </div>
         </template>
         <template v-else-if="requestStatus === 'error'">
             {{ requestErrorMessage }}
@@ -91,6 +97,9 @@
             display: flex
             flex-direction: row
             justify-content: space-between
+            .name
+                align-self: center
+                padding-left: 10px
         .content
             width: 100%
             display: flex
@@ -106,6 +115,7 @@
                 display: flex
                 @media ($mobileBreakPoint)
                     width: 0
+                    margin-right: 0px
                     &.active
                         width: 100%
             .card-right
@@ -123,7 +133,8 @@
                         display: none
                         @media ($mobileBreakPoint)
                             display: block
-
+    .loader
+        padding: 20px
 
 
 </style>

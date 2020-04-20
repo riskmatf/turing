@@ -6,7 +6,7 @@
                     <breadcrumbs :paths="breadcrumbData"/>
                 </div>
                 <div class="row">
-                    <classroom-name :classroom-name="classroom.name"/>
+                    <classroom-name class="name" :classroom-name="classroom.name"/>
                     <el-button
                             size="mini"
                             @click="generalClick"
@@ -30,7 +30,10 @@
             </div>
         </template>
         <template v-else-if="requestStatus === 'loading'">
-            Loading...
+            <div class="loading">
+                Loading...
+                <i class="el-icon-loading"></i>
+            </div>
         </template>
         <template v-else-if="requestStatus === 'error'">
             <span class="text-danger">Error: {{ request.message }}</span>
@@ -70,6 +73,12 @@
                 display: flex
                 flex-direction: row
                 justify-content: space-between
+                padding-right: 5px
+                .name
+                    align-self: center
+                    padding-left: 10px
+    .loading
+        margin: 20px
 
 </style>
 

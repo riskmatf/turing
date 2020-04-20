@@ -19,7 +19,9 @@
             </el-collapse>
         </div>
         <template v-else-if="request.status === 'loading'">
-            Loading... 
+            <div class="loading">
+                Loading...
+            </div> 
         </template>
         <div v-else-if="request.status === 'error'" class="text-danger">
             Error: {{ request.message }}
@@ -32,6 +34,8 @@
 
     .breadcrumbs
         margin-top: 5px
+        margin-bottom: 5px
+        margin-left: 2px
     .location-container
         display: flex
         flex-direction: column
@@ -57,7 +61,8 @@
             padding-left: 15px
             font-size: 14px
             font-weight: bold
-
+    .loading
+        margin: 20px
                 
 </style>
 
