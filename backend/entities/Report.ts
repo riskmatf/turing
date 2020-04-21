@@ -27,11 +27,11 @@ export class Report {
 
   @ManyToOne(
 	  ()=>Computer,
-	  computer => computer.reports,
+	  // computer => computer.reports,
 	  {onDelete: "RESTRICT", onUpdate: "RESTRICT"}
   )
   @JoinColumn([{name: "computerId", referencedColumnName: "id"}])
-  computerId: number | null;
+  computerId: Computer | null;
 
   @Column({	type:"varchar",  name: "description", nullable: true, length: 1000, charset:"utf8mb4",
   			collation: "utf8mb4_unicode_ci" })

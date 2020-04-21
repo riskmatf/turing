@@ -1,14 +1,17 @@
 <template>
-    <div class="column">
+    <div class="row">
         <div>Working: <span class="text-success">{{ classroomCompCount.working }}</span></div>
-        <div>Broken: <span class="text-danger">{{ classroomCompCount.broken }}</span> </div>
+        <div class="tabsp">Broken: <span class="text-danger">{{ classroomCompCount.broken }}</span> </div>
     </div>
 </template>
 
 <style lang="sass" scoped>
-    .column
+    .row
         display: flex
-        flex-direction: column
+        flex-direction: row
+        justify-content: center
+    .tabsp
+        padding-left: 10px
 </style>
 
 <script>

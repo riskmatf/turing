@@ -1,15 +1,17 @@
 <template>
     <base-layout>
         <template v-slot:topBar>
-            <router-link :to="{ name: 'homePage' }" class="nav-item">
-                <el-button :type="linkStates.homePage" size="mini" class="nav-button">Home</el-button>
-            </router-link>
-            <router-link :to="{ name: 'classroomListPage' }"  class="nav-item">
-                <el-button :type="linkStates.classrooms" size="mini" class="nav-button">Classrooms</el-button>
-            </router-link>
-            <router-link :to="{ name: 'tutorialPage' }"  class="nav-item">
-                <el-button :type="linkStates.tutorial" size="mini" class="nav-button">Tutorial</el-button>
-            </router-link>
+            <el-menu-item index="1" :route="{ name: 'homePage' }">
+                Pocetna
+            </el-menu-item>
+
+            <el-menu-item index="2" :route="{ name: 'classroomListPage' }">
+                Ucionice
+            </el-menu-item>
+
+            <el-menu-item index="3" :route="{ name: 'tutorialPage' }" disabled>
+                Uputstvo
+            </el-menu-item>
         </template>
 
         <template v-slot:body>
@@ -33,7 +35,6 @@
 
 <script>
     import { BaseLayout } from '@/components/_common/baseLayout'
-    import { Button } from 'element-ui'
     import { userStore } from '@/store'
 
     export default {
@@ -41,7 +42,6 @@
         store: userStore,
         components: {
             BaseLayout,
-            ElButton: Button,
         },
         computed: {
             linkStates() {

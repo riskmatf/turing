@@ -1,6 +1,6 @@
 <template>
     <div>
-        <breadcrumbs :paths="breadcrumbData"/>
+        <breadcrumbs :paths="breadcrumbData" class="breadcrumbs"/>
         <div v-if="request.status === 'success'" class="location-container">
             <el-collapse 
                 v-for="(classrooms, location) in classroomsGroupedByLocation" 
@@ -26,24 +26,41 @@
 </template>
 
 <style lang="sass">
+    @import "./src/assets/styles/breakPoints"
+
+    .breadcrumbs
+        margin-top: 5px
     .location-container
         display: flex
         flex-direction: column
         align-content: center
+        margin-top: 5px
         .collapse
             width: 77%
-            padding-left: 10px 
+            padding-left: 10px
+            padding-bottom: 5px
             align-self: center
             .classroom-grid
                 padding-left: 10px
+                justify-content: center
             .classroom
-                width: 32%
+                width: 30%
                 margin-right: 10px
-                margin-top: 10px 
+                margin-top: 10px
+                @media ($mobileBreakPoint)
+                    width: 95%
+                @media ($middleScreenBreakPoint)
+                    width: 45%
+        .el-collapse-item__header
+            padding-left: 15px
+            font-size: 14px
+            font-weight: bold
+
+                
 </style>
 
 <script>
-    import Breadcrumbs from '@/components/_common/breadcrumbs'
+    import Breadcrumbs from '@/components/_common/breadcrumbs/breadcrumbs'
     import Classroom from './classroom'
     import { mapGetters, mapActions, mapState } from 'vuex' 
     import ClassroomGrid from '@/components/_common/classroomGrid'
@@ -58,8 +75,8 @@
         computed: {
             breadcrumbData() {
                 return [
-                        { name: 'home', to: {name: 'homePage'}},
-                        { name: 'classrooms', to: { name: 'classroomListPage' } }
+                        { name: 'pocetna', to: {name: 'homePage'}},
+                        { name: 'ucionice', to: { name: 'classroomListPage' } }
                        ]
             },
             ...mapGetters('Classroom/AllClassrooms', ['classroomsGroupedByLocation']),
