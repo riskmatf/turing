@@ -26,9 +26,9 @@ export class Computer{
 	})
 	broken: boolean;
 
-	@OneToMany(
-		()=>Report,
-		report => report.computerId
-	)
-	reports:Report[];
+	// @OneToMany(
+	// 	()=>Report,
+	// 	report => report.computerId
+	// )
+	// reports:Report[];
 }

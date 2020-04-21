@@ -1,6 +1,7 @@
-import { EntityRepository, AbstractRepository } from "typeorm";
-import { Report } from "../../entities/Report";
-import { Classroom } from "../../entities/Classroom";
+import {AbstractRepository, EntityRepository} from "typeorm";
+import {Report} from "../../entities/Report";
+import {Classroom} from "../../entities/Classroom";
+import {Computer} from "../../entities/Computer";
 
 
 interface IReport{
@@ -35,7 +36,8 @@ export class ReportsRepository extends AbstractRepository<Report>
 			...rest,
 			hasAdminComment: !!report.adminComment,
 			adminDisplayName: adminUsername ? adminUsername.displayName : null,
-			classroomName: classroomName.name
+			classroomName: classroomName.name,
+			computerId: report.computerId
 		};
 
 		return mappedReport;
@@ -54,6 +56,10 @@ export class ReportsRepository extends AbstractRepository<Report>
 
 	public async addComputerReport(data: IComputerReport){
 		return this._addReport(data);
+	}
+
+	public async getReportsForComputer(computer : Computer, fixed: boolean = false){
+		return await this.repository.find({where: {computerId: computer.id, classroomName: computer.classroomName, fixed}});
 	}
 
 

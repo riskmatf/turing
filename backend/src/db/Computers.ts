@@ -1,5 +1,8 @@
 import { Computer} from "../../entities/Computer";
-import { AbstractRepository, EntityRepository } from "typeorm";
+import {AbstractRepository, EntityRepository, getCustomRepository} from "typeorm";
+import {ClassroomsRepository} from "./Classrooms";
+import {Report} from "../../entities/Report";
+import {ReportsRepository} from "./Reports";
 
 interface IComputer {
     computerId: number,
@@ -26,33 +29,39 @@ export class ComputersRepository extends AbstractRepository<Computer>{
 							.leftJoinAndSelect("computer.classroomName", "classroom")
 							.where("computer.classroomName = :cName", {cName: classroomName})
 							.getMany();
-		const mappedComputers: IComputer[] = computers.map(comp=>{
+		const reportsRepo = getCustomRepository(ReportsRepository);
+		const mappedComputers: IComputer[] = await Promise.all(computers.map(async comp=>{
 			const isBroken: boolean = comp.broken;
-			const hasReports = comp.reports.length > 0;
+			const reports = await reportsRepo.getReportsForComputer(comp);
+			const hasReports = reports.length > 0;
 			return {
 				computerId: comp.id,
 				classroomName: comp.classroomName.name,
 				isBroken,
 				hasReports,
 			}
-		});
+		}));
 		return mappedComputers;
 	}
 
 	public async getReportsForComputerInClassroom(computerId: number, classroomName: string){
+		const classroomRepo = getCustomRepository(ClassroomsRepository);
+		const reportsRepository = getCustomRepository(ReportsRepository);
+		const classroom = await classroomRepo.getClassroomByName(classroomName);
+		if(!classroom){
+			return undefined;
+		}
 		const computer = await this.repository.findOne({
 			where:{
-				classroomName,
+				classroomName: classroom,
 				id: computerId,
-				fixed: false
-			},
-			relations: ["reports"]
+			}
 		});
 		if(!computer){
 			return undefined;
 		}
-
-		const mappedReports: IReportOverview[] = computer.reports.map(rep=>{
+		const reports = await reportsRepository.getReportsForComputer(computer);
+		const mappedReports: IReportOverview[] = reports.map(rep=>{
 			return {
 				reportId: rep.reportId,
 				description: rep.description,

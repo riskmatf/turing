@@ -27,7 +27,7 @@ export class Report {
 
   @ManyToOne(
 	  ()=>Computer,
-	  computer => computer.reports,
+	  // computer => computer.reports,
 	  {onDelete: "RESTRICT", onUpdate: "RESTRICT"}
   )
   @JoinColumn([{name: "computerId", referencedColumnName: "id"}])
@@ -52,7 +52,7 @@ export class Report {
   @Column("int", { name: "timestamp" })
   timestamp: number;
 
-  @Column("tinyint", { 
+  @Column("tinyint", {
 			  name: "urgent",
 			  width: 1,
 			  default: () => "'0'",
