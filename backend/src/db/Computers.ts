@@ -11,7 +11,7 @@ interface IComputer {
 	hasReports: boolean,
 }
 
-interface IReportOverview{
+export interface IReportOverview{
     reportId: number,
     description: string,
     hasAdminComment: boolean,

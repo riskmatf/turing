@@ -2,6 +2,7 @@ import {AbstractRepository, EntityRepository} from "typeorm";
 import {Report} from "../../entities/Report";
 import {Classroom} from "../../entities/Classroom";
 import {Computer} from "../../entities/Computer";
+import {IReportOverview} from "./Computers";
 
 
 interface IReport{
@@ -57,6 +58,26 @@ export class ReportsRepository extends AbstractRepository<Report>
 
 	public async addComputerReport(data: IComputerReport){
 		return this._addReport(data);
+	}
+
+	public async getGeneralReports(classroomName: string, fixed: boolean = false){
+		const reports = await this.repository.find({
+			where:{
+				classroomName,
+				isGeneral: true,
+				fixed
+			}
+		});
+		const mappedReports: IReportOverview[] = reports.map(rep=>{
+			return {
+				reportId: rep.reportId,
+				description: rep.description,
+				hasAdminComment: !!rep.adminComment,
+				timestamp: rep.timestamp,
+				urgent: rep.urgent
+			}
+		});
+		return mappedReports;
 	}
 
 	public async getReportsForComputer(computer : Computer, fixed: boolean = false){
