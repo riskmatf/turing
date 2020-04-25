@@ -9,7 +9,9 @@
         <report-date :report-date="currentDate"/>
         <div class="form-item">
             <label>Hitan</label>
-            <report-urgent-switch v-model="isUrgent" yes-text="Jeste" no-text="Nije"/>
+            <div>
+                <report-urgent-switch v-model="isUrgent" yes-text="Jeste hitan" no-text="Nije hitan"/>
+            </div>
         </div>
         <div class="form-item">
             <label>Opis*</label>
