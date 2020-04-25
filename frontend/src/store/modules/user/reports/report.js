@@ -50,7 +50,6 @@ export default {
                     isGeneral: report.isGeneral,
                     description: report.description,
                 })
-                console.log(response.data)
                 return response.data
             } catch (e) {
                 throw _.get(e, 'response.data.message', 'Failed')
