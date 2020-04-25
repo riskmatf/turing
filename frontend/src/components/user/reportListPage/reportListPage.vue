@@ -6,10 +6,17 @@
                         :paths="breadcrumbData"
                         class="breadcrumbs"
                 />
-
                 <div class="row">
                     <div>Reports for computer #{{ computerId }} in classroom {{ classroomId }}</div>
-                    <el-button size="mini">Prijavi kvar</el-button>
+                    <el-button size="mini" @click="isReportModalVisible=true">
+                        Prijavi kvar
+                    </el-button>
+                    <add-report-modal
+                        :visible.sync="isReportModalVisible"
+                        :computer-id="computerId"
+                        :classroom-id="classroomId"
+                        @change="commentAdded"
+                    />
                 </div>
             </page-header>
 
@@ -33,14 +40,21 @@
                     </report-list>
                 </el-card>
 
-                <el-card class="card-right">
+                <el-card
+                    class="card-right"
+                    body-style="display: flex; flex-direction: column; flex-grow: 1; min-height: 0"
+                >
                     <template v-if="!isReportSelected">
                         Odaberite kvar
                     </template>
-                    <div v-else class="column">
+                    <div v-else class="column full">
                         <template v-if="reportRequest.status === 'success'">
                             <i class="el-icon-arrow-left back-button" @click="selectReport(null)"/>
-                            <report-details :report="report"/>
+                            <report-details
+                                :report="report"
+                                :classroom-schema-url="classroom.schemaUrl"
+                                :number-of-computers="classroom.computers.length"
+                            />
                         </template>
                         <template v-else-if="reportRequest.status === 'loading'">
                             Loading...
@@ -62,7 +76,7 @@
 </template>
 
 <style lang="sass" scoped>
-    @import './src/assets/styles/breakPoints'
+    @import '../../../assets/styles/breakPoints'
 
     .container
         height: 100%
@@ -97,11 +111,14 @@
             .card-right
                 height: 100%
                 flex-grow: 1
+                display: flex
                 box-sizing: border-box
                 width: 0
                 .column
                     display: flex
                     flex-direction: column
+                    &.full
+                        height: 100%
                     .back-button
                         display: none
                         @media ($mobileBreakPoint)
@@ -112,14 +129,14 @@
 </style>
 
 <script>
+    import _ from "lodash";
+    import { mapState, mapActions, mapGetters, mapMutations } from 'vuex'
     import { Breadcrumbs } from '@/components/_common/breadcrumbs'
     import PageHeader from '@/components/_common/pageHeader'
     import ReportShortFormat from './reportShortFormat'
     import ReportList from '@/components/_common/reportList'
-
-    import { mapState, mapActions, mapGetters } from 'vuex'
-    import _ from "lodash";
-    import ReportDetails from "@/components/user/reportDetails";
+    import ReportDetails from "@/components/user/reportListPage/reportDetails";
+    import AddReportModal from './addReportModal'
 
     export default {
         name: 'report-list-page',
@@ -129,9 +146,11 @@
             PageHeader,
             ReportShortFormat,
             ReportList,
+            AddReportModal,
         },
         data() {
             return {
+                isReportModalVisible: false,
             }
         },
         computed: {
@@ -224,6 +243,7 @@
             ...mapActions('Classroom/AllClassrooms', ['fetchAllClassrooms']),
             ...mapActions('Report/ComputerReports', ['fetchComputerReports']),
             ...mapActions('Report/Report', ['fetchReport']),
+            ...mapMutations('Report/Report', ['clearReportData']),
             getData() {
                 if (['error', 'notInitialized'].includes(this.allClassroomsRequest.status)) {
                     this.fetchAllClassrooms()
@@ -238,37 +258,44 @@
                 this.fetchComputerReports({ classroomId: this.classroomId, computerId: this.computerId, })
             },
             getReportData(reportId) {
-                if (_.isNil(this.debuncedMethod)) {
-                    this.debuncedMethod = _.debounce((reportId) => {
-                        this.fetchReport({ reportId: reportId })
-                    }, 300)
+                if (this.isReportSelected) {
+                    if (_.isNil(this.debuncedMethod)) {
+                        this.debuncedMethod = _.debounce((reportId) => {
+                            this.fetchReport({ reportId: reportId })
+                        }, 300)
+                    }
+                    this.debuncedMethod(reportId)
                 }
-                this.debuncedMethod(reportId)
             },
             selectReport(report) {
                 if (_.isNil(report)) {
                     this.$router.replace({})
-                } else {
+                } else if (report.reportId !== this.selectedReportId){
                     this.$router.replace({ query: { reportId: report.reportId } })
                 }
-            }
+            },
+            commentAdded() {
+                this.isReportModalVisible = false
+                this.getData()
+            },
         },
         watch: {
             $route: {
                 immediate: true,
                 handler(currentRoute, prevRoute) {
-                    if (_.isNil(prevRoute)) {
-                        this.getData()
-                    } else if (
-                        prevRoute.name === currentRoute.name && (
-                            prevRoute.params.classroomId !== currentRoute.params.classroomId ||
-                            prevRoute.params.computerId !== currentRoute.params.computerId
-                        )
-                    ) {
+                    const hasPreviousRoute = !_.isNil(prevRoute)
+                    const areRoutesSame = hasPreviousRoute && prevRoute.name === currentRoute.name
+                    const classroomHasChanged = hasPreviousRoute && prevRoute.params.classroomId !== currentRoute.params.classroomId
+                    const computerHasChanged = hasPreviousRoute && prevRoute.params.computerId !== currentRoute.params.computerId
+                    const classroomOrComputerHasChanged =  classroomHasChanged || computerHasChanged
+
+                    if (!hasPreviousRoute || (areRoutesSame && classroomOrComputerHasChanged)) {
                         this.getData()
                     }
 
-                    if (_.get(currentRoute, 'query.reportId', null) !== _.get(prevRoute, 'query.reportId', null)) {
+                    if (!_.get(currentRoute, 'query.reportId', null)) {
+                        this.clearReportData()
+                    } else if (_.get(currentRoute, 'query.reportId', null) !== _.get(prevRoute, 'query.reportId', null)) {
                         this.getReportData(currentRoute.query.reportId)
                     }
                 }

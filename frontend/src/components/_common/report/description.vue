@@ -14,15 +14,21 @@
         props: {
             value: String,
             maxRows: Number,
+            minRows: Number,
             readonly: Boolean,
         },
         computed: {
             autosize() {
-                if (_.isNil(this.maxRows)) {
-                    return true
+                const result = {}
+
+                if (!_.isNil(this.maxRows)) {
+                    result.maxRows = this.maxRows
+                }
+                if (!_.isNil(this.minRows)) {
+                    result.minRows = this.minRows
                 }
 
-                return { maxRows: this.maxRows }
+                return result
             },
             model: {
                 get() {
