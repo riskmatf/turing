@@ -1,6 +1,7 @@
-import { EntityRepository, AbstractRepository } from "typeorm";
-import { Report } from "../../entities/Report";
-import { Classroom } from "../../entities/Classroom";
+import {AbstractRepository, EntityRepository} from "typeorm";
+import {Report} from "../../entities/Report";
+import {Classroom} from "../../entities/Classroom";
+import {Computer} from "../../entities/Computer";
 
 
 interface IReport{
@@ -22,7 +23,7 @@ export class ReportsRepository extends AbstractRepository<Report>
 {
 	public async getReportById(reportId: number){
 		const report = await this.repository.findOne({
-			relations:["adminUsername", "classroomName"],
+			relations:["adminUsername", "classroomName", "computerId"],
 			where: {
 				reportId,
 			}
@@ -30,12 +31,14 @@ export class ReportsRepository extends AbstractRepository<Report>
 		if(report === undefined){
 			return undefined;
 		}
-		const {classroomName, adminUsername, ...rest} = report;
+		console.log(report);
+		const {classroomName, adminUsername, computerId, ...rest} = report;
 		const mappedReport: IReport = {
 			...rest,
 			hasAdminComment: !!report.adminComment,
 			adminDisplayName: adminUsername ? adminUsername.displayName : null,
-			classroomName: classroomName.name
+			classroomName: classroomName.name,
+			computerId: computerId ? computerId.id : null
 		};
 
 		return mappedReport;
@@ -56,6 +59,10 @@ export class ReportsRepository extends AbstractRepository<Report>
 		return this._addReport(data);
 	}
 
+	public async getReportsForComputer(computer : Computer, fixed: boolean = false){
+		return await this.repository.find({where: {computerId: computer.id, classroomName: computer.classroomName, fixed}});
+	}
+
 
 /*********************************************PRIVATE******************************************* */
 
@@ -67,11 +74,16 @@ export class ReportsRepository extends AbstractRepository<Report>
 	private static _reportDataToReport(data: IReportData){
 		let report: Report = new Report();
 		const classroom = new Classroom();
+		const computer = new Computer();
 
 		classroom.name = data.classroomName; // save fill fail if name is bad
+		if(data.computerId)
+			computer.id = data.computerId;
 		report.classroomName = classroom;
+		if(!data.isGeneral)
+			report.computerId = computer;
 
-		const {classroomName, ...tmp} = data;
+		const {classroomName, computerId, ...tmp} = data;
 		// this is shortcut for filling data, because tmp will have all the missing stuff that report needs
 		report = {...report, ...tmp};
 		report.fixed = false;

@@ -45,11 +45,17 @@ reportsRouter.get("/:id", (req, resp)=>{
 
 reportsRouter.post("/", (req, resp)=>{
 	const repo = getCustomRepository(ReportsRepository);
-	const requiredParams = ["classroomName", "computerId", "description", "isGeneral", "urgent"];
+	const requiredParams = ["classroomName", "description", "isGeneral", "urgent"];
 
 	for(const param of requiredParams){
 		if(!req.body.hasOwnProperty(param)){
 			resp.status(400).send(`Missing required param ${param}`);
+			return;
+		}
+	}
+	if(req.body.isGeneral === false){
+		if(!req.body.hasOwnProperty("computerId")){
+			resp.status(400).send(`Missing required param computerId`);
 			return;
 		}
 	}
