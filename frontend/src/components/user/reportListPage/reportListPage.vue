@@ -7,7 +7,7 @@
                         class="breadcrumbs"
                 />
                 <div class="row">
-                    <div>Reports for computer #{{ computerId }} in classroom {{ classroomId }}</div>
+                    <div class="name">Reports for computer #{{ computerId }} in classroom {{ classroomId }}</div>
                     <el-button size="mini" @click="isReportModalVisible=true">
                         Prijavi kvar
                     </el-button>
