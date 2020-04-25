@@ -9,7 +9,7 @@ interface IComputer {
 	hasReports: boolean,
 }
 
-interface IReportOverview{
+export interface IReportOverview{
     reportId: number,
     description: string,
     hasAdminComment: boolean,
@@ -22,8 +22,8 @@ export class ComputersRepository extends AbstractRepository<Computer>{
 	public async getComputersFromClassroom(classroomName: string){
 		const computers = await this.repository
 							.createQueryBuilder("computer")
-							.leftJoinAndSelect("computer.reports", "report",
-									"report.classroomName = computer.classroomName and report.fixed=0")
+							.leftJoinAndSelect(Report, "report",
+									"report.computerId = computer.id and report.classroomName = computer.classroomName and report.fixed=0")
 							.leftJoinAndSelect("computer.classroomName", "classroom")
 							.where("computer.classroomName = :cName", {cName: classroomName})
 							.getMany();

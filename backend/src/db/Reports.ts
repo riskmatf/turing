@@ -1,11 +1,12 @@
 import {AbstractRepository, EntityRepository, FindOperator, getCustomRepository, In} from "typeorm";
-import { Report } from "../../entities/Report";
-import { Classroom } from "../../entities/Classroom";
+import {Report} from "../../entities/Report";
+import {Classroom} from "../../entities/Classroom";
 import {Computer} from "../../entities/Computer";
 import {ClassroomsRepository} from "./Classrooms";
+import {IReportOverview} from "./Computers";
 
 
-export interface IReportForSending{
+interface IReport{
     reportId: number,
     computerId: number | null,
     classroomName: string,
@@ -98,8 +99,38 @@ export class ReportsRepository extends AbstractRepository<Report>
 		return this._addReport(data);
 	}
 
+	public async getGeneralReports(classroomName: string, fixed: boolean = false){
+		const reports = await this.repository.find({
+			where:{
+				classroomName,
+				isGeneral: true,
+				fixed
+			}
+		});
+		const mappedReports: IReportOverview[] = reports.map(rep=>{
+			return {
+				reportId: rep.reportId,
+				description: rep.description,
+				hasAdminComment: !!rep.adminComment,
+				timestamp: rep.timestamp,
+				urgent: rep.urgent
+			}
+		});
+		return mappedReports;
+	}
+
 	public async getReportsForComputer(computer : Computer, fixed: boolean = false){
-		return await this.repository.find({where: {computerId: computer.id, classroomName: computer.classroomName, fixed}});
+		return await this.repository.find({
+			where: {
+				computerId: computer.id,
+				classroomName: computer.classroomName,
+				fixed
+			},
+			order:{
+				urgent: "DESC",
+				timestamp: "DESC",
+			}
+		});
 	}
 
 

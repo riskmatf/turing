@@ -8,25 +8,38 @@ import { ComputersRepository } from '../db/Computers';
 const reportsRouter = express.Router();
 
 reportsRouter.get("/", (req, resp)=>{
-	const requiredParams : string[] = ["classroomName", "computerId"];
-	for (const param of requiredParams) {
-		if(!req.query[param]){
-			resp.status(400).send({message: `Missing required param ${param}`});
-			return;
-		}
+	let computerId: number | undefined;
+	if(!req.query.hasOwnProperty("classroomName")){
+		resp.status(400).send({message: `Missing required param classroomName`});
+		return;
 	}
-	const repo = getCustomRepository(ComputersRepository);
-
-	const compId: number = +req.query.computerId;
-	repo.getReportsForComputerInClassroom(compId, req.query.classroomName.toString())
-									.then(reports=>{
-											if(reports)
-												resp.send(reports);
-											else{
-												resp.status(404).send({message:"Given computer/classroom does not exist"});
-											}
-										})
-									.catch(err=>{serverError(err, resp)});
+	const classroomName : string = req.query.classroomName.toString();
+	if(req.query.hasOwnProperty("computerId")){
+		computerId = +req.query.computerId;
+	}
+	if(computerId){
+		const repo = getCustomRepository(ComputersRepository);
+		repo.getReportsForComputerInClassroom(computerId, req.query.classroomName.toString())
+			.then(reports=>{
+				if(reports)
+					resp.send(reports);
+				else{
+					resp.status(404).send({message:"Given computer/classroom does not exist"});
+				}
+			})
+			.catch(err=>{serverError(err, resp)});
+	}
+	else{
+	    const repo = getCustomRepository(ReportsRepository);
+	    repo.getGeneralReports(classroomName)
+			.then( reports =>{
+				resp.send(reports);
+			})
+			.catch(err=>{
+				console.log(`Error while getting general reports for classroom ${classroomName}: ${JSON.stringify(err)}`);
+				resp.status(500).send({message: "NEPOZNATA GREŠKA NA SERVERU!"})
+			})
+	}
 });
 
 

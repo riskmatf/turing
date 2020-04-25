@@ -12,7 +12,7 @@ import {
     ClassroomPage,
     TutorialPage,
     ReportListPage,
-
+    NotFoundPage,
 } from '@/components/user'
 
 Vue.use(VueRouter)
@@ -41,6 +41,7 @@ const routes = [
                 ]
             },
             { path: '/tutorial', name: 'tutorialPage', component: TutorialPage, meta: { index: '3' }},
+            { path: '/*', name: 'notFound', component: NotFoundPage }
         ]
     }
 ]

@@ -1,6 +1,8 @@
 <template>
     <div>
-        <breadcrumbs :paths="breadcrumbData" class="breadcrumbs"/>
+        <page-header>
+            <breadcrumbs :paths="breadcrumbData" class="breadcrumbs"/>
+        </page-header>
         <div v-if="request.status === 'success'" class="location-container">
             <el-collapse 
                 v-for="(classrooms, location) in classroomsGroupedByLocation" 
@@ -17,7 +19,9 @@
             </el-collapse>
         </div>
         <template v-else-if="request.status === 'loading'">
-            Loading... 
+            <div class="loading">
+                Loading...
+            </div> 
         </template>
         <div v-else-if="request.status === 'error'" class="text-danger">
             Error: {{ request.message }}
@@ -30,6 +34,8 @@
 
     .breadcrumbs
         margin-top: 5px
+        margin-bottom: 5px
+        margin-left: 2px
     .location-container
         display: flex
         flex-direction: column
@@ -55,15 +61,17 @@
             padding-left: 15px
             font-size: 14px
             font-weight: bold
-
+    .loading
+        margin: 20px
                 
 </style>
 
 <script>
     import Breadcrumbs from '@/components/_common/breadcrumbs/breadcrumbs'
     import Classroom from './classroom'
-    import { mapGetters, mapActions, mapState } from 'vuex' 
     import ClassroomGrid from '@/components/_common/classroomGrid'
+    import PageHeader from '@/components/_common/pageHeader'
+    import { mapGetters, mapActions, mapState } from 'vuex'
 
     export default {
         name: 'classroom-list-page',
@@ -71,6 +79,7 @@
             Breadcrumbs,
             ClassroomGrid,
             Classroom,
+            PageHeader,
         },
         computed: {
             breadcrumbData() {
