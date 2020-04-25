@@ -36,7 +36,7 @@
             </div>
         </template>
         <template v-else-if="requestStatus === 'error'">
-            <span class="text-danger">Error: {{ request.message }}</span>
+            <span class="text-danger">Error: {{ requestErrorMessage }}</span>
         </template>
     </div>
 </template>
@@ -132,7 +132,13 @@
                 }
 
                 return 'success'
-            }
+            },
+            requestErrorMessage() {
+                if (this.classroomRequest.status === 'error')  return this.classroomRequest.message
+                if (this.allClassroomsRequest.status === 'error') return this.allClassroomsRequest.message
+
+                return null
+            },
         },
         methods: {
             ...mapActions('Classroom/Classroom', ['fetchClassroom']),
