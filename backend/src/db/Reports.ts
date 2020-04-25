@@ -60,7 +60,17 @@ export class ReportsRepository extends AbstractRepository<Report>
 	}
 
 	public async getReportsForComputer(computer : Computer, fixed: boolean = false){
-		return await this.repository.find({where: {computerId: computer.id, classroomName: computer.classroomName, fixed}});
+		return await this.repository.find({
+			where: {
+				computerId: computer.id,
+				classroomName: computer.classroomName,
+				fixed
+			},
+			order:{
+				urgent: "DESC",
+				timestamp: "DESC",
+			}
+		});
 	}
 
 
