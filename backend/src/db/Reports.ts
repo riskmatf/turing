@@ -1,7 +1,8 @@
-import {AbstractRepository, EntityRepository, FindOperator, In} from "typeorm";
+import {AbstractRepository, EntityRepository, FindOperator, getCustomRepository, In} from "typeorm";
 import { Report } from "../../entities/Report";
 import { Classroom } from "../../entities/Classroom";
 import {Computer} from "../../entities/Computer";
+import {ClassroomsRepository} from "./Classrooms";
 
 
 export interface IReportForSending{
@@ -27,7 +28,7 @@ export interface IFilter{
 		fixed?: boolean;
 		comments?: boolean;
 		broken?: boolean;
-		classrooms? : FindOperator<string>,
+		classroomName? : FindOperator<Classroom>,
 	}
 	take : number,
 	skip: number
@@ -37,15 +38,17 @@ export const PAGE_SIZE = 5;
 export class ReportsRepository extends AbstractRepository<Report>
 {
 	public async getReportsWithFilters(params : IFilter, loggedUser: string){
+	    console.log(params.whereParams);
 		const reports = await this.repository.find({
 			relations:["adminUsername", "classroomName"],
 			where:{
-				...params.whereParams,
+				...params.whereParams
 			},
 			take: params.take,
 			skip: params.skip
 
 		});
+		console.log(reports);
 		return reports.map(report => {
 			return ReportsRepository._mapReport(report, loggedUser);
 		});
@@ -64,9 +67,7 @@ export class ReportsRepository extends AbstractRepository<Report>
 	}
 
 	public async getMaxNumberOfPages(params : IFilter){
-		console.log(params.whereParams);
-		const tmp = await this.repository.findAndCount({where:{classroomName: In(["718"])}});
-		console.log(tmp[0]);
+		const tmp = await this.repository.findAndCount({where:{...params.whereParams}});
 		return Math.floor(tmp[1]/PAGE_SIZE);
 	}
 

@@ -1,4 +1,4 @@
-import { AbstractRepository, EntityRepository } from 'typeorm';
+import {AbstractRepository, EntityRepository, FindOperator, In} from 'typeorm';
 import { Classroom } from '../../entities/Classroom';
 import { imagesPaths } from '../index';
 interface IClassroom {

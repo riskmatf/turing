@@ -2,6 +2,7 @@ import express, {Request} from 'express';
 import {getCustomRepository, In} from "typeorm";
 import {IFilter, IReportForSending, PAGE_SIZE, ReportsRepository} from "../../db/Reports";
 import qs from 'qs';
+import {ClassroomsRepository} from "../../db/Classrooms";
 
 const adminReportsRouter = express.Router();
 
@@ -18,7 +19,7 @@ function getQueryParameters(req: Request){
         skip: page*PAGE_SIZE
     };
     if(query.classrooms){
-        params.whereParams.classrooms = In(query.classrooms as string[]);
+        params.whereParams.classroomName = In(query.classrooms as string[]);
     }
     if(query.locations){
         params.whereParams.locations = In(query.locations as string[]);
@@ -76,23 +77,23 @@ async function getLastUrl(req: Request, params : IFilter) {
 }
 
 adminReportsRouter.get("/", (req, res)=>{
-    const params : IFilter = getQueryParameters(req);
-    const repo = getCustomRepository(ReportsRepository);
-    repo.getReportsWithFilters(params, req.username).then(async (reports : IReportForSending[]) =>{
-        const ret = {
-            reports,
-            links: {
-                current: req.baseUrl + req.url,
-                next: await getNextUrl(req, params),
-                prev: getPreviousUrl(req),
-                first: getFirstUrl(req),
-                last: await getLastUrl(req, params)
-            }
-        };
+        const params : IFilter = getQueryParameters(req);
+        const repo = getCustomRepository(ReportsRepository);
+        repo.getReportsWithFilters(params, req.username).then(async (reports : IReportForSending[]) =>{
+            const ret = {
+                reports,
+                links: {
+                    current: req.baseUrl + req.url,
+                    next: await getNextUrl(req, params),
+                    prev: getPreviousUrl(req),
+                    first: getFirstUrl(req),
+                    last: await getLastUrl(req, params)
+                }
+            };
 
 
-        res.send(ret);
-    })
+            res.send(ret);
+        })
 });
 
 export default adminReportsRouter;
