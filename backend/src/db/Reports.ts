@@ -1,8 +1,7 @@
-import {AbstractRepository, EntityRepository, FindOperator, getCustomRepository, In} from "typeorm";
+import {AbstractRepository, EntityRepository, FindOperator, FindOperatorType, getCustomRepository, In} from "typeorm";
 import {Report} from "../../entities/Report";
 import {Classroom} from "../../entities/Classroom";
 import {Computer} from "../../entities/Computer";
-import {ClassroomsRepository} from "./Classrooms";
 import {IReportOverview} from "./Computers";
 
 
@@ -24,33 +23,38 @@ export interface IReportForSending{
 
 export interface IFilter{
     whereParams: {
-		locations?: FindOperator<string>;
 		urgent?: boolean;
 		fixed?: boolean;
-		comments?: boolean;
-		broken?: boolean;
+		adminComment?: FindOperator<any>;
 		classroomName? : FindOperator<Classroom>,
-	}
+	},
+	locations?: string[],
 	take : number,
 	skip: number
 }
-export const PAGE_SIZE = 5;
+export const PAGE_SIZE = 20;
 @EntityRepository(Report)
 export class ReportsRepository extends AbstractRepository<Report>
 {
 	public async getReportsWithFilters(params : IFilter, loggedUser: string){
-	    console.log(params.whereParams);
-		const reports = await this.repository.find({
+		let reports = await this.repository.find({
 			relations:["adminUsername", "classroomName"],
 			where:{
 				...params.whereParams
+
 			},
 			take: params.take,
 			skip: params.skip
 
 		});
-		console.log(reports);
-		return reports.map(report => {
+		if(params.locations !== undefined){
+			reports = reports.filter(report => {
+			    // ignore warning bcs it has if above... rly typescript?
+				// @ts-ignore
+				return params.locations.indexOf(report.classroomName.location) !== -1;
+			})
+		}
+		return reports .map(report => {
 			return ReportsRepository._mapReport(report, loggedUser);
 		});
 	}
@@ -68,8 +72,20 @@ export class ReportsRepository extends AbstractRepository<Report>
 	}
 
 	public async getMaxNumberOfPages(params : IFilter){
-		const tmp = await this.repository.findAndCount({where:{...params.whereParams}});
-		return Math.floor(tmp[1]/PAGE_SIZE);
+		let reports = await this.repository.find({
+			relations: ["classroomName"],
+			where:{
+				...params.whereParams
+			}
+		});
+		if(params.locations !== undefined){
+			reports = reports.filter(report => {
+				// ignore warning bcs it has if above... rly typescript?
+				// @ts-ignore
+				return params.locations.indexOf(report.classroomName.location) !== -1;
+			})
+		}
+		return Math.floor(reports.length/PAGE_SIZE);
 	}
 
 	private static _mapReport(report: Report, loggedUser: string = ""){
@@ -86,7 +102,6 @@ export class ReportsRepository extends AbstractRepository<Report>
 	}
 
 	public async addGeneralReport(data: IGeneralReport){
-		// can't use just if(!data.isGeneral) because that includes undefs and nulls
 		if(!data.isGeneral){
 			throw new Error("Report not marked as general!");
 		}

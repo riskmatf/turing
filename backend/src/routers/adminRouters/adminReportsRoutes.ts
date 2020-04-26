@@ -1,11 +1,20 @@
 import express, {Request} from 'express';
-import {getCustomRepository, In} from "typeorm";
+import {getCustomRepository, In, IsNull, Not} from "typeorm";
 import {IFilter, IReportForSending, PAGE_SIZE, ReportsRepository} from "../../db/Reports";
 import qs from 'qs';
-import {ClassroomsRepository} from "../../db/Classrooms";
 
 const adminReportsRouter = express.Router();
-
+function parseBoolean(value: string) : boolean{
+    if(value === "true"){
+        return true;
+    }
+    else if(value === "false"){
+        return false;
+    }
+    else{
+        throw new Error("BAD BOOLEAN PARAMETER");
+    }
+}
 function getQueryParameters(req: Request){
     const query = req.query;
     const page = req.query.page ? +req.query.page : 0;
@@ -18,75 +27,117 @@ function getQueryParameters(req: Request){
         params.whereParams.classroomName = In(query.classrooms as string[]);
     }
     if(query.locations){
-        params.whereParams.locations = In(query.locations as string[]);
-    }
-    if(query.broken){
-        params.whereParams.broken = JSON.parse(query.broken as string);
+        params.locations = query.locations as string[];
     }
     if(query.comments){
-        params.whereParams.comments = JSON.parse(query.comments as string);
+        try{
+            const hasComments = parseBoolean(query.comments as string);
+            if(hasComments){
+                params.whereParams.adminComment = Not(IsNull());
+            }
+            else{
+                params.whereParams.adminComment = IsNull();
+            }
+        }
+        catch(err){
+            console.log("ERROR PARSING BOOLEAN");
+            return undefined;
+        }
     }
     if(query.urgent){
-        params.whereParams.urgent = JSON.parse(query.urgent as string);
+        try{
+            params.whereParams.urgent = parseBoolean(query.urgent as string);
+        }
+        catch(err){
+            console.log("ERROR PARSING BOOLEAN");
+            return undefined;
+        }
     }
     if(query.fixed){
-        params.whereParams.fixed = JSON.parse(query.fixed as string);
+        try{
+            params.whereParams.fixed = parseBoolean(query.fixed as string);
+        }
+        catch(err){
+            console.log("ERROR PARSING BOOLEAN");
+            return undefined;
+        }
     }
     return params;
 }
 
-async function getNextUrl(req: Request, params: IFilter){
-    const repo = getCustomRepository(ReportsRepository);
-    if( +req.query.page >= (await repo.getMaxNumberOfPages(params))){
+function createUrl(req: Request, queryParams: any){
+    const host = req.headers.host;
+    let baseUrl = req.baseUrl;
+    if(!baseUrl.endsWith("?")){
+        baseUrl += "?";
+    }
+    const query = qs.stringify(queryParams);
+    return host + baseUrl + query;
+}
+
+function getNextUrl(req: Request, maxNumOfPages: number){
+    let page : number = 0;
+    if(req.query.page !== undefined){
+        page = +req.query.page;
+    }
+    if( page >= maxNumOfPages ){
         return undefined;
     }
-    const baseUrl = req.headers.host + req.baseUrl;
-    const queryParams = req.query;
-    queryParams.page = (+queryParams.page + 1).toString();
-    return baseUrl + qs.stringify(queryParams);
+    const queryParams = JSON.parse(JSON.stringify(req.query));
+    queryParams.page = (page + 1).toString();
+    return createUrl(req, queryParams);
 }
 
 
 function getPreviousUrl(req: Request) {
-    if(+req.query.page <= 0){
+    let page : number = 0;
+    if(req.query.page !== undefined){
+        page = +req.query.page;
+    }
+    if(page <= 0){
+        // no previous page
         return undefined;
     }
-    const baseUrl = req.headers.host + req.baseUrl;
-    const queryParams = req.query;
-    queryParams.page = (+queryParams.page - 1).toString();
-    return baseUrl + qs.stringify(queryParams);
+    const queryParams = JSON.parse(JSON.stringify(req.query));
+    queryParams.page = (page - 1).toString() ;
+    return createUrl(req, queryParams);
 }
 
 function getFirstUrl(req: Request) {
-    const baseUrl = req.headers.host + req.baseUrl;
-    const queryParams = req.query;
+    const queryParams = JSON.parse(JSON.stringify(req.query));
     queryParams.page = '0';
-    return baseUrl + qs.stringify(queryParams);
+    return createUrl(req, queryParams);
 }
 
-async function getLastUrl(req: Request, params : IFilter) {
-    const repo = getCustomRepository(ReportsRepository);
-    const baseUrl = req.headers.host + req.baseUrl;
-    const queryParams = req.query;
-    queryParams.page = (await repo.getMaxNumberOfPages(params)).toString();
-    return baseUrl + qs.stringify(queryParams);
+function getLastUrl(req: Request, maxNumOfPages : number) {
+    const queryParams = JSON.parse(JSON.stringify(req.query));
+    queryParams.page = (maxNumOfPages).toString();
+    return createUrl(req, queryParams);
 }
 
-adminReportsRouter.get("/", (req, res)=>{
-        const params : IFilter = getQueryParameters(req);
+adminReportsRouter.get("/", async (req, res)=>{
+        const params : IFilter | undefined = getQueryParameters(req);
+        if(params === undefined){
+            res.status(400).send({message: "LOŠI PARAMETRI!"});
+            return;
+        }
         const repo = getCustomRepository(ReportsRepository);
-        repo.getReportsWithFilters(params, req.username).then(async (reports : IReportForSending[]) =>{
+        const maxNumOfPages = await repo.getMaxNumberOfPages(params);
+        const nextUrl = getNextUrl(req, maxNumOfPages);
+        const prevUrl = getPreviousUrl(req);
+        const firstUrl = getFirstUrl(req);
+        const lastUrl = getLastUrl(req, maxNumOfPages);
+        repo.getReportsWithFilters(params, req.username).then((reports : IReportForSending[]) =>{
             const ret = {
                 reports,
-                links: {
-                    current: req.headers.host + req.baseUrl + req.url,
-                    next: await getNextUrl(req, params),
-                    prev: getPreviousUrl(req),
-                    first: getFirstUrl(req),
-                    last: await getLastUrl(req, params)
+                paging: {
+                    nextUrl,
+                    prevUrl,
+                    firstUrl,
+                    lastUrl,
+                    maxNumOfPages
                 }
             };
-
 
             res.send(ret);
         })
