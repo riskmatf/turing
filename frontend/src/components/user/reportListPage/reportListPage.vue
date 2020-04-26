@@ -45,7 +45,11 @@
                     class="card-right"
                     body-style="display: flex; flex-direction: column; flex-grow: 1; min-height: 0"
                 >
-                    <template v-if="!isReportSelected">
+
+                    <template v-if="reports.length === 0">
+                        Trenutno nema kvarova
+                    </template>
+                    <template v-else-if="!isReportSelected">
                         Odaberite kvar
                     </template>
                     <div v-else class="column full">
