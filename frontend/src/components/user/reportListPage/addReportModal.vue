@@ -1,11 +1,16 @@
 <template>
     <el-dialog
-        :title="generalInformation"
         :visible.sync="visibleModel"
         :fullscreen="fullscreen"
         :close-on-press-escape="!addingReport"
         :close-on-click-modal="!addingReport"
+        :show-close="false"
     >
+        <div slot="title" class="header">
+            <div class="close-button el-icon-close" @click="visibleModel = false"></div>
+            <div>{{ generalInformation }}</div>
+        </div>
+
         <div class="form-item">
             <label style="align-self: center">Hitan</label>
             <div>
@@ -28,6 +33,11 @@
 </template>
 
 <style lang="sass" scoped>
+    .header
+        display: flex
+        flex-direction: column
+        .close-button
+            align-self: flex-end
     .form-item
         display: grid
         grid-template-columns: auto 1fr
@@ -38,7 +48,6 @@
 </style>
 
 <script>
-    import _ from 'lodash'
     import { mapActions } from 'vuex'
     import { ReportDescription, ReportUrgentSwitch, ReportDate } from '@/components/_common/report'
 
@@ -51,7 +60,8 @@
         props: {
             visible: Boolean,
             classroomId: String,
-            computerId: [String, Number],
+            computerId: Number,
+            isGeneral: Boolean,
         },
         data() {
             return {
@@ -71,9 +81,6 @@
                     this.$emit('update:visible', val)
                 }
             },
-            isGeneral() {
-                return _.isNil(this.computerId)
-            },
             generalInformation() {
                 let message = `Prijavljivanje kvara u ucionici ${this.classroomId}`
                 if (!this.isGeneral) {
@@ -83,7 +90,7 @@
             },
         },
         methods: {
-            ...mapActions('Report/Report', ['addReport']),
+            ...mapActions('Report/Report', ['addReport', 'addGeneralReport']),
             resetState() {
                 this.currentDate = Math.round(Date.now() / 1000)
                 this.description = ''
@@ -99,13 +106,22 @@
                     return
                 }
                 this.addingReport = true
-                this.addReport({
-                    computerId: this.computerId,
-                    classroomId: this.classroomId,
-                    description: this.description,
-                    isGeneral: this.isGeneral,
-                    isUrgent: this.isUrgent,
-                }).then(() => {
+                let promise = null
+                if (this.isGeneral) {
+                    promise = this.addGeneralReport({
+                        classroomId: this.classroomId,
+                        description: this.description,
+                        isUrgent: this.isUrgent,
+                    })
+                } else {
+                    promise = this.addReport({
+                        computerId: this.computerId,
+                        classroomId: this.classroomId,
+                        description: this.description,
+                        isUrgent: this.isUrgent,
+                    })
+                }
+                promise.then(() => {
                     this.$emit('change')
                 }).catch((e) => {
                     this.addingReport = false
