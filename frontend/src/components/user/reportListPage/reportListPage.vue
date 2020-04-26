@@ -133,6 +133,7 @@
                         display: none
                         @media ($mobileBreakPoint)
                             display: block
+                            margin-bottom: 10px
     .loader
         padding: 20px
 

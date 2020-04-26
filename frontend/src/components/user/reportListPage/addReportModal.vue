@@ -6,15 +6,14 @@
         :close-on-press-escape="!addingReport"
         :close-on-click-modal="!addingReport"
     >
-        <report-date :report-date="currentDate"/>
         <div class="form-item">
-            <label>Hitan</label>
+            <label style="align-self: center">Hitan</label>
             <div>
                 <report-urgent-switch v-model="isUrgent" yes-text="Jeste hitan" no-text="Nije hitan"/>
             </div>
         </div>
         <div class="form-item">
-            <label>Opis*</label>
+            <label>Opis<span style="color: red">*</span></label>
             <report-description v-model="description" :max-rows="6" :min-rows="3"/>
         </div>
 
@@ -24,6 +23,7 @@
             </el-button>
             <el-button size="small" @click="visibleModel = false">Otkazi</el-button>
         </div>
+        <report-date :report-date="currentDate"/>
     </el-dialog>
 </template>
 
@@ -32,6 +32,7 @@
         display: grid
         grid-template-columns: auto 1fr
         margin-bottom: 10px
+        padding-top: -10px
         label
             margin-right: 10px
 </style>
