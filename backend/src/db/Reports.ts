@@ -6,7 +6,7 @@ import {ClassroomsRepository} from "./Classrooms";
 import {IReportOverview} from "./Computers";
 
 
-interface IReport{
+export interface IReportForSending{
     reportId: number,
     computerId: number | null,
     classroomName: string,

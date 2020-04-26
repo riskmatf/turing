@@ -6,10 +6,6 @@ import {ClassroomsRepository} from "../../db/Classrooms";
 
 const adminReportsRouter = express.Router();
 
-interface IAdminReport  extends IReportForSending
-{
-    canChangeComment? : boolean
-}
 function getQueryParameters(req: Request){
     const query = req.query;
     const page = req.query.page ? +req.query.page : 0;
@@ -44,7 +40,7 @@ async function getNextUrl(req: Request, params: IFilter){
     if( +req.query.page >= (await repo.getMaxNumberOfPages(params))){
         return undefined;
     }
-    const baseUrl = req.baseUrl;
+    const baseUrl = req.headers.host + req.baseUrl;
     const queryParams = req.query;
     queryParams.page = (+queryParams.page + 1).toString();
     return baseUrl + qs.stringify(queryParams);
@@ -55,14 +51,14 @@ function getPreviousUrl(req: Request) {
     if(+req.query.page <= 0){
         return undefined;
     }
-    const baseUrl = req.baseUrl;
+    const baseUrl = req.headers.host + req.baseUrl;
     const queryParams = req.query;
     queryParams.page = (+queryParams.page - 1).toString();
     return baseUrl + qs.stringify(queryParams);
 }
 
 function getFirstUrl(req: Request) {
-    const baseUrl = req.baseUrl;
+    const baseUrl = req.headers.host + req.baseUrl;
     const queryParams = req.query;
     queryParams.page = '0';
     return baseUrl + qs.stringify(queryParams);
@@ -70,7 +66,7 @@ function getFirstUrl(req: Request) {
 
 async function getLastUrl(req: Request, params : IFilter) {
     const repo = getCustomRepository(ReportsRepository);
-    const baseUrl = req.baseUrl;
+    const baseUrl = req.headers.host + req.baseUrl;
     const queryParams = req.query;
     queryParams.page = (await repo.getMaxNumberOfPages(params)).toString();
     return baseUrl + qs.stringify(queryParams);
@@ -83,7 +79,7 @@ adminReportsRouter.get("/", (req, res)=>{
             const ret = {
                 reports,
                 links: {
-                    current: req.baseUrl + req.url,
+                    current: req.headers.host + req.baseUrl + req.url,
                     next: await getNextUrl(req, params),
                     prev: getPreviousUrl(req),
                     first: getFirstUrl(req),
