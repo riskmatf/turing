@@ -7,7 +7,7 @@
                         class="breadcrumbs"
                 />
                 <div class="row">
-                    <div class="name">Reports for computer #{{ computerId }} in classroom {{ classroomId }}</div>
+                    <div class="name">{{ pageTitle }}</div>
                     <el-button size="mini" @click="isReportModalVisible=true">
                         Prijavi kvar
                     </el-button>
@@ -15,7 +15,8 @@
                         :visible.sync="isReportModalVisible"
                         :computer-id="computerId"
                         :classroom-id="classroomId"
-                        @change="commentAdded"
+                        :is-general="areGeneralReports"
+                        @change="reportAdded"
                     />
                 </div>
             </page-header>
@@ -115,7 +116,7 @@
                 display: flex
                 @media ($mobileBreakPoint)
                     width: 0
-                    margin-right: 0px
+                    margin-right: 0
                     &.active
                         width: 100%
             .card-right
@@ -191,7 +192,7 @@
                                return { name: computerId, to: { name: 'reportListPage', params: { computerId: computerId } } }
                            }),
                        ],
-                        currentName: this.computerId === 'general' ? 'opsti' : this.computerId
+                       currentName: this.areGeneralReports ? 'opsti' : this.computerId
                     }
                 ]
             },
@@ -199,7 +200,9 @@
                 return this.$route.params.classroomId
             },
             computerId() {
-                return this.$route.params.computerId
+                if (this.areGeneralReports) return null
+
+                return parseInt(this.$route.params.computerId, 10)
             },
             requestStatus() {
                 if (
@@ -248,12 +251,22 @@
             currentSelectedReport() {
                 const report = _.find(this.reports, (report) => report.reportId === this.selectedReportId)
                 return report || null
+            },
+            areGeneralReports() {
+                return this.$route.params.computerId === 'general'
+            },
+            pageTitle() {
+                let result = `Kvarovi u ucionici ${this.classroomId}`
+                if (!this.areGeneralReports) {
+                    result += ` na racunaru #${this.computerId}`
+                }
+                return result
             }
         },
         methods: {
             ...mapActions('Classroom/Classroom', ['fetchClassroom']),
             ...mapActions('Classroom/AllClassrooms', ['fetchAllClassrooms']),
-            ...mapActions('Report/ComputerReports', ['fetchComputerReports']),
+            ...mapActions('Report/ComputerReports', ['fetchComputerReports', 'fetchGeneralReports']),
             ...mapActions('Report/Report', ['fetchReport']),
             ...mapMutations('Report/Report', ['clearReportData']),
             getData() {
@@ -267,7 +280,11 @@
 
                 if (this.computerReportsRequest.status === 'loading') return
 
-                this.fetchComputerReports({ classroomId: this.classroomId, computerId: this.computerId, })
+                if (!this.areGeneralReports) {
+                    this.fetchComputerReports({ classroomId: this.classroomId, computerId: this.computerId, })
+                } else {
+                    this.fetchGeneralReports({ classroomId: this.classroomId })
+                }
             },
             getReportData(reportId) {
                 if (this.isReportSelected) {
@@ -286,7 +303,7 @@
                     this.$router.replace({ query: { reportId: report.reportId } })
                 }
             },
-            commentAdded() {
+            reportAdded() {
                 this.isReportModalVisible = false
                 this.getData()
             },

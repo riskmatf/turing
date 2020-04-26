@@ -47,7 +47,7 @@ export default {
                     computerId: report.computerId,
                     classroomName: report.classroomId,
                     urgent: report.isUrgent,
-                    isGeneral: report.isGeneral,
+                    isGeneral: false,
                     description: report.description,
                 })
                 return response.data
@@ -55,6 +55,19 @@ export default {
                 throw _.get(e, 'response.data.message', 'Failed')
             }
 
+        },
+        async addGeneralReport(scope, report) {
+            try {
+                const response = await Vue.$http.post('/api/v1/reports', {
+                    classroomName: report.classroomId,
+                    urgent: report.isUrgent,
+                    isGeneral: true,
+                    description: report.description,
+                })
+                return response.data
+            } catch (e) {
+                throw _.get(e, 'response.data.message', 'Failed')
+            }
         }
     },
 }

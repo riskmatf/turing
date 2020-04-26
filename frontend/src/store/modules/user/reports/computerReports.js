@@ -25,19 +25,29 @@ export default {
     actions: {
         async fetchComputerReports({ commit }, { classroomId, computerId }) {
             commit('setRequest', { request: { status: 'loading' } })
-
             try {
                 const serverResponse = await Vue.$http.get(
-                    '/api/v1/reports',  { params: { computerId: computerId, classroomName: classroomId, } }
+                    '/api/v1/reports',  { params: { computerId: computerId, classroomName: classroomId }}
                 )
                 commit('setRequest', { request: { status: 'success', response: serverResponse.data } })
-                // commit('setRequest', { request: { status: 'success', response: reports } })
                 return serverResponse.data
             } catch (e) {
                 commit('setRequest', { request: { status: 'error', message: _.get(e, 'response.data.message', 'Failed') } })
                 throw e
             }
-
+        },
+        async fetchGeneralReports({ commit }, { classroomId }) {
+            commit('setRequest', { request: { status: 'loading' } })
+            try {
+                const serverResponse = await Vue.$http.get(
+                    '/api/v1/reports',  { params: { classroomName: classroomId }}
+                )
+                commit('setRequest', { request: { status: 'success', response: serverResponse.data } })
+                return serverResponse.data
+            } catch (e) {
+                commit('setRequest', { request: { status: 'error', message: _.get(e, 'response.data.message', 'Failed') } })
+                throw e
+            }
         }
     },
 }

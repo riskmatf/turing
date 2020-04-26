@@ -11,7 +11,7 @@
         <div class="row marginer-bottom">
             <report-date class="date-full" :report-date="report.timestamp"/>
             <report-urgent-icon 
-                :is-urgent="report.isUrgent"
+                :is-urgent="report.urgent"
                 class="marginer-right"
             />
             <report-computer-location
