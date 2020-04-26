@@ -66,6 +66,10 @@ export class ReportsRepository extends AbstractRepository<Report>
 				classroomName,
 				isGeneral: true,
 				fixed
+			},
+			order:{
+				urgent: "DESC",
+				timestamp: "DESC",
 			}
 		});
 		const mappedReports: IReportOverview[] = reports.map(rep=>{
