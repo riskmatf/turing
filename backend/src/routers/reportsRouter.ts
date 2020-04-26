@@ -74,7 +74,7 @@ reportsRouter.post("/", (req, resp)=>{
 	}
 	let promise : Promise<Report>;
 	if(!req.body.isGeneral){
-		const computerId = Number(req.body.computerId);
+		const computerId = +req.body.computerId;
 		if(isNaN(computerId)){
 			resp.status(400).send(`ComputerId is NaN`);
 			return;

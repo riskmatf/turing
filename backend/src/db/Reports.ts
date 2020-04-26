@@ -112,7 +112,7 @@ export class ReportsRepository extends AbstractRepository<Report>
 		const computer = new Computer();
 
 		classroom.name = data.classroomName; // save fill fail if name is bad
-		if(data.computerId)
+		if(data.computerId !== undefined)
 			computer.id = data.computerId;
 		report.classroomName = classroom;
 		if(!data.isGeneral)
