@@ -18,6 +18,9 @@ function parseBoolean(value: string) : boolean{
 function getQueryParameters(req: Request){
     const query = req.query;
     const page = req.query.page ? +req.query.page : 0;
+    if(page < 0){
+        return undefined;
+    }
     const params :IFilter = {
         whereParams: {},
         take: PAGE_SIZE,
