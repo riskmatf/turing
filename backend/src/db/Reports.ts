@@ -44,7 +44,11 @@ export class ReportsRepository extends AbstractRepository<Report>
 
 			},
 			take: params.take,
-			skip: params.skip
+			skip: params.skip,
+			order:{
+				urgent: "DESC",
+				timestamp: "DESC",
+			}
 
 		});
 		if(params.locations !== undefined){
