@@ -6,6 +6,7 @@ import {getCustomRepository} from "typeorm";
 import accountManagementRouter from "./adminAccountManagementRouter";
 import authRouter from "./adminAuthRouter";
 import adminReportsRouter from "./adminReportsRoutes";
+import adminClassroomsRouter from "./adminClassroomsRouter";
 
 const adminRouter = express.Router();
 declare global {
@@ -90,6 +91,7 @@ adminRouter.head('/displayName', (req, res)=>{
 });
 
 adminRouter.use("/reports", adminReportsRouter);
+adminRouter.use("/classrooms", adminClassroomsRouter);
 
 adminRouter.head('/username', (req, res)=>{
     if(req.query && req.query.username){

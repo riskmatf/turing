@@ -1,4 +1,4 @@
-import {AbstractRepository, EntityRepository, FindOperator, In} from 'typeorm';
+import {AbstractRepository, EntityRepository} from 'typeorm';
 import { Classroom } from '../../entities/Classroom';
 import { imagesPaths } from '../index';
 interface IClassroom {
@@ -40,5 +40,8 @@ export class ClassroomsRepository extends AbstractRepository<Classroom>{
 			}
 		});
 		return mappedClassrooms;
+	}
+	public async deleteClassroom(classroomName: string){
+		return this.repository.delete(classroomName);
 	}
 }
