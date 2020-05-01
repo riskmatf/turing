@@ -11,7 +11,7 @@
             >
                 <el-collapse-item :title="location">
                     <classroom-grid :classroomList="classrooms" class="classroom-grid">
-                        <template v-slot="{ classroom }" >
+                        <template v-slot="{ classroom }">
                             <classroom :classroom="classroom" class="classroom" :key="classroom.name"/>
                         </template>
                     </classroom-grid>
@@ -68,13 +68,12 @@
 
 <script>
     import Breadcrumbs from '@/components/_common/breadcrumbs/breadcrumbs'
-    import Classroom from './classroom'
     import ClassroomGrid from '@/components/_common/classroomGrid'
     import PageHeader from '@/components/_common/pageHeader'
+    import Classroom from './classroom'
     import { mapGetters, mapActions, mapState } from 'vuex'
 
     export default {
-        name: 'classroom-list-page',
         components: {
             Breadcrumbs,
             ClassroomGrid,

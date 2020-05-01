@@ -1,5 +1,9 @@
-import LoginPage from './login'
+import BaseLayout from './baseLayout'
+import HomePage from './homePage'
+import { ClassroomListPage } from './classroomListPage'
 
 export {
-    LoginPage,
+    BaseLayout,
+    HomePage,
+    ClassroomListPage,
 }

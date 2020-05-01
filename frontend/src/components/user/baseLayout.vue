@@ -1,5 +1,5 @@
 <template>
-    <base-layout>
+    <base-layout targetHomePage="homePage">
         <template v-slot:topBar>
             <el-menu-item index="1" :route="{ name: 'homePage' }">
                 Pocetna
