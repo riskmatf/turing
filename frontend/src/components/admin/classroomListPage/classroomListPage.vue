@@ -2,6 +2,9 @@
     <div>
         <page-header>
             <breadcrumbs :paths="breadcrumbData" class="breadcrumbs"/>
+            <div class="positioner">
+                <el-button size="mini">Dodaj ucionicu</el-button>
+            </div>
         </page-header>
         <div class="location-container">
             <el-collapse 
@@ -28,6 +31,11 @@
         margin-top: 5px
         margin-bottom: 5px
         margin-left: 2px
+    .positioner
+        display: flex
+        flex-direction: row
+        justify-content: flex-end
+        padding-right: 5px
     .location-container
         display: flex
         flex-direction: column

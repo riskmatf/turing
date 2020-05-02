@@ -13,13 +13,29 @@
                 Ucionice 
             </el-menu-item>
 
-            <el-menu-item index="04">
-                Admin nalog
-            </el-menu-item>
+            <el-submenu index="04">
+                <template slot="title">Nalog</template>
+                <el-menu-item index="04-1">
+                    <div>
+                        <i class="el-icon-setting"></i>
+                        <span>Podesavanja</span>
+                    </div>
+                </el-menu-item>
 
-            <el-menu-item index="05">
-                Dodaj admin nalog
-            </el-menu-item>
+                <el-menu-item index="04-2">
+                    <div>
+                        <i class="el-icon-user"></i>
+                        <span>Dodaj novog admina</span>
+                    </div>
+                </el-menu-item>
+
+                <el-menu-item index="04-3">
+                    <div>
+                        <i class="el-icon-right"></i>                    
+                        <span>Odjava</span>
+                    </div>
+                </el-menu-item>
+            </el-submenu>
         </template>
 
         <template v-slot:body>
@@ -30,7 +46,9 @@
 
 
 <style lang="sass" scoped>
-
+    .centerer
+        display: flex  
+        flex-direction: row
 </style>
 
 <script>
