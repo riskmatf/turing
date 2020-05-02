@@ -22,7 +22,7 @@ export default {
                 commit('setRequest', { request: { status: 'error', message: _.get(e, 'message', 'Failed') } })
                 throw e
             }
-        }
+        },
     },
     getters: {
         classroomsGroupedByLocation(state) {

@@ -29,7 +29,7 @@
                     </div>
                 </el-menu-item>
 
-                <el-menu-item index="04-3">
+                <el-menu-item @click="logoutUser">
                     <div>
                         <i class="el-icon-right"></i>                    
                         <span>Odjava</span>
@@ -53,13 +53,23 @@
 
 <script>
     import { BaseLayout } from '@/components/_common/baseLayout'
-    import { adminStore } from '@/store'
-    
+    import { mapActions } from 'vuex'
+
     export default {
         name: 'admin-base-layout',
-        store: adminStore,
         components: {
             BaseLayout
         },
+        methods: {
+            ...mapActions('Admin/Admin', ['logout']),
+            logoutUser() {
+                this.logout()
+                .then(() => {
+                    this.$router.replace({ name: 'adminLogin' })
+                }).catch((e) => {
+                    this.$message({ message: `Odjavljivanje nije uspelo: ${e}` })
+                })
+            },
+        }
     }
 </script>

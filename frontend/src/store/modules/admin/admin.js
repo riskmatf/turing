@@ -1,15 +1,51 @@
+import Vue from 'vue'
+import _ from 'lodash'
+
 export default {
     namespaced: true,
     state: {
-
+        adminData: null,
+        isAdminLoggedIn: false,
     },
     getters: {
 
     },
     mutations: {
-
+        setAdminLoggedInState(state, { adminData, isAdminLoggedIn }) {
+          state.adminData = adminData
+          state.isAdminLoggedIn = isAdminLoggedIn
+        },
+        clearLoginState(state) {
+            state.adminData = null
+            state.isAdminLoggedIn = false
+        },
     },
     actions: {
-
+        async whoami({ commit }) {
+            try {
+                let serverResponse = await Vue.$http.get('/api/v1/admin/whoami')
+                commit('setAdminLoggedInState', { adminData: serverResponse.data, isAdminLoggedIn: true })
+                return serverResponse.data
+            } catch (e) {
+                commit('clearLoginState')
+                throw _.get(e, 'response.data.message', 'Failed whoami')
+            }
+        },
+        async login({ dispatch }, { username, password }) {
+            try {
+                await Vue.$http.post('/api/v1/admin/login', { username, password })
+                await dispatch('whoami')
+            } catch (e) {
+                throw _.get(e, 'response.data.message', 'Failed login')
+            }
+        },
+        async logout({ commit }) {
+            try {
+                await Vue.$http.post('/api/v1/admin/logout')
+                commit('clearLoginState')
+            } catch (e) {
+                throw _.get(e, 'response.data.message', 'Failed logout')
+            }
+        },
     },
 }
