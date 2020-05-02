@@ -5,6 +5,7 @@ import  VueRouter from 'vue-router'
 // import { ClassroomListPage } from '@/components/user/classroomListPage'
 // import { ClassroomPage } from '@/components/user/classroomPage'
 
+import store from "@/store";
 import {
     HomePage,
     BaseLayout,
@@ -14,36 +15,53 @@ import {
     ReportListPage,
     NotFoundPage,
 } from '@/components/user'
+import {
+    LoginPage,
+} from '@/components/admin'
 
 Vue.use(VueRouter)
-
 const RouterView = { render(createElement){return createElement('router-view')} }
-
+const BaseComponent = {
+    store: store,
+    render(h) {
+        return h('router-view')
+    }
+}
 const routes = [
     {
         path: '/',
-        component: BaseLayout,
+        component: BaseComponent,
         children: [
-            { path: '', name: 'homePage', component: HomePage, meta: { index: '1' }},
             {
-                path: '/classrooms',
-                component: RouterView,
+                path: 'admin/login',
+                component: LoginPage,
+            },
+            {
+                path: '',
+                component: BaseLayout,
                 children: [
-                    { path: '', name: 'classroomListPage', component: ClassroomListPage, meta: { index: '2' } },
+                    { path: '', name: 'homePage', component: HomePage, meta: { index: '1' }},
                     {
-                        path: ':classroomId',
+                        path: '/classrooms',
                         component: RouterView,
                         children: [
-                            { path: '', name: 'classroomPage', component: ClassroomPage, meta: { index: '2' }},
-                            { path: ':computerId', name: 'reportListPage', component: ReportListPage, meta: { index: '2' } }
+                            { path: '', name: 'classroomListPage', component: ClassroomListPage, meta: { index: '2' } },
+                            {
+                                path: ':classroomId',
+                                component: RouterView,
+                                children: [
+                                    { path: '', name: 'classroomPage', component: ClassroomPage, meta: { index: '2' }},
+                                    { path: ':computerId', name: 'reportListPage', component: ReportListPage, meta: { index: '2' } }
+                                ]
+                            },
                         ]
                     },
+                    { path: '/tutorial', name: 'tutorialPage', component: TutorialPage, meta: { index: '3' }},
+                    { path: '/*', name: 'notFound', component: NotFoundPage }
                 ]
-            },
-            { path: '/tutorial', name: 'tutorialPage', component: TutorialPage, meta: { index: '3' }},
-            { path: '/*', name: 'notFound', component: NotFoundPage }
-        ]
-    }
+            }
+        ],
+    },
 ]
 
 

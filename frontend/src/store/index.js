@@ -1,7 +1,13 @@
-import userStore from './userStore'
-import adminStore from './adminStore'
+import Vuex from 'vuex'
+import Vue from 'vue'
+import User from './userStore'
+import Admin from './adminStore'
 
-export {
-    userStore,
-    adminStore,
-}
+Vue.use(Vuex)
+
+export default new Vuex.Store({
+    modules: {
+        Admin,
+        User,
+    }
+})

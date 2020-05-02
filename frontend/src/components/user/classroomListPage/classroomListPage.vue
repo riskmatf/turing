@@ -88,11 +88,11 @@
                         { name: 'ucionice', to: { name: 'classroomListPage' } }
                        ]
             },
-            ...mapGetters('Classroom/AllClassrooms', ['classroomsGroupedByLocation']),
-            ...mapState('Classroom/AllClassrooms', ['request']),
+            ...mapGetters('User/Classroom/AllClassrooms', ['classroomsGroupedByLocation']),
+            ...mapState('User/Classroom/AllClassrooms', ['request']),
         },
         methods: {
-            ...mapActions('Classroom/AllClassrooms', ['fetchAllClassrooms'])
+            ...mapActions('User/Classroom/AllClassrooms', ['fetchAllClassrooms'])
         },
         created() {
             if (this.request.status === 'loading') {

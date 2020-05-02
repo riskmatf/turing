@@ -1,14 +1,15 @@
-import Admin from './modules/admin/admin'
-
 export default {
     namespaced: true,
     state: {
+
+    },
+    getters: {
+
     },
     mutations: {
+
     },
     actions: {
+
     },
-    modules: {
-        Admin,
-    }
 }

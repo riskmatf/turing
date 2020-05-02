@@ -1,12 +1,8 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-
 import Classroom from './modules/user/classrooms'
 import Report from  './modules/user/reports'
 
-Vue.use(Vuex)
-
-export default new Vuex.Store({
+export default {
+    namespaced: true,
     state: {
     },
     mutations: {
@@ -17,4 +13,4 @@ export default new Vuex.Store({
         Classroom,
         Report,
     }
-})
+}

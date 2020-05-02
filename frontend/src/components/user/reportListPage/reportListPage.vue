@@ -171,14 +171,14 @@
             }
         },
         computed: {
-            ...mapState('Classroom/Classroom', { classroomRequest: 'request' }),
-            ...mapGetters('Classroom/Classroom', ['classroom']),
-            ...mapState('Classroom/AllClassrooms', { allClassroomsRequest: 'request' }),
-            ...mapGetters('Classroom/AllClassrooms', ['allClassrooms']),
-            ...mapState('Report/ComputerReports', { computerReportsRequest: 'request' }),
-            ...mapGetters('Report/ComputerReports', ['reports']),
-            ...mapState('Report/Report', { reportRequest: 'request' }),
-            ...mapGetters('Report/Report', ['report']),
+            ...mapState('User/Classroom/Classroom', { classroomRequest: 'request' }),
+            ...mapGetters('User/Classroom/Classroom', ['classroom']),
+            ...mapState('User/Classroom/AllClassrooms', { allClassroomsRequest: 'request' }),
+            ...mapGetters('User/Classroom/AllClassrooms', ['allClassrooms']),
+            ...mapState('User/Report/ComputerReports', { computerReportsRequest: 'request' }),
+            ...mapGetters('User/Report/ComputerReports', ['reports']),
+            ...mapState('User/Report/Report', { reportRequest: 'request' }),
+            ...mapGetters('User/Report/Report', ['report']),
             breadcrumbData() {
                 return [
                     { name: 'pocetna', to: { name: 'homePage' } },
@@ -268,11 +268,11 @@
             }
         },
         methods: {
-            ...mapActions('Classroom/Classroom', ['fetchClassroom']),
-            ...mapActions('Classroom/AllClassrooms', ['fetchAllClassrooms']),
-            ...mapActions('Report/ComputerReports', ['fetchComputerReports', 'fetchGeneralReports']),
-            ...mapActions('Report/Report', ['fetchReport']),
-            ...mapMutations('Report/Report', ['clearReportData']),
+            ...mapActions('User/Classroom/Classroom', ['fetchClassroom']),
+            ...mapActions('User/Classroom/AllClassrooms', ['fetchAllClassrooms']),
+            ...mapActions('User/Report/ComputerReports', ['fetchComputerReports', 'fetchGeneralReports']),
+            ...mapActions('User/Report/Report', ['fetchReport']),
+            ...mapMutations('User/Report/Report', ['clearReportData']),
             getData() {
                 if (['error', 'notInitialized'].includes(this.allClassroomsRequest.status)) {
                     this.fetchAllClassrooms()

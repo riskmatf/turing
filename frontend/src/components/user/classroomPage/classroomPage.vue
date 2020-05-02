@@ -101,10 +101,10 @@
             ClassroomName,
         },
         computed: {
-            ...mapState('Classroom/Classroom', {classroomRequest: 'request'}),
-            ...mapGetters('Classroom/Classroom', ['classroom']),
-            ...mapState('Classroom/AllClassrooms', {allClassroomsRequest: 'request'}),
-            ...mapGetters('Classroom/AllClassrooms', ['allClassrooms']),
+            ...mapState('User/Classroom/Classroom', {classroomRequest: 'request'}),
+            ...mapGetters('User/Classroom/Classroom', ['classroom']),
+            ...mapState('User/Classroom/AllClassrooms', {allClassroomsRequest: 'request'}),
+            ...mapGetters('User/Classroom/AllClassrooms', ['allClassrooms']),
             breadcrumbData() {
                 return [
                     { name: 'pocetna', to: { name: 'homePage' } },
@@ -141,8 +141,8 @@
             },
         },
         methods: {
-            ...mapActions('Classroom/Classroom', ['fetchClassroom']),
-            ...mapActions('Classroom/AllClassrooms', ["fetchAllClassrooms"]),
+            ...mapActions('User/Classroom/Classroom', ['fetchClassroom']),
+            ...mapActions('User/Classroom/AllClassrooms', ["fetchAllClassrooms"]),
             computerClick(computerId) {
                 const computer = this.classroom.computers.find(({ computerId:cId }) => cId === computerId)
                 if (computer !== undefined && computer.isBroken) {

@@ -90,7 +90,7 @@
             },
         },
         methods: {
-            ...mapActions('Report/Report', ['addReport', 'addGeneralReport']),
+            ...mapActions('User/Report/Report', ['addReport', 'addGeneralReport']),
             resetState() {
                 this.currentDate = Math.round(Date.now() / 1000)
                 this.description = ''
