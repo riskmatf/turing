@@ -4,7 +4,9 @@
             <template v-slot:header>
                 <div class="row">
                     <classroom-name :classroomName="classroom.name"/>
-                    <div class="aligner"><i class="el-icon-delete text-danger" @click="confirmDelete"></i></div>
+                    <div class="aligner">
+                        <i class="el-icon-delete text-danger" @click="(e)=>confirmDelete(e, classroom.name)"></i>
+                    </div>
                 </div>
             </template>
             <div class="column">
@@ -36,6 +38,7 @@
 
 <script>
     import { ClassroomCompCount, ClassroomName, ClassroomImage, } from '@/components/_common/classroom'
+    import { mapActions } from 'vuex'
 
     export default {
         components: {
@@ -57,7 +60,7 @@
             },
         },
         methods: {
-            confirmDelete(e) {
+            confirmDelete(e, classroomId) {
                 e.stopImmediatePropagation()
                 this.$confirm('Da li zelite da uklonite ucionicu?', {
                         cancelButtonText: 'Otkazi',
@@ -65,17 +68,23 @@
                         customClass: 'message-box-reversed',
                     }
                 ).then(() => {
-                        this.$message({
-                            type: 'success',
-                            message: 'Ucionica obrisana'
-                        })
-                }).catch(() => {
-                        this.$message({
-                            type: 'info',
-                            message: 'Brisanje otkazano'
-                        }) 
+                        this.deleteClassroom({ classroomId })
+                            .then(()=> {
+                                this.$message({
+                                    type: 'success',
+                                    message: 'Ucionica obrisana'
+                                })
+                                this.$emit('change')
+                            }).catch((e)=>{
+                                this.$message({
+                                    type: 'error',
+                                    message: `Brisanje neuspesno: ${e}`,
+                                })
+                            })
+                        
                 })
             },
+            ...mapActions('Admin/Classroom/AllClassrooms', ['deleteClassroom'])
         },
     }
 </script>

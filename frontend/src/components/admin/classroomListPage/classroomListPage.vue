@@ -5,21 +5,30 @@
             <div class="positioner">
                 <el-button size="mini">Dodaj ucionicu</el-button>
             </div>
-        </page-header>
-        <div class="location-container">
+        </page-header>      
+        <div v-if="request.status === 'success'" class="location-container">
             <el-collapse 
-                v-for="(classrooms, location) in classroomData"
+                v-for="(classrooms, location) in classroomsGroupedByLocation"
                 :key="location"
                 class="collapse"
             >
                 <el-collapse-item :title="location">
                     <classroom-grid :classroomList="classrooms" class="classroom-grid"> 
                         <template v-slot="{ classroom }">
-                            <classroom :classroom="classroom" class="classroom" :key="classroom.name"/>
+                            <classroom :classroom="classroom" class="classroom" 
+                                :key="classroom.name" @change="fetchAllClassrooms"/>
                         </template>
                     </classroom-grid>
                 </el-collapse-item>
             </el-collapse>
+        </div>
+        <template v-else-if="request.status === 'loading'">
+            <div class="loading">
+                Loading...
+            </div> 
+        </template>
+        <div v-else-if="request.status === 'error'" class="text-danger">
+            Error: {{ request.message }}
         </div>
     </div>
 </template>
@@ -61,6 +70,8 @@
             padding-left: 15px
             font-size: 14px
             font-weight: bold
+    .loading
+        margin: 20px
 </style>
 
 <script>
@@ -68,6 +79,7 @@
     import ClassroomGrid from '@/components/_common/classroomGrid'
     import PageHeader from '@/components/_common/pageHeader'
     import Classroom from './classroom'
+    import { mapGetters, mapActions, mapState } from 'vuex'
 
     export default {
         components: {
@@ -83,38 +95,17 @@
                         { name: 'ucionice', to: { name: 'adminClassroomListPage' } }
                        ]
             },
-            classroomData() {
-                return  {"Trg":[
-                    {
-                        "name":"704",
-                        "location":"Trg",
-                        "numberOfComputers":{"working":16,"broken":0},
-                        "imageUrl":"http://localhost:3000/static/images/704.jpg",
-                        "schemaUrl":"http://localhost:3000/static/schemas/704.svg"
-                    },
-                    {
-                        "name":"718",
-                        "location":"Trg",
-                        "numberOfComputers":{"working":21,"broken":0},
-                        "imageUrl":"http://localhost:3000/static/images/718.jpg",
-                        "schemaUrl":"http://localhost:3000/static/schemas/718.svg"
-                    },
-                    {
-                        "name":"bim",
-                        "location":"Trg",
-                        "numberOfComputers":{"working":21,"broken":0},
-                        "imageUrl":"http://localhost:3000/static/images/bim.jpg",
-                        "schemaUrl":"http://localhost:3000/static/schemas/bim.svg"
-                    },
-                    {
-                        "name":"dlab",
-                        "location":"Trg",
-                        "numberOfComputers":{"working":11,"broken":0},
-                        "imageUrl":"http://localhost:3000/static/images/dlab.jpg",
-                        "schemaUrl":"http://localhost:3000/static/schemas/dlab.svg"
-                    },
-                ]}
-            }
+            ...mapGetters('Admin/Classroom/AllClassrooms', ['classroomsGroupedByLocation']),
+            ...mapState('Admin/Classroom/AllClassrooms', ['request']),
         },
+        methods: {
+            ...mapActions('Admin/Classroom/AllClassrooms', ['fetchAllClassrooms']),
+        },
+        created() {
+            if (this.request.status === 'loading') {
+                return
+            }
+            this.fetchAllClassrooms()
+        }
     }
 </script>
