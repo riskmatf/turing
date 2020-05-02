@@ -4,6 +4,7 @@ import { ComputersRepository } from '../db/Computers';
 import { ClassroomsRepository } from '../db/Classrooms';
 import { getCustomRepository } from 'typeorm';
 import { serverError } from '../apiRouter';
+import {ReportsRepository} from "../db/Reports";
 const classroomsRouter = express.Router();
 
 
@@ -16,19 +17,25 @@ classroomsRouter.get("/", (req, resp)=>{
 	});
 });
 
-classroomsRouter.get("/:classroomName/computers", (req, resp)=>{
+classroomsRouter.get("/:classroomName", (req, resp)=>{
 	const computerRepo = getCustomRepository(ComputersRepository);
-	computerRepo.getComputersFromClassroom(req.params.classroomName)
-				.then(comps => {
-					if(comps.length > 0)
-						resp.send(comps);
-					else{
-						resp.status(404).send({message:"Classroom not found"});
-					}
-				})
-				.catch(err=>{
-					serverError(err, resp);
-				})
+	const computersPromise = computerRepo.getComputersFromClassroom(req.params.classroomName);
+	const reportsRepo = getCustomRepository(ReportsRepository);
+	const hasGeneralReportsPromise = reportsRepo.hasGeneralReports(req.params.classroomName);
+	Promise.all([computersPromise, hasGeneralReportsPromise]).then(([computers, hasGeneralReports])=>{
+		if(computers.length > 0){
+			resp.send({
+				computers,
+				hasGeneralReports
+			});
+		}
+		else{
+			resp.status(404).send({message:"Učionica nije pronađena!"});
+		}
+	})
+	.catch(err=>{
+		serverError(err, resp);
+	})
 
 });
 

@@ -17,6 +17,7 @@ reportsRouter.get("/", (req, resp)=>{
 	if(req.query.hasOwnProperty("computerId")){
 		computerId = +req.query.computerId;
 	}
+	// get reports from computer
 	if(computerId !== undefined){
 		const repo = getCustomRepository(ComputersRepository);
 		repo.getReportsForComputerInClassroom(computerId, req.query.classroomName.toString())
@@ -29,6 +30,7 @@ reportsRouter.get("/", (req, resp)=>{
 			})
 			.catch(err=>{serverError(err, resp)});
 	}
+	// get general reports
 	else{
 	    const repo = getCustomRepository(ReportsRepository);
 	    repo.getGeneralReports(classroomName)

@@ -1,4 +1,4 @@
-import {AbstractRepository, EntityRepository, FindOperator, FindOperatorType, getCustomRepository, In} from "typeorm";
+import {AbstractRepository, EntityRepository, FindOperator} from "typeorm";
 import {Report} from "../../entities/Report";
 import {Classroom} from "../../entities/Classroom";
 import {Computer} from "../../entities/Computer";
@@ -140,6 +140,15 @@ export class ReportsRepository extends AbstractRepository<Report>
 			}
 		});
 		return mappedReports;
+	}
+	public async hasGeneralReports(classroomName: string, fixed: boolean = false) {
+		const reports = await this.repository.find({
+			where: {
+				classroomName,
+				fixed
+			}
+		});
+		return reports.length !== 0;
 	}
 
 	public async getReportsForComputer(computer : Computer, fixed: boolean = false){
