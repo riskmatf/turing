@@ -3,6 +3,7 @@ import {AbstractRepository, EntityRepository, getCustomRepository} from "typeorm
 import {ClassroomsRepository} from "./Classrooms";
 import {ReportsRepository} from "./Reports";
 import {Report} from "../../entities/Report";
+import {Classroom} from "../../entities/Classroom";
 interface IComputer {
     computerId: number,
 	classroomName: string,
@@ -70,5 +71,8 @@ export class ComputersRepository extends AbstractRepository<Computer>{
 			}
 		});
 		return mappedReports;
+	}
+	public async deleteComputersFromClassroom(classroomName: Classroom){
+		return this.repository.delete({ classroomName });
 	}
 }

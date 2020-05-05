@@ -1,6 +1,9 @@
-import {AbstractRepository, EntityRepository} from 'typeorm';
-import { Classroom } from '../../entities/Classroom';
-import { imagesPaths } from '../index';
+import {AbstractRepository, EntityRepository, getCustomRepository} from 'typeorm';
+import {Classroom} from '../../entities/Classroom';
+import {imagesPaths} from '../index';
+import {ReportsRepository} from "./Reports";
+import {ComputersRepository} from "./Computers";
+
 interface IClassroom {
 	name: string,
     location: string,
@@ -42,6 +45,15 @@ export class ClassroomsRepository extends AbstractRepository<Classroom>{
 		return mappedClassrooms;
 	}
 	public async deleteClassroom(classroomName: string){
-		return this.repository.delete(classroomName);
+		const classroom = await this.getClassroomByName(classroomName);
+		if(classroom !== undefined){
+			const reportsRepository = getCustomRepository(ReportsRepository);
+			const computersRepository = getCustomRepository(ComputersRepository);
+			await reportsRepository.deleteReportsFromClassroom(classroom);
+			await computersRepository.deleteComputersFromClassroom(classroom);
+			return await this.repository.delete(classroomName);
+		}
+		else
+			return undefined
 	}
 }

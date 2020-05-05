@@ -30,7 +30,8 @@ export class Report {
 	  // computer => computer.reports,
 	  {onDelete: "RESTRICT", onUpdate: "RESTRICT"}
   )
-  @JoinColumn([{name: "computerId", referencedColumnName: "id"}])
+  @JoinColumn([{name: "computerId", referencedColumnName: "id"},
+                          {name: "classroomName", referencedColumnName: "classroomName"}])
   computerId: Computer | null;
 
   @Column({	type:"varchar",  name: "description", nullable: true, length: 1000, charset:"utf8mb4",
@@ -71,7 +72,7 @@ export class Report {
   @ManyToOne(
     () => Admin,
     admin => admin.reports,
-    { onDelete: "RESTRICT", onUpdate: "RESTRICT" }
+    { onDelete: "SET NULL", onUpdate: "CASCADE" }
   )
   @JoinColumn([{ name: "adminUsername", referencedColumnName: "username" }])
   adminUsername: Admin | null;

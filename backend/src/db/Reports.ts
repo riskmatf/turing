@@ -27,6 +27,7 @@ export interface IFilter{
 		fixed?: boolean;
 		adminComment?: FindOperator<any>;
 		classroomName? : FindOperator<Classroom>,
+		computerId? : string
 	},
 	locations?: string[],
 	take : number,
@@ -118,6 +119,9 @@ export class ReportsRepository extends AbstractRepository<Report>
 		return this._addReport(data);
 	}
 
+	public async deleteReportsFromClassroom(classroomName: Classroom){
+		return this.repository.delete({ classroomName });
+	}
 	public async getGeneralReports(classroomName: string, fixed: boolean = false){
 		const reports = await this.repository.find({
 			where:{

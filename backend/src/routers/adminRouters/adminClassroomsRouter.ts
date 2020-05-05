@@ -7,7 +7,7 @@ const adminClassroomsRouter = express.Router();
 adminClassroomsRouter.delete("/:cName", (req, res)=>{
     const repo = getCustomRepository(ClassroomsRepository);
     repo.deleteClassroom(req.params.cName).then(deleteResult =>{
-        if(deleteResult.affected === 0){
+        if(deleteResult === undefined){
             res.status(404).send({message:"Nije pronađena učionica"});
         }
         else{
