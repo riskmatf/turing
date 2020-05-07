@@ -1,8 +1,9 @@
-import {AbstractRepository, EntityRepository, FindOperator} from "typeorm";
+import {AbstractRepository, EntityRepository} from "typeorm";
 import {Report} from "../../entities/Report";
 import {Classroom} from "../../entities/Classroom";
 import {Computer} from "../../entities/Computer";
-import {IReportOverview} from "./Computers";
+import {IAdminReportOverview, IReportOverview} from "./Computers";
+import {Admin} from "../../entities/Admin";
 
 
 export interface IReportForSending{
@@ -23,45 +24,44 @@ export interface IReportForSending{
 
 export interface IFilter{
     whereParams: {
+		locations?: string[];
+		classrooms?: string[];
 		urgent?: boolean;
 		fixed?: boolean;
-		adminComment?: FindOperator<any>;
-		classroomName? : FindOperator<Classroom>,
-		computerId? : string
+		computerId? : number
 	},
-	locations?: string[],
 	take : number,
-	skip: number
+	skip: number,
+	whereString: string
 }
 export const PAGE_SIZE = 20;
 @EntityRepository(Report)
 export class ReportsRepository extends AbstractRepository<Report>
 {
-	public async getReportsWithFilters(params : IFilter, loggedUser: string){
-		let reports = await this.repository.find({
-			relations:["adminUsername", "classroomName"],
-			where:{
-				...params.whereParams
-
-			},
-			take: params.take,
-			skip: params.skip,
-			order:{
-				urgent: "DESC",
-				timestamp: "DESC",
+	public async getReportsWithFilters(params : IFilter){
+		const reports = await this
+			.createQueryBuilder("reports")
+			.leftJoinAndSelect(Admin, "admins",
+							"reports.adminUsername = admins.username")
+			.leftJoinAndSelect(Classroom, "classrooms",
+				"reports.classroomName = classrooms.name")
+			.where(params.whereString, params.whereParams)
+			.take(params.take)
+			.skip(params.skip)
+			.orderBy("reports.urgent", "DESC")
+			.addOrderBy("reports.timestamp", "DESC")
+			.getMany();
+		const mappedReports: IAdminReportOverview[] = reports.map(rep=>{
+			return {
+				reportId: rep.reportId,
+				description: rep.description,
+				hasAdminComment: !!rep.adminComment,
+				timestamp: rep.timestamp,
+				urgent: rep.urgent,
+				fixed: rep.fixed,
 			}
-
 		});
-		if(params.locations !== undefined){
-			reports = reports.filter(report => {
-			    // ignore warning bcs it has if above... rly typescript?
-				// @ts-ignore
-				return params.locations.indexOf(report.classroomName.location) !== -1;
-			})
-		}
-		return reports .map(report => {
-			return ReportsRepository._mapReport(report, loggedUser);
-		});
+		return mappedReports;
 	}
 	public async getReportById(reportId: number){
 		const report = await this.repository.findOne({
@@ -77,20 +77,15 @@ export class ReportsRepository extends AbstractRepository<Report>
 	}
 
 	public async getMaxNumberOfPages(params : IFilter){
-		let reports = await this.repository.find({
-			relations: ["classroomName"],
-			where:{
-				...params.whereParams
-			}
-		});
-		if(params.locations !== undefined){
-			reports = reports.filter(report => {
-				// ignore warning bcs it has if above... rly typescript?
-				// @ts-ignore
-				return params.locations.indexOf(report.classroomName.location) !== -1;
-			})
-		}
-		return Math.floor(reports.length/PAGE_SIZE);
+		const numberOfReports = await this
+			.createQueryBuilder("reports")
+			.leftJoinAndSelect(Admin, "admins",
+				"reports.adminUsername = admins.username")
+			.leftJoinAndSelect(Classroom, "classrooms",
+				"reports.classroomName = classrooms.name")
+			.where(params.whereString, params.whereParams)
+			.getCount();
+		return Math.floor(numberOfReports/PAGE_SIZE);
 	}
 
 	private static _mapReport(report: Report, loggedUser: string = ""){

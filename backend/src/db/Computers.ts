@@ -19,6 +19,10 @@ export interface IReportOverview{
     urgent: boolean,
 }
 
+export interface IAdminReportOverview extends IReportOverview{
+	fixed: boolean
+}
+
 @EntityRepository(Computer)
 export class ComputersRepository extends AbstractRepository<Computer>{
 	public async getComputersFromClassroom(classroomName: string){

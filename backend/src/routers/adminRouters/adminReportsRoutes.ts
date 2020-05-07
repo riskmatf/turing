@@ -1,8 +1,9 @@
 import express from 'express';
 import {getCustomRepository} from "typeorm";
-import {IFilter, IReportForSending, ReportsRepository} from "../../db/Reports";
+import {IFilter, ReportsRepository} from "../../db/Reports";
 import {getFirstUrl, getLastUrl, getNextUrl, getPreviousUrl} from "./utils/urlCreatorFuncs";
 import {getQueryParameters} from "./utils/queryParmetersParser";
+import {IAdminReportOverview} from "../../db/Computers";
 
 const adminReportsRouter = express.Router();
 
@@ -18,7 +19,7 @@ adminReportsRouter.get("/", async (req, res)=>{
         const prevUrl = getPreviousUrl(req);
         const firstUrl = getFirstUrl(req);
         const lastUrl = getLastUrl(req, maxNumOfPages);
-        repo.getReportsWithFilters(params, req.username).then((reports : IReportForSending[]) =>{
+        repo.getReportsWithFilters(params).then((reports : IAdminReportOverview[]) =>{
             const ret = {
                 reports,
                 paging: {
