@@ -63,12 +63,12 @@
                         </template>
                         <template v-else-if="reportRequest.status === 'loading'">
                             <div class="loader">
-                                Loading...
+                                Učitavanje...
                                 <i class="el-icon-loading"></i>
                             </div>
                         </template>
                         <template v-else-if="reportRequest.status === 'error'">
-                            {{ reportRequest.message }}
+                            Greška: {{ reportRequest.message }}
                         </template>
                     </div>
                 </el-card>
@@ -76,12 +76,12 @@
         </template>
         <template v-else-if="requestStatus === 'loading'">
             <div class="loader">
-                Loading...
+                Učitavanje...
                 <i class="el-icon-loading"></i>
             </div>
         </template>
         <template v-else-if="requestStatus === 'error'">
-            {{ requestErrorMessage }}
+            Greška: {{ requestErrorMessage }}
         </template>
     </div>
 </template>
@@ -260,9 +260,9 @@
                 return this.$route.params.computerId === 'general'
             },
             pageTitle() {
-                let result = `Kvarovi u ucionici ${this.classroomId}`
+                let result = `Kvarovi u učionici ${this.classroomId},`
                 if (!this.areGeneralReports) {
-                    result += ` na racunaru #${this.computerId}`
+                    result += ` na računaru #${this.computerId}`
                 }
                 return result
             }

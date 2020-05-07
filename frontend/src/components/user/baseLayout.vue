@@ -2,11 +2,11 @@
     <base-layout targetHomePage="homePage">
         <template v-slot:topBar>
             <el-menu-item index="1" :route="{ name: 'homePage' }">
-                Pocetna
+                Početna
             </el-menu-item>
 
             <el-menu-item index="2" :route="{ name: 'classroomListPage' }">
-                Ucionice
+                Učionice
             </el-menu-item>
 
             <el-menu-item index="3" :route="{ name: 'tutorialPage' }" disabled>

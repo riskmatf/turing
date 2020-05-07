@@ -26,7 +26,7 @@
             <el-button type="primary" size="small" @click="submit" :disabled="addingReport">
                 Prijavi
             </el-button>
-            <el-button size="small" @click="visibleModel = false">Otkazi</el-button>
+            <el-button size="small" @click="visibleModel = false">Otkaži</el-button>
         </div>
         <report-date :report-date="currentDate"/>
     </el-dialog>
@@ -82,9 +82,9 @@
                 }
             },
             generalInformation() {
-                let message = `Prijavljivanje kvara u ucionici ${this.classroomId}`
+                let message = `Prijavljivanje kvara u učionici ${this.classroomId}`
                 if (!this.isGeneral) {
-                    message += ` za racunar ${this.computerId}`
+                    message += ` za računar ${this.computerId}`
                 }
                 return message
             },
@@ -100,7 +100,7 @@
             submit() {
                 if (this.description.trim() === '') {
                     this.$message({
-                        message: 'Polje opis je obavezno',
+                        message: 'Polje opis je obavezno!',
                         type: 'error',
                     })
                     return

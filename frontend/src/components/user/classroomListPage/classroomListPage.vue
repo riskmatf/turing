@@ -20,11 +20,11 @@
         </div>
         <template v-else-if="request.status === 'loading'">
             <div class="loading">
-                Loading...
+                Učitavanje...
             </div> 
         </template>
         <div v-else-if="request.status === 'error'" class="text-danger">
-            Error: {{ request.message }}
+            Greška: {{ request.message }}
         </div>
     </div>
 </template>

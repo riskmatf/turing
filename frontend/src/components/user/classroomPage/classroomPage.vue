@@ -11,7 +11,7 @@
                             size="mini"
                             @click="generalClick"
                     >
-                        Opsti kvarovi
+                        Opšti kvarovi
                     </el-button>
                 </div>
             </page-header>
@@ -31,12 +31,12 @@
         </template>
         <template v-else-if="requestStatus === 'loading'">
             <div class="loading">
-                Loading...
+                Učitavanje...
                 <i class="el-icon-loading"></i>
             </div>
         </template>
         <template v-else-if="requestStatus === 'error'">
-            <span class="text-danger">Error: {{ requestErrorMessage }}</span>
+            <span class="text-danger">Greška: {{ requestErrorMessage }}</span>
         </template>
     </div>
 </template>

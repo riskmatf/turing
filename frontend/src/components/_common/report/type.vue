@@ -16,10 +16,10 @@
         },
         computed: {
             typeSentence() {
-                let res = `Prijavljen kvar #${this.reportId} u ucionici ${this.classroomId} `
+                let res = `Prijavljen kvar #${this.reportId} u učionici ${this.classroomId}, `
 
                 if (!this.isGeneral) {
-                    res += `na racunaru ${this.computerId}`
+                    res += `na računaru #${this.computerId}`
                 }
 
                 return res

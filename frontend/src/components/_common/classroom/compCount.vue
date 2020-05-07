@@ -1,7 +1,7 @@
 <template>
     <div class="row">
-        <div>Working: <span class="text-success">{{ classroomCompCount.working }}</span></div>
-        <div class="tabsp">Broken: <span class="text-danger">{{ classroomCompCount.broken }}</span> </div>
+        <div>U funkciji: <span class="text-success">{{ classroomCompCount.working }}</span></div>
+        <div class="tabsp">Pokvareno: <span class="text-danger">{{ classroomCompCount.broken }}</span> </div>
     </div>
 </template>
 
