@@ -1,6 +1,5 @@
-import {Entity, PrimaryColumn, OneToMany, ManyToOne, JoinColumn, Column} from 'typeorm';
+import {Entity, PrimaryColumn, ManyToOne, JoinColumn, Column} from 'typeorm';
 import { Classroom } from './Classroom';
-import { Report } from './Report';
 import { BooleanTransformer } from '@anchan828/typeorm-transformers';
 
 @Entity("computers", { schema: "turing" })
@@ -25,10 +24,4 @@ export class Computer{
 		transformer: new BooleanTransformer(),
 	})
 	broken: boolean;
-
-	// @OneToMany(
-	// 	()=>Report,
-	// 	report => report.computerId
-	// )
-	// reports:Report[];
 }

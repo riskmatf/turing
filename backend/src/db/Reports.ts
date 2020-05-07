@@ -158,8 +158,7 @@ export class ReportsRepository extends AbstractRepository<Report>
 	public async getReportsForComputer(computer : Computer, fixed: boolean = false){
 		return await this.repository.find({
 			where: {
-				computerId: computer.id,
-				classroomName: computer.classroomName,
+				computerId: computer,
 				fixed
 			},
 			order:{
