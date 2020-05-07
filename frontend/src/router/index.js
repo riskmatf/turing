@@ -15,6 +15,7 @@ import {
     BaseLayout as AdminBaseLayout,
     HomePage as AdminHomePage,
     ClassroomListPage as AdminClassroomListPage,
+    ClassroomPage as AdminClassroomPage,
     LoginPage,
 } from '@/components/admin'
 
@@ -46,6 +47,13 @@ const routes = [
                         component: RouterView,
                         children: [
                             { path: '', name: 'adminClassroomListPage', component: AdminClassroomListPage, meta: { index: '03' } },
+                            {
+                                path: ':classroomId',
+                                component: RouterView,
+                                children: [
+                                    { path: '', name: 'adminClassroomPage', component: AdminClassroomPage, meta: { index: '03'} },
+                                ]
+                            },
                         ]
                     },
                     { path: '*', name: 'adminNotFound', component: NotFoundPage },
