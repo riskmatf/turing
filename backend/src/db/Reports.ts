@@ -101,6 +101,9 @@ export class ReportsRepository extends AbstractRepository<Report>
 		report.fixed = true;
 		return this.repository.save(report);
 	}
+	public async deleteReport(reportId: number){
+		return this.repository.delete(reportId);
+	}
 	private static _mapReport(report: Report, loggedUser: string = ""){
 		const {classroomName, adminUsername, computerId, ...rest} = report;
 		const mappedReport: IReportForSending = {
@@ -109,7 +112,7 @@ export class ReportsRepository extends AbstractRepository<Report>
 			adminDisplayName: adminUsername ? adminUsername.displayName : null,
 			classroomName: classroomName.name,
 			computerId: computerId ? computerId.id : null,
-			canChangeComment: adminUsername ? adminUsername.username === loggedUser : false
+			canChangeComment: adminUsername ?  adminUsername.username === loggedUser : false
 		};
 		return mappedReport;
 	}

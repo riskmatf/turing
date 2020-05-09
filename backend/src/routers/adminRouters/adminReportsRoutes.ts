@@ -53,6 +53,17 @@ adminReportsRouter.put("/:id/comment", async (req, resp)=>{
     res !== undefined ? resp.send({message: "Uspeh"}) : resp.status(400).send({message: "Nije moguće naći izveštaj sa tim id!"});
 });
 
+adminReportsRouter.delete("/:id", async (req, resp)=>{
+    const repo = getCustomRepository(ReportsRepository);
+    const repId: number = +req.params.id;
+    if(isNaN(repId)){
+        resp.status(400).send({message: "Loš id"});
+        return;
+    }
+    await repo.deleteReport(repId);
+    resp.send({message: "Uspeh"});
+});
+
 adminReportsRouter.get("/", async (req, res)=>{
         const params : IFilter | undefined = getQueryParameters(req);
         if(params === undefined){
