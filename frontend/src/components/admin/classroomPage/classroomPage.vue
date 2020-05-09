@@ -15,6 +15,18 @@
                     </el-button>
                 </div>
             </page-header>
+            <div class="schema">
+                <classroom-schema-card
+                    :classroom-name="classroom.name"
+                    :schema-url="classroom.schemaUrl"
+                    :computers="classroom.computers"
+                    @computerClick="computerClick"
+                    @generalClick="generalClick"
+                />
+            </div>
+            <div class="legend">
+                <classroom-schema-legend/>
+            </div>
         </template>
         <template v-else-if="requestStatus === 'loading'">
             <div class="loading">
@@ -72,6 +84,8 @@
 <script>
     import Breadcrumbs from '@/components/_common/breadcrumbs/breadcrumbs'
     import PageHeader from '@/components/_common/pageHeader'
+    import ClassroomSchemaLegend from './classroomSchemaLegend'
+    import ClassroomSchemaCard from './classroomSchemaCard'
     import { ClassroomName } from '@/components/_common/classroom'
     import { mapState, mapActions, mapGetters } from 'vuex'
     import _ from 'lodash'
@@ -82,6 +96,8 @@
             Breadcrumbs,
             PageHeader,
             ClassroomName,
+            ClassroomSchemaLegend,
+            ClassroomSchemaCard,
         },
         computed:{
             ...mapState('Admin/Classroom/Classroom', {classroomRequest: 'request'}),
@@ -126,6 +142,22 @@
         methods: {
             ...mapActions('Admin/Classroom/Classroom', ['fetchClassroom']),
             ...mapActions('Admin/Classroom/AllClassrooms', ["fetchAllClassrooms"]),
+            computerClick(computerId) {
+                const computer = this.classroom.computers.find(({ computerId:cId }) => cId === computerId)
+                if (computer !== undefined && computer.isBroken) {
+                    this.$message({
+                        message: `Racunar ${computerId} nije u funkciji`,
+                        type: 'error',
+                        duration: '1500',
+                    })
+                    return
+                }
+
+                this.$router.push({ name: 'adminHomePage', params: { computerId: computerId } })
+            },
+            generalClick() {
+                this.$router.push({ name: 'adminReportListPage', params: { computerId: 'general'} })
+            },
             getData() {
                 if (['error', 'notInitialized'].includes(this.allClassroomsRequest.status)) {
                     this.fetchAllClassrooms()
