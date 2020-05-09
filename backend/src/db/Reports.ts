@@ -4,6 +4,7 @@ import {Classroom} from "../../entities/Classroom";
 import {Computer} from "../../entities/Computer";
 import {ComputersRepository, IAdminReportOverview, IReportOverview} from "./Computers";
 import {Admin} from "../../entities/Admin";
+import {AdminRepository} from "./Admins";
 
 
 export interface IReportForSending{
@@ -175,7 +176,27 @@ export class ReportsRepository extends AbstractRepository<Report>
 		});
 	}
 
-
+	public async setComment(reportId: number, comment: string, adminUsername: string){
+		const report = await this.repository.findOne(
+			{
+				where:{
+					reportId
+				},
+				relations: ["adminUsername"]
+			});
+		const adminRepo = getCustomRepository(AdminRepository);
+		const admin = await adminRepo.findByUsername(adminUsername);
+		// admin will never be undef but check is needed for type reasons
+		if(report === undefined || admin === undefined){
+			return undefined;
+		}
+		if(report.adminUsername !== null && report.adminUsername.username !== adminUsername){
+			return false;
+		}
+		report.adminComment = comment;
+		report.adminUsername = admin;
+		return this.repository.save(report);
+	}
 /*********************************************PRIVATE******************************************* */
 
 	private async _addReport(data: IReportData){

@@ -34,6 +34,25 @@ adminReportsRouter.put("/:id/solve", async (req, resp)=>{
     res !== undefined ? resp.send({message: "Uspeh"}) : resp.status(400).send({message: "Nije moguće naći izveštaj sa tim id!"});
 });
 
+adminReportsRouter.put("/:id/comment", async (req, resp)=>{
+    const repo = getCustomRepository(ReportsRepository);
+    const repId: number = +req.params.id;
+    if(isNaN(repId)){
+        resp.status(400).send({message: "Loš id"});
+        return;
+    }
+    if(!req.body.hasOwnProperty("comment")){
+        resp.status(400).send({message: "Nedostaje komentar!"});
+        return;
+    }
+    const res = await repo.setComment(repId, req.body.comment, req.username);
+    if(res === false){
+        resp.status(403).send({message: "Ne možete promeniti komentar koji je postavio neko drugi!"});
+        return;
+    }
+    res !== undefined ? resp.send({message: "Uspeh"}) : resp.status(400).send({message: "Nije moguće naći izveštaj sa tim id!"});
+});
+
 adminReportsRouter.get("/", async (req, res)=>{
         const params : IFilter | undefined = getQueryParameters(req);
         if(params === undefined){
