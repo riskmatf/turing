@@ -1,8 +1,8 @@
-import {AbstractRepository, EntityRepository} from "typeorm";
+import {AbstractRepository, EntityRepository, getCustomRepository} from "typeorm";
 import {Report} from "../../entities/Report";
 import {Classroom} from "../../entities/Classroom";
 import {Computer} from "../../entities/Computer";
-import {IAdminReportOverview, IReportOverview} from "./Computers";
+import {ComputersRepository, IAdminReportOverview, IReportOverview} from "./Computers";
 import {Admin} from "../../entities/Admin";
 
 
@@ -63,17 +63,22 @@ export class ReportsRepository extends AbstractRepository<Report>
 		});
 		return mappedReports;
 	}
-	public async getReportById(reportId: number){
-		const report = await this.repository.findOne({
-			relations:["adminUsername", "classroomName", "computerId"],
-			where: {
-				reportId,
-			}
-		});
-		if(report === undefined){
+	public async getReportById(reportId: number, loggedUser: string = ""){
+		const compRepo = getCustomRepository(ComputersRepository);
+		const {raw, entities} = await this
+			.createQueryBuilder("reports")
+			.leftJoinAndSelect("reports.adminUsername","admins")
+			.leftJoinAndSelect( "reports.classroomName", "classrooms")
+			.leftJoinAndSelect(Computer, "computers", "computers.id = reports.computerId and computers.classroomName = reports.classroomName")
+			.where("reports.reportId = :reportId", {reportId})
+			.getRawAndEntities();
+		if(entities.length === 0){
 			return undefined;
 		}
-		return ReportsRepository._mapReport(report);
+		const report = entities[0];
+		const comp = await compRepo.getComputer(raw[0].reports_computerId as number, report.classroomName.name);
+		report.computerId = comp ? comp : null;
+		return ReportsRepository._mapReport(report, loggedUser);
 	}
 
 	public async getMaxNumberOfPages(params : IFilter){
@@ -96,7 +101,7 @@ export class ReportsRepository extends AbstractRepository<Report>
 			adminDisplayName: adminUsername ? adminUsername.displayName : null,
 			classroomName: classroomName.name,
 			computerId: computerId ? computerId.id : null,
-			canChangeComment: adminUsername? adminUsername.username === loggedUser : false
+			canChangeComment: adminUsername ? adminUsername.username === loggedUser : false
 		};
 		return mappedReport;
 	}

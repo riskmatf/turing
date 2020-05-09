@@ -91,4 +91,18 @@ export class ComputersRepository extends AbstractRepository<Computer>{
 		}
 		return qb.raw.changedRows === 1;
 	}
+
+	public async getComputer(computerId: number, classroomName: string){
+		const classroomRepo = getCustomRepository(ClassroomsRepository);
+		const classroom = await classroomRepo.getClassroomByName(classroomName);
+		if(!classroom){
+			return undefined;
+		}
+		return await this.repository.findOne({
+			where:{
+				classroomName: classroom,
+				id: computerId,
+			}
+		});
+	}
 }
