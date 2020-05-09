@@ -23,6 +23,17 @@ adminReportsRouter.get("/:id", (req, resp)=>{
     })
 });
 
+adminReportsRouter.put("/:id/solve", async (req, resp)=>{
+    const repo = getCustomRepository(ReportsRepository);
+    const repId: number = +req.params.id;
+    if(isNaN(repId)){
+        resp.status(400).send({message: "Loš id"});
+        return;
+    }
+    const res = await repo.solveReport(repId);
+    res !== undefined ? resp.send({message: "Uspeh"}) : resp.status(400).send({message: "Nije moguće naći izveštaj sa tim id!"});
+});
+
 adminReportsRouter.get("/", async (req, res)=>{
         const params : IFilter | undefined = getQueryParameters(req);
         if(params === undefined){

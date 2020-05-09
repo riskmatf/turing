@@ -92,7 +92,14 @@ export class ReportsRepository extends AbstractRepository<Report>
 			.getCount();
 		return Math.floor(numberOfReports/PAGE_SIZE);
 	}
-
+	public async solveReport(reportId: number){
+		const report = await this.repository.findOne(reportId);
+		if(report === undefined){
+			return undefined;
+		}
+		report.fixed = true;
+		return this.repository.save(report);
+	}
 	private static _mapReport(report: Report, loggedUser: string = ""){
 		const {classroomName, adminUsername, computerId, ...rest} = report;
 		const mappedReport: IReportForSending = {
