@@ -28,45 +28,49 @@ function checkLogin(username: string, password: string, successCallback: (userna
                 if(user.password === Md5.hashStr(password).toString()){
                     successCallback(user.username, user.displayName);
                 }
+                // bad pass
                 else{
-                    failureCallback("BAD PASSWORD");
+                    failureCallback("Loše korisničko ime i/ili šifra!");
                 }
             }
+            // bad username
             else{
-                failureCallback("BAD USERNAME");
+                failureCallback("Loše korisničko ime i/ili šifra!");
             }
         })
 }
 
-authRouter.post("/login", (req, res)=>{
+authRouter.post("/login", (req, resp)=>{
     if(req.session && req.session.username){
-        res.status(400).send({message: "ALREADY LOGGED IN"});
+        resp.status(400).send({message: "ALREADY LOGGED IN"});
         return;
     }
     checkLogin(req.body.username, req.body.password,
         (username, displayName)=>{
             if(!req.session){
                 console.error("SESSION NOT INITIALIZED");
-                res.status(500).send({});
+                resp.status(500).send({});
                 throw Error("SESSION NOT INITIALIZED");
             }
             // setting data in session to mark user as logged in
             req.session.username = username;
             req.session.displayName = displayName;
-            res.send({message: "SUCCESS"});
+            resp.send({message: "SUCCESS"});
         },
         (msg: string)=>{
-            res.status(401).send({message: msg});
+            resp.status(401).send({message: msg});
         });
 });
 
-authRouter.post("/logout", (req, res)=>{
+authRouter.post("/logout", (req, resp)=>{
     if(req.session && req.session.username) {
         req.session.destroy(() => {
-            res.send({message:"SUCCESS"});
+            resp.send({message:"Uspeh!"});
         });
-    }else{
-        res.send({message: "ERROR, not logged in, can't logout."});
+    }
+    // not logged in, can't logout but no need for different message
+    else{
+        resp.send({message: "Uspeh!"});
     }
 });
 export default authRouter;
