@@ -79,4 +79,16 @@ export class ComputersRepository extends AbstractRepository<Computer>{
 	public async deleteComputersFromClassroom(classroomName: Classroom){
 		return this.repository.delete({ classroomName });
 	}
+	public async setBrokenFlag(computerId: number, classroomName: string, broken: boolean){
+		const qb = await this.repository
+			.createQueryBuilder("computer")
+			.update(Computer)
+			.set({broken})
+			.where("id = :computerId and classroomName = :classroomName", {computerId, classroomName})
+			.execute();
+		if(qb.raw.affectedRows !== 1){
+			return undefined; // no computer matched
+		}
+		return qb.raw.changedRows === 1;
+	}
 }
