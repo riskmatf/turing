@@ -17,6 +17,7 @@ import {
     ClassroomListPage as AdminClassroomListPage,
     ClassroomPage as AdminClassroomPage,
     ReportListPage as AdminReportListPage,
+    SettingsPage,
     LoginPage,
 } from '@/components/admin'
 
@@ -58,6 +59,7 @@ const routes = [
                             },
                         ]
                     },
+                    { path: 'settings', name: 'adminSettingsPage', component: SettingsPage, meta: { index: '04-1' }},
                     { path: '*', name: 'adminNotFound', component: NotFoundPage },
                 ]
             },

@@ -15,7 +15,7 @@
 
             <el-submenu index="04">
                 <template slot="title">Nalog</template>
-                <el-menu-item index="04-1">
+                <el-menu-item index="04-1" :route=" { name: 'adminSettingsPage' } ">
                     <div>
                         <i class="el-icon-setting"></i>
                         <span>Podešavanja</span>

@@ -1,5 +1,6 @@
 import BaseLayout from './baseLayout'
 import HomePage from './homePage'
+import SettingsPage from './settingsPage'
 import { ClassroomListPage } from './classroomListPage'
 import LoginPage from './loginPage'
 import { ClassroomPage } from './classroomPage'
@@ -12,4 +13,5 @@ export {
     ClassroomListPage,
     ClassroomPage,
     ReportListPage,
+    SettingsPage,
 }
