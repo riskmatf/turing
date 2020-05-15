@@ -3,7 +3,14 @@
         <el-card v-if="showLoginScreen" class="login-card">
             <h2 class="title">Prijava Admina</h2>
 
-            <el-input v-model="username" class="form-item" type="text" size="large" placeholder="Korisnicko ime">
+            <el-input
+                v-model="username"
+                class="form-item"
+                type="text"
+                size="large"
+                placeholder="Korisnicko ime"
+                @keyup.native.enter="loginOnEnter"
+            >
                 <i slot="prepend" class="fas fa-user"/>
             </el-input>
             <el-input
@@ -13,6 +20,7 @@
                 size="large"
                 placeholder="Sifra"
                 show-password
+                @keyup.native.enter="loginOnEnter"
             >
                 <i slot="prepend" class="fas fa-lock"/>
             </el-input>
@@ -56,27 +64,9 @@
 </style>
 
 <script>
-    import { mapActions } from 'vuex'
+    import { mapActions, mapState } from 'vuex'
     import _ from 'lodash'
-    /**
-     * TODO
-     * @task Check if user is logedin by calling whoami
-     * [X] Add a flag that should login page be displayed
-     * [X] Have spinner
-     * [X] On create send request whoami
-     * [X] If success redirect to where user was going
-     * [X] If it fails show login screen
-     * @task On login login user
-     * [X] Create function that logins user
-     * [X] Send request
-     * [X] Create function that redirects user
-     * [X] Use it created
-     * [X] If success redirect to where user was going
-     * [X] If failed show message
-     * [X] Add callback to login button
-     * @task Login on enter
-     * @task When you login failed clear password
-     */
+
     export default {
         data() {
             return {
@@ -86,6 +76,7 @@
             }
         },
         computed: {
+            ...mapState('Admin/Admin', ['isAdminLoggedIn']),
             isLoginButtonDisabled() {
                 return this.username.trim() === '' || this.password.trim() === ''
             },
@@ -96,6 +87,7 @@
         methods: {
             ...mapActions('Admin/Admin', ['whoami', 'login']),
             loginUser() {
+                if (this.isLoginButtonDisabled) return
                 this.login({
                     username: this.username,
                     password: this.password
@@ -107,11 +99,18 @@
             },
             redirectUser() {
                 this.$router.replace(this.redirectUrl)
+            },
+            loginOnEnter() {
+                if (this.isLoginButtonDisabled) return
+                this.loginUser()
             }
         },
         created() {
-            this.whoami()
-            .then(() => {
+            if (this.isAdminLoggedIn) {
+                this.redirectUser()
+            }
+
+            this.whoami().then(() => {
                 this.redirectUser()
             }).catch(() => {
                 this.showLoginScreen = true

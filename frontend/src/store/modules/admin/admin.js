@@ -25,6 +25,7 @@ export default {
             try {
                 let serverResponse = await Vue.$http.get('/api/v1/admin/whoami')
                 commit('setAdminLoggedInState', { adminData: serverResponse.data, isAdminLoggedIn: true })
+                Vue.cookie.set('loggedInUsername', serverResponse.data.username)
                 return serverResponse.data
             } catch (e) {
                 commit('clearLoginState')
@@ -43,6 +44,7 @@ export default {
             try {
                 await Vue.$http.post('/api/v1/admin/logout')
                 commit('clearLoginState')
+                Vue.cookie.delete('loggedInUsername')
             } catch (e) {
                 throw _.get(e, 'response.data.message', 'Failed logout')
             }

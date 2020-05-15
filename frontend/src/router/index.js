@@ -86,4 +86,22 @@ const router = new VueRouter({
   routes
 })
 
+router.beforeEach((to, from, next) => {
+    if (!to.fullPath.startsWith('/admin') || to.name === 'adminLogin') {
+        next()
+        return
+    }
+
+    if (!store.state.Admin.Admin.isAdminLoggedIn) {
+        next({ name: 'adminLogin', query: { to: to.fullPath } })
+        return
+    }
+    if (store.state.Admin.Admin.adminData.username !== Vue.cookie.get('loggedInUsername')) {
+        store.commit('Admin/Admin/clearLoginState')
+        next({ name: 'adminLogin', query: { to: to.fullPath } })
+        return
+    }
+    next()
+})
+
 export default router
