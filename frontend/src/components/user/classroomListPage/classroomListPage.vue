@@ -83,8 +83,8 @@
         computed: {
             breadcrumbData() {
                 return [
-                        { name: 'pocetna', to: {name: 'homePage'}},
-                        { name: 'ucionice', to: { name: 'classroomListPage' } }
+                        { name: 'početna', to: {name: 'homePage'}},
+                        { name: 'učionice', to: { name: 'classroomListPage' } }
                        ]
             },
             ...mapGetters('User/Classroom/AllClassrooms', ['classroomsGroupedByLocation']),

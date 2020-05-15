@@ -181,8 +181,8 @@
             ...mapGetters('User/Report/Report', ['report']),
             breadcrumbData() {
                 return [
-                    { name: 'pocetna', to: { name: 'homePage' } },
-                    { name: 'ucionice', to: { name: 'classroomListPage' } },
+                    { name: 'početna', to: { name: 'homePage' } },
+                    { name: 'učionice', to: { name: 'classroomListPage' } },
                     {
                         children: _.map(this.allClassrooms, ({ name }) => {
                             return { name: name, to: { name: 'classroomPage', params: { classroomId: name } } }
@@ -191,12 +191,12 @@
                     },
                     {
                        children: [
-                           { name: 'opsti', to: { name: 'reportListPage', params: { computerId: 'general' } } },
+                           { name: 'opšti', to: { name: 'reportListPage', params: { computerId: 'general' } } },
                            ..._.map(this.classroom.computers, ({ computerId }) => {
-                               return { name: computerId, to: { name: 'reportListPage', params: { computerId: computerId } } }
+                               return { name: (computerId === 0 ? 'N' : computerId), to: { name: 'reportListPage', params: { computerId: computerId } } }
                            }),
                        ],
-                       currentName: this.areGeneralReports ? 'opsti' : this.computerId
+                       currentName: this.areGeneralReports ? 'opšti' : (this.computerId === 0 ? 'N' : this.computerId)
                     }
                 ]
             },
@@ -261,9 +261,15 @@
             },
             pageTitle() {
                 let result = `Kvarovi u učionici ${this.classroomId},`
-                if (!this.areGeneralReports) {
-                    result += ` na računaru #${this.computerId}`
+                if (this.areGeneralReports) {
+                    result = `Opšti kvarovi u učionici ${this.classroomId}`
                 }
+                if (!this.areGeneralReports) { 
+                    result += ' na računaru' 
+                    result += ( this.computerId === 0 ? 
+                        ' N' : ` #${this.computerId}` ) 
+                } 
+
                 return result
             }
         },

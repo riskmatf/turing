@@ -2,7 +2,7 @@
     <div class="home-container">
         <h1> Turing logo </h1>
         <el-card>
-            Dobrodosli na platformu Turing, admine.
+            Dobrodošli na platformu Turing, admine.
         </el-card>
     </div>
 </template>

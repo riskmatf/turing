@@ -3,7 +3,7 @@
         <page-header>
             <breadcrumbs :paths="breadcrumbData" class="breadcrumbs"/>
             <div class="positioner">
-                <el-button size="mini">Dodaj ucionicu</el-button>
+                <el-button size="mini">Dodaj učionicu</el-button>
             </div>
         </page-header>      
         <div v-if="request.status === 'success'" class="location-container">
@@ -24,11 +24,11 @@
         </div>
         <template v-else-if="request.status === 'loading'">
             <div class="loading">
-                Loading...
+                Učitavanje...
             </div> 
         </template>
         <div v-else-if="request.status === 'error'" class="text-danger">
-            Error: {{ request.message }}
+            Greška: {{ request.message }}
         </div>
     </div>
 </template>
@@ -91,8 +91,8 @@
         computed: {
             breadcrumbData() {
                 return [
-                        { name: 'pocetna', to: {name: 'adminHomePage'}},
-                        { name: 'ucionice', to: { name: 'adminClassroomListPage' } }
+                        { name: 'početna', to: {name: 'adminHomePage'}},
+                        { name: 'učionice', to: { name: 'adminClassroomListPage' } }
                        ]
             },
             ...mapGetters('Admin/Classroom/AllClassrooms', ['classroomsGroupedByLocation']),

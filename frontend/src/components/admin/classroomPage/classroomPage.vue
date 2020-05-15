@@ -1,29 +1,44 @@
 <template>
     <div class="classroom-container">
         <template v-if="requestStatus === 'success'">
-            <page-header class="page-header">  <!-- Chech on user side classroomPage for class with atfoc. -->
+            <page-header class="page-header">  
                 <div class="breadcrumbs">
                     <breadcrumbs :paths="breadcrumbData"/>
                 </div>
                 <div class="row">
                     <classroom-name class="name" :classroom-name="classroom.name"/>
                     <el-button
-                            size="mini"
-                            @click="generalClick"
+                        size="mini"
+                        @click="generalClick"
                     >
-                        Opsti kvarovi
+                    <i class="el-icon-warning-outline" v-if="showGeneralIcon"></i>
+                        Opšti kvarovi
                     </el-button>
                 </div>
             </page-header>
+            <div class="schema">
+                <classroom-schema-card
+                    :classroom-name="classroom.name"
+                    :schema-url="classroom.schemaUrl"
+                    :computers="classroom.computers"
+                    @computerClick="computerClick"
+                    @generalClick="generalClick"
+                />
+            </div>
+            <div class="legend">
+                <classroom-schema-legend/>
+            </div>
         </template>
         <template v-else-if="requestStatus === 'loading'">
             <div class="loading">
-                Loading...
+                Učitavanje...
                 <i class="el-icon-loading"></i>
             </div>
         </template>
         <template v-else-if="requestStatus === 'error'">
-            <span class="text-danger">Error: {{ requestErrorMessage }}</span>
+            <span class="text-danger">
+                Greška: {{ requestErrorMessage }}
+            </span>
         </template>
     </div>
 </template>
@@ -72,6 +87,8 @@
 <script>
     import Breadcrumbs from '@/components/_common/breadcrumbs/breadcrumbs'
     import PageHeader from '@/components/_common/pageHeader'
+    import ClassroomSchemaLegend from './classroomSchemaLegend'
+    import ClassroomSchemaCard from './classroomSchemaCard'
     import { ClassroomName } from '@/components/_common/classroom'
     import { mapState, mapActions, mapGetters } from 'vuex'
     import _ from 'lodash'
@@ -82,6 +99,8 @@
             Breadcrumbs,
             PageHeader,
             ClassroomName,
+            ClassroomSchemaLegend,
+            ClassroomSchemaCard,
         },
         computed:{
             ...mapState('Admin/Classroom/Classroom', {classroomRequest: 'request'}),
@@ -90,8 +109,8 @@
             ...mapGetters('Admin/Classroom/AllClassrooms', ['allClassrooms']),
             breadcrumbData(){
                 return [
-                    { name: 'pocetna', to: { name: 'adminHomePage' } },
-                    { name: 'ucionice', to: { name: 'adminClassroomListPage' } },
+                    { name: 'početna', to: { name: 'adminHomePage' } },
+                    { name: 'učionice', to: { name: 'adminClassroomListPage' } },
                     {
                         children: _.map(this.allClassrooms, ({ name }) => {
                             return { name: name, to: { name: 'adminClassroomPage', params: { classroomId: name } } }
@@ -122,10 +141,29 @@
 
                 return null
             },
+            showGeneralIcon() {
+                return this.classroom.hasGeneralReports
+            },
         },
         methods: {
             ...mapActions('Admin/Classroom/Classroom', ['fetchClassroom']),
             ...mapActions('Admin/Classroom/AllClassrooms', ["fetchAllClassrooms"]),
+            computerClick(computerId) {
+                const computer = this.classroom.computers.find(({ computerId:cId }) => cId === computerId)
+                if (computer !== undefined && computer.isBroken) {
+                    this.$message({
+                        message: `Racunar ${computerId} nije u funkciji`,
+                        type: 'error',
+                        duration: '1500',
+                    })
+                    return
+                }
+
+                this.$router.push({ name: 'adminReportListPage', params: { computerId: computerId } })
+            },
+            generalClick() {
+                this.$router.push({ name: 'adminReportListPage', params: { computerId: 'general'} })
+            },
             getData() {
                 if (['error', 'notInitialized'].includes(this.allClassroomsRequest.status)) {
                     this.fetchAllClassrooms()

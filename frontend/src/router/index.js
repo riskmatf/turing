@@ -16,6 +16,7 @@ import {
     HomePage as AdminHomePage,
     ClassroomListPage as AdminClassroomListPage,
     ClassroomPage as AdminClassroomPage,
+    ReportListPage as AdminReportListPage,
     LoginPage,
 } from '@/components/admin'
 
@@ -52,6 +53,7 @@ const routes = [
                                 component: RouterView,
                                 children: [
                                     { path: '', name: 'adminClassroomPage', component: AdminClassroomPage, meta: { index: '03'} },
+                                    { path: ':computerId', name: 'adminReportListPage', component: AdminReportListPage, meta: { index: '03' } }
                                 ]
                             },
                         ]

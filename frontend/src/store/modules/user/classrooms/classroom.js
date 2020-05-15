@@ -35,14 +35,15 @@ export default {
             }
 
             try {
-                const response = await Vue.$http.get(`/api/v1/classrooms/${classroomId}/computers`)
+                const response = await Vue.$http.get(`/api/v1/classrooms/${classroomId}`)
                 commit('setRequest', {
                     request:
                         {
                             status: 'success',
                             response: {
                                 ...targetClassroom,
-                                computers: response.data
+                                computers: response.data.computers,
+                                hasGeneralReports: response.data.hasGeneralReports,
                             }
                         }
                 })

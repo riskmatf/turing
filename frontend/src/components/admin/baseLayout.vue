@@ -2,7 +2,7 @@
     <base-layout targetHomePage="adminHomePage">
         <template v-slot:topBar>
             <el-menu-item index="01" :route=" { name: 'adminHomePage' }">
-                Pocetna
+                Početna
             </el-menu-item>
 
             <el-menu-item index="02">
@@ -10,7 +10,7 @@
             </el-menu-item>
 
             <el-menu-item index="03" :route=" { name: 'adminClassroomListPage' } ">
-                Ucionice 
+                Učionice 
             </el-menu-item>
 
             <el-submenu index="04">
@@ -18,7 +18,7 @@
                 <el-menu-item index="04-1">
                     <div>
                         <i class="el-icon-setting"></i>
-                        <span>Podesavanja</span>
+                        <span>Podešavanja</span>
                     </div>
                 </el-menu-item>
 

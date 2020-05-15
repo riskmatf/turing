@@ -8,9 +8,10 @@
                 <div class="row">
                     <classroom-name class="name" :classroom-name="classroom.name"/>
                     <el-button
-                            size="mini"
-                            @click="generalClick"
+                        size="mini"
+                        @click="generalClick"
                     >
+                    <i class="el-icon-warning-outline" v-if="showGeneralIcon"></i>
                         Opšti kvarovi
                     </el-button>
                 </div>
@@ -107,8 +108,8 @@
             ...mapGetters('User/Classroom/AllClassrooms', ['allClassrooms']),
             breadcrumbData() {
                 return [
-                    { name: 'pocetna', to: { name: 'homePage' } },
-                    { name: 'ucionice', to: { name: 'classroomListPage' } },
+                    { name: 'početna', to: { name: 'homePage' } },
+                    { name: 'učionice', to: { name: 'classroomListPage' } },
                     {
                         children: _.map(this.allClassrooms, ({ name }) => {
                             return { name: name, to: { name: 'classroomPage', params: { classroomId: name } } }
@@ -138,6 +139,9 @@
                 if (this.allClassroomsRequest.status === 'error') return this.allClassroomsRequest.message
 
                 return null
+            },
+            showGeneralIcon() {
+                return this.classroom.hasGeneralReports
             },
         },
         methods: {

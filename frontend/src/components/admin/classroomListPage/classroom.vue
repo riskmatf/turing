@@ -62,9 +62,9 @@
         methods: {
             confirmDelete(e, classroomId) {
                 e.stopImmediatePropagation()
-                this.$confirm('Da li zelite da uklonite ucionicu?', {
-                        cancelButtonText: 'Otkazi',
-                        confirmButtonText: 'Obrisi',
+                this.$confirm('Da li želite da uklonite učionicu?', {
+                        cancelButtonText: 'Otkaži',
+                        confirmButtonText: 'Obriši',
                         customClass: 'message-box-reversed',
                     }
                 ).then(() => {
@@ -72,13 +72,13 @@
                             .then(()=> {
                                 this.$message({
                                     type: 'success',
-                                    message: 'Ucionica obrisana'
+                                    message: 'Učionica obrisana'
                                 })
                                 this.$emit('change')
                             }).catch((e)=>{
                                 this.$message({
                                     type: 'error',
-                                    message: `Brisanje neuspesno: ${e}`,
+                                    message: `Brisanje neuspešno: ${e}`,
                                 })
                             })
                         
