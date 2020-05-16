@@ -1,9 +1,8 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Admin from './modules/admin/admin'
+import Classroom from './modules/admin/classrooms'
 
-Vue.use(Vuex)
-
-export default new Vuex.Store({
+export default {
+    namespaced: true,
     state: {
     },
     mutations: {
@@ -11,6 +10,7 @@ export default new Vuex.Store({
     actions: {
     },
     modules: {
-
+        Admin,
+        Classroom,
     }
-})
+}

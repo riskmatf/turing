@@ -1,5 +1,5 @@
 <template>
-    <div>Trazena strana ne postoji</div>
+    <div>Tražena strana ne postoji</div>
 </template>
 
 <style lang="sass" scoped>

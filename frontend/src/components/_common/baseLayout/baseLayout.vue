@@ -7,7 +7,7 @@
             class="desktop topBar"
             active-text-color="#409EFF"
         >
-            <el-menu-item index="0" :route="{ name: 'homePage' }">
+            <el-menu-item index="0" :route="{ name: targetHomePage }">
                 Turing logo
             </el-menu-item>
             <div class="spacer"></div>
@@ -23,7 +23,7 @@
                 active-text-color="#409EFF"
                 @select="handleSelect"
             >
-                <el-menu-item index="0" :route="{ name: 'homePage' }">
+                <el-menu-item index="0" :route="{ name: targetHomePage }">
                     Turing logo
                 </el-menu-item>
                 <div class="spacer"></div>
@@ -111,11 +111,13 @@
 
 </style>
 
-
 <script>
     export default {
         name: 'base-layout',
         components: {
+        },
+        props: {
+            targetHomePage: String,
         },
         data() {
             return {
@@ -125,7 +127,7 @@
         methods: {
             handleSelect() {
                 this.isOpen = false
-            }
+            },
         }
     }
 </script>

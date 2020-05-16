@@ -21,7 +21,7 @@
 </style>
 
 <script>
-    import { Schema } from '@/components/_common/schema';
+    import { Schema } from '@/components/_common/schema'
 
     export default {
         name: 'classroomSchemaCard',

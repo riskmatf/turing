@@ -1,5 +1,5 @@
 <template>
-    <h1>Here will be tutorial how to use turing</h1>
+    <h1>Ovde će biti uputstvo o korišćenju platforme turing.</h1>
 </template>
 
 <style lang="sass" scoped>

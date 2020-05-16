@@ -63,12 +63,12 @@
                         </template>
                         <template v-else-if="reportRequest.status === 'loading'">
                             <div class="loader">
-                                Loading...
+                                Učitavanje...
                                 <i class="el-icon-loading"></i>
                             </div>
                         </template>
                         <template v-else-if="reportRequest.status === 'error'">
-                            {{ reportRequest.message }}
+                            Greška: {{ reportRequest.message }}
                         </template>
                     </div>
                 </el-card>
@@ -76,12 +76,12 @@
         </template>
         <template v-else-if="requestStatus === 'loading'">
             <div class="loader">
-                Loading...
+                Učitavanje...
                 <i class="el-icon-loading"></i>
             </div>
         </template>
         <template v-else-if="requestStatus === 'error'">
-            {{ requestErrorMessage }}
+            Greška: {{ requestErrorMessage }}
         </template>
     </div>
 </template>
@@ -171,18 +171,18 @@
             }
         },
         computed: {
-            ...mapState('Classroom/Classroom', { classroomRequest: 'request' }),
-            ...mapGetters('Classroom/Classroom', ['classroom']),
-            ...mapState('Classroom/AllClassrooms', { allClassroomsRequest: 'request' }),
-            ...mapGetters('Classroom/AllClassrooms', ['allClassrooms']),
-            ...mapState('Report/ComputerReports', { computerReportsRequest: 'request' }),
-            ...mapGetters('Report/ComputerReports', ['reports']),
-            ...mapState('Report/Report', { reportRequest: 'request' }),
-            ...mapGetters('Report/Report', ['report']),
+            ...mapState('User/Classroom/Classroom', { classroomRequest: 'request' }),
+            ...mapGetters('User/Classroom/Classroom', ['classroom']),
+            ...mapState('User/Classroom/AllClassrooms', { allClassroomsRequest: 'request' }),
+            ...mapGetters('User/Classroom/AllClassrooms', ['allClassrooms']),
+            ...mapState('User/Report/ComputerReports', { computerReportsRequest: 'request' }),
+            ...mapGetters('User/Report/ComputerReports', ['reports']),
+            ...mapState('User/Report/Report', { reportRequest: 'request' }),
+            ...mapGetters('User/Report/Report', ['report']),
             breadcrumbData() {
                 return [
-                    { name: 'pocetna', to: { name: 'homePage' } },
-                    { name: 'ucionice', to: { name: 'classroomListPage' } },
+                    { name: 'početna', to: { name: 'homePage' } },
+                    { name: 'učionice', to: { name: 'classroomListPage' } },
                     {
                         children: _.map(this.allClassrooms, ({ name }) => {
                             return { name: name, to: { name: 'classroomPage', params: { classroomId: name } } }
@@ -191,12 +191,12 @@
                     },
                     {
                        children: [
-                           { name: 'opsti', to: { name: 'reportListPage', params: { computerId: 'general' } } },
+                           { name: 'opšti', to: { name: 'reportListPage', params: { computerId: 'general' } } },
                            ..._.map(this.classroom.computers, ({ computerId }) => {
-                               return { name: computerId, to: { name: 'reportListPage', params: { computerId: computerId } } }
+                               return { name: (computerId === 0 ? 'N' : computerId), to: { name: 'reportListPage', params: { computerId: computerId } } }
                            }),
                        ],
-                       currentName: this.areGeneralReports ? 'opsti' : this.computerId
+                       currentName: this.areGeneralReports ? 'opšti' : (this.computerId === 0 ? 'N' : this.computerId)
                     }
                 ]
             },
@@ -260,19 +260,25 @@
                 return this.$route.params.computerId === 'general'
             },
             pageTitle() {
-                let result = `Kvarovi u ucionici ${this.classroomId}`
-                if (!this.areGeneralReports) {
-                    result += ` na racunaru #${this.computerId}`
+                let result = `Kvarovi u učionici ${this.classroomId},`
+                if (this.areGeneralReports) {
+                    result = `Opšti kvarovi u učionici ${this.classroomId}`
                 }
+                if (!this.areGeneralReports) { 
+                    result += ' na računaru' 
+                    result += ( this.computerId === 0 ? 
+                        ' N' : ` #${this.computerId}` ) 
+                } 
+
                 return result
             }
         },
         methods: {
-            ...mapActions('Classroom/Classroom', ['fetchClassroom']),
-            ...mapActions('Classroom/AllClassrooms', ['fetchAllClassrooms']),
-            ...mapActions('Report/ComputerReports', ['fetchComputerReports', 'fetchGeneralReports']),
-            ...mapActions('Report/Report', ['fetchReport']),
-            ...mapMutations('Report/Report', ['clearReportData']),
+            ...mapActions('User/Classroom/Classroom', ['fetchClassroom']),
+            ...mapActions('User/Classroom/AllClassrooms', ['fetchAllClassrooms']),
+            ...mapActions('User/Report/ComputerReports', ['fetchComputerReports', 'fetchGeneralReports']),
+            ...mapActions('User/Report/Report', ['fetchReport']),
+            ...mapMutations('User/Report/Report', ['clearReportData']),
             getData() {
                 if (['error', 'notInitialized'].includes(this.allClassroomsRequest.status)) {
                     this.fetchAllClassrooms()

@@ -3,3 +3,10 @@
 
 .text-danger
     color: #f56c6c
+
+.message-box-reversed
+    .el-message-box__btns
+        display: flex
+        flex-direction: row-reverse
+        & > .el-button:not(:first-child)
+            margin-right: 15px

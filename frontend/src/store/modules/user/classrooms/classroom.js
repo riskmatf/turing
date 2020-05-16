@@ -17,10 +17,10 @@ export default {
 
             commit('setRequest', { request: { status: 'loading' } })
             try {
-                if (rootState.Classroom.AllClassrooms.request.status !== 'success') {
-                    classroomListData = await dispatch('Classroom/AllClassrooms/fetchAllClassrooms', null, { root: true })
+                if (rootState.User.Classroom.AllClassrooms.request.status !== 'success') {
+                    classroomListData = await dispatch('User/Classroom/AllClassrooms/fetchAllClassrooms', null, { root: true })
                 } else {
-                    classroomListData = rootState.Classroom.AllClassrooms.request.response
+                    classroomListData = rootState.User.Classroom.AllClassrooms.request.response
                 }
             } catch (e) {
                 commit('setRequest', { request : { status: 'error', message: _.get(e, 'message', 'Failed') } })
@@ -35,14 +35,15 @@ export default {
             }
 
             try {
-                const response = await Vue.$http.get(`/api/v1/classrooms/${classroomId}/computers`)
+                const response = await Vue.$http.get(`/api/v1/classrooms/${classroomId}`)
                 commit('setRequest', {
                     request:
                         {
                             status: 'success',
                             response: {
                                 ...targetClassroom,
-                                computers: response.data
+                                computers: response.data.computers,
+                                hasGeneralReports: response.data.hasGeneralReports,
                             }
                         }
                 })

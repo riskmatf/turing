@@ -3,7 +3,7 @@
         v-model="currentSelected"
         :items="paths"
         :get-label="getLabel"
-        placeholder="Odaberite ucionicu"
+        placeholder="Odaberite učionicu"
         dropdown-class="breadcrumb-dropdown"
     />
 </template>

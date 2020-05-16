@@ -10,7 +10,7 @@
                 <img src='@/assets/redSign.svg' alt="redSign">    
             </div>
             <div class="text">
-                Izbacen iz upotrebe 
+                Izbačen iz upotrebe 
             </div>
     </div>
 </template>

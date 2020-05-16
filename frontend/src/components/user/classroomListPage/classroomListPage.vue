@@ -11,7 +11,7 @@
             >
                 <el-collapse-item :title="location">
                     <classroom-grid :classroomList="classrooms" class="classroom-grid">
-                        <template v-slot="{ classroom }" >
+                        <template v-slot="{ classroom }">
                             <classroom :classroom="classroom" class="classroom" :key="classroom.name"/>
                         </template>
                     </classroom-grid>
@@ -20,11 +20,11 @@
         </div>
         <template v-else-if="request.status === 'loading'">
             <div class="loading">
-                Loading...
+                Učitavanje...
             </div> 
         </template>
         <div v-else-if="request.status === 'error'" class="text-danger">
-            Error: {{ request.message }}
+            Greška: {{ request.message }}
         </div>
     </div>
 </template>
@@ -68,13 +68,12 @@
 
 <script>
     import Breadcrumbs from '@/components/_common/breadcrumbs/breadcrumbs'
-    import Classroom from './classroom'
     import ClassroomGrid from '@/components/_common/classroomGrid'
     import PageHeader from '@/components/_common/pageHeader'
+    import Classroom from './classroom'
     import { mapGetters, mapActions, mapState } from 'vuex'
 
     export default {
-        name: 'classroom-list-page',
         components: {
             Breadcrumbs,
             ClassroomGrid,
@@ -84,15 +83,15 @@
         computed: {
             breadcrumbData() {
                 return [
-                        { name: 'pocetna', to: {name: 'homePage'}},
-                        { name: 'ucionice', to: { name: 'classroomListPage' } }
+                        { name: 'početna', to: {name: 'homePage'}},
+                        { name: 'učionice', to: { name: 'classroomListPage' } }
                        ]
             },
-            ...mapGetters('Classroom/AllClassrooms', ['classroomsGroupedByLocation']),
-            ...mapState('Classroom/AllClassrooms', ['request']),
+            ...mapGetters('User/Classroom/AllClassrooms', ['classroomsGroupedByLocation']),
+            ...mapState('User/Classroom/AllClassrooms', ['request']),
         },
         methods: {
-            ...mapActions('Classroom/AllClassrooms', ['fetchAllClassrooms'])
+            ...mapActions('User/Classroom/AllClassrooms', ['fetchAllClassrooms'])
         },
         created() {
             if (this.request.status === 'loading') {
