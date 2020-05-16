@@ -5,6 +5,7 @@ import {Computer} from "../../entities/Computer";
 import {ComputersRepository, IAdminReportOverview, IReportOverview} from "./Computers";
 import {Admin} from "../../entities/Admin";
 import {AdminRepository} from "./Admins";
+import {ClassroomsRepository} from "./Classrooms";
 
 
 export interface IReportForSending{
@@ -157,26 +158,24 @@ export class ReportsRepository extends AbstractRepository<Report>
 		return mappedReports;
 	}
 	public async hasGeneralReports(classroomName: string, fixed: boolean = false) {
-		const reports = await this.repository.find({
-			where: {
-				classroomName,
-				fixed
-			}
-		});
-		return reports.length !== 0;
+		const reportsCount = await this.repository.createQueryBuilder("reports")
+			.where("classroomName = :cname AND fixed = :fixed and isGeneral = true", {cname: classroomName, fixed})
+			.getCount();
+		return reportsCount !== 0;
 	}
 
 	public async getReportsForComputer(computer : Computer, fixed: boolean = false){
-		return await this.repository.find({
-			where: {
-				computerId: computer,
-				fixed
-			},
-			order:{
-				urgent: "DESC",
-				timestamp: "DESC",
-			}
-		});
+		return await this.repository
+			.createQueryBuilder("reports")
+			.where("reports.computerId = :cid AND reports.classroomName = :cname AND fixed = :fixed",
+				{
+					cid: computer.id,
+					cname: computer.classroomName,
+					fixed
+				})
+			.orderBy("reports.urgent", "DESC")
+			.addOrderBy("reports.timestamp", "DESC")
+			.getMany();
 	}
 
 	public async setComment(reportId: number, comment: string, adminUsername: string){
@@ -203,18 +202,30 @@ export class ReportsRepository extends AbstractRepository<Report>
 /*********************************************PRIVATE******************************************* */
 
 	private async _addReport(data: IReportData){
-		const report = ReportsRepository._reportDataToReport(data);
-		return this.repository.save(report);
+		const report = await ReportsRepository._reportDataToReport(data);
+		if(report === undefined)
+			return undefined;
+		// because repo.save does not work with the exact same object for some reason, we need this again
+		return this.repository.createQueryBuilder("reports")
+			.insert()
+			.into(Report)
+			.values([{
+				...report
+			}
+			])
+			.execute();
 	}
 
-	private static _reportDataToReport(data: IReportData){
+	private static async _reportDataToReport(data: IReportData){
 		let report: Report = new Report();
-		const classroom = new Classroom();
-		const computer = new Computer();
-
-		classroom.name = data.classroomName; // save fill fail if name is bad
-		if(data.computerId !== undefined)
-			computer.id = data.computerId;
+		const computerRepo = getCustomRepository(ComputersRepository);
+		const classroomRepo = getCustomRepository(ClassroomsRepository);
+		const classroom = await classroomRepo.getClassroomByName(data.classroomName);
+		const computer = data.computerId !== undefined ? await computerRepo.getComputer(data.computerId, data.classroomName)
+									: null;
+		if(computer === undefined || classroom === undefined){
+			return undefined;
+		}
 		report.classroomName = classroom;
 		if(!data.isGeneral)
 			report.computerId = computer;
@@ -224,7 +235,6 @@ export class ReportsRepository extends AbstractRepository<Report>
 		report = {...report, ...tmp};
 		report.fixed = false;
 		report.timestamp = Math.floor((+ new Date()) / 1000);
-
 		return report;
 	}
 

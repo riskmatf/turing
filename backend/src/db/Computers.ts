@@ -2,7 +2,6 @@ import { Computer} from "../../entities/Computer";
 import {AbstractRepository, EntityRepository, getCustomRepository} from "typeorm";
 import {ClassroomsRepository} from "./Classrooms";
 import {ReportsRepository} from "./Reports";
-import {Report} from "../../entities/Report";
 import {Classroom} from "../../entities/Classroom";
 interface IComputer {
     computerId: number,
@@ -28,9 +27,6 @@ export class ComputersRepository extends AbstractRepository<Computer>{
 	public async getComputersFromClassroom(classroomName: string){
 		const computers = await this.repository
 							.createQueryBuilder("computer")
-							.leftJoinAndSelect(Report, "report",
-									"report.computerId = computer.id and report.classroomName = computer.classroomName and report.fixed=0")
-							.leftJoinAndSelect("computer.classroomName", "classroom")
 							.where("computer.classroomName = :cName", {cName: classroomName})
 							.getMany();
 		const reportsRepo = getCustomRepository(ReportsRepository);

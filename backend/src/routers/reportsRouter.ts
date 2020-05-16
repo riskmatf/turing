@@ -1,7 +1,6 @@
 import express from 'express';
 import {ReportsRepository} from '../db/Reports';
-import { Report } from '../../entities/Report';
-import { getCustomRepository } from 'typeorm';
+import {getCustomRepository, InsertResult} from 'typeorm';
 import { serverError } from '../apiRouter';
 import { ComputersRepository } from '../db/Computers';
 
@@ -74,7 +73,7 @@ reportsRouter.post("/", (req, resp)=>{
 			return;
 		}
 	}
-	let promise : Promise<Report>;
+	let promise : Promise<InsertResult | undefined>;
 	if(!req.body.isGeneral){
 		const computerId = +req.body.computerId;
 		if(isNaN(computerId)){
@@ -98,9 +97,15 @@ reportsRouter.post("/", (req, resp)=>{
 		});
 	}
 
-	promise.then(_res=>{
+	promise.then(res=>{
 		// TODO: send email
-		resp.send({message:"Report successfully added"});
+		if(res !== undefined)
+		{
+			resp.send({message:"Report successfully added"});
+		}
+		else{
+			resp.status(400).send( {message:"Loši parametri! Neuspelo dodavanje izveštaja."});
+		}
 	}).catch(
 		err=>{
 			serverError(err, resp);
