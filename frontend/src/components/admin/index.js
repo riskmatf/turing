@@ -5,6 +5,7 @@ import { ClassroomListPage } from './classroomListPage'
 import LoginPage from './loginPage'
 import { ClassroomPage } from './classroomPage'
 import { ReportListPage } from './reportListPage'
+import ReportsFilterPage from './reportsFilterPage'
 
 export {
     LoginPage,
@@ -14,4 +15,5 @@ export {
     ClassroomPage,
     ReportListPage,
     SettingsPage,
+    ReportsFilterPage,
 }

@@ -5,7 +5,7 @@
                 Početna
             </el-menu-item>
 
-            <el-menu-item index="02">
+            <el-menu-item index="02" :route="{ name: 'reportsFilterPage' }">
                 Kvarovi
             </el-menu-item>
 
