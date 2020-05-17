@@ -9,7 +9,13 @@
                     <el-collapse-item title="Promena imena">
                         <div class="collapse-container">
                             <div class="marginer">Unesite novo ime:</div>
-                            <el-input placeholder="Novo ime" size="mini" class="input" v-model="nameInput"/>
+                            <el-input 
+                                placeholder="Novo ime" 
+                                size="mini" 
+                                class="input" 
+                                v-model="nameInput"
+                                @keyup.native.enter="handleChangeName"
+                            />        
                             <el-button
                                     size="mini"
                                     class="styler"
@@ -29,6 +35,7 @@
                                     class="input"
                                     v-model="passInput"
                                     show-password
+                                    @keyup.native.enter="handleChangePassword"
                             />
                             <div class="marginer">Potvrdite novu lozinku:</div>
                             <el-input
@@ -37,6 +44,7 @@
                                     class="input"
                                     v-model="repeatInput"
                                     show-password
+                                    @keyup.native.enter="handleChangePassword"
                             />
                             <el-button
                                     size="mini"
@@ -119,6 +127,9 @@
         },
         methods: {
             handleChangeName() {
+                if(this.isChangedNameButtonDisabled) {
+                    return
+                }
                 this.changeNameRequestInProgress = true
                 this.changeName({ displayName: this.nameInput })
                 .then(()=> {
@@ -137,7 +148,10 @@
                     }
                 )
             },
-        handleChangePassword() {  
+            handleChangePassword() { 
+                if(this.isChangedPasswordButtonDisabled) {
+                    return
+                }
                 if (this.passInput === this.repeatInput){
                     this.changePasswordRequestInProgress = true
 
