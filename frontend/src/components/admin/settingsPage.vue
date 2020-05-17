@@ -14,22 +14,35 @@
                                 size="mini" 
                                 class="styler" 
                                 @click="handleChangeName"
-                                :disabled="isDisabled"
+                                :disabled="isChangedNameButtonDisabled"
                             >
                                 Promeni ime
                             </el-button>
                         </div>
                     </el-collapse-item>
                     <el-collapse-item title="Promena lozinke">
-                        <div class="collapse-container">
+                        <div class="collapse-container" autocomplete="off">
                             <div class="marginer">Unesite novu lozinku:</div>
-                            <el-input placeholder="Nova lozinka" size="mini" class="input" v-model="passInput"/> 
+                            <el-input 
+                                placeholder="Nova lozinka" 
+                                size="mini" 
+                                class="input" 
+                                v-model="passInput"
+                                show-password
+                            /> 
                             <div class="marginer">Potvrdite novu lozinku:</div>
-                            <el-input placeholder="Potvrda lozinke" size="mini" class="input" v-model="repeatInput"/> 
+                            <el-input 
+                                placeholder="Potvrda lozinke" 
+                                size="mini" 
+                                class="input" 
+                                v-model="repeatInput"
+                                show-password
+                            /> 
                             <el-button 
                                 size="mini" 
                                 class="styler"
                                 @click="handleChangePassword"
+                                :disabled="isChangedPasswordButtonDisabled"
                             >
                                 Promeni lozinku
                             </el-button>                  
@@ -95,18 +108,27 @@
                         { name: 'podešavanja', to: { name: 'adminClassroomListPage' } }
                        ]
             },
+            isChangedNameButtonDisabled() {
+                return this.changeNameRequestInProgress || this.nameInput.trim().length === 0
+            },
+            isChangedPasswordButtonDisabled() {
+                return this.changePasswordRequestInProgress || 
+                    this.passInput.trim().length === 0 || 
+                    this.repeatInput.trim().length === 0
+            },
         },
         data() {
             return {
                 nameInput: '',
                 passInput: '',
                 repeatInput: '',
-                isDisabled: false,
+                changeNameRequestInProgress: false,
+                changePasswordRequestInProgress: false,
             }
         },
         methods: {
             handleChangeName() {
-                this.isDisabled = true
+                this.changeNameRequestInProgress = true
                 this.changeName({ displayName: this.nameInput })
                 .then(()=> {
                     this.$message({
@@ -120,26 +142,37 @@
                         message: `Promena imena neuspešna.`,
                     })
                 }).finally(()=>{
-                        this.isDisabled = false
+                        this.changeNameRequestInProgress = false
                     }
                 )
             },
-            handleChangePassword() {
+        handleChangePassword() {  
                 if (this.passInput === this.repeatInput){
-                    
-                    this.changePassword({ })
-                    .then(()=> {
-                        this.$message({
-                            type: 'success',
-                            message: 'Lozinka je uspešno promenjena.'
+                    this.changePasswordRequestInProgress = true
+
+                    this.$confirm('Da li želite da promenite lozinku?', {
+                            cancelButtonText: 'Otkaži',
+                            confirmButtonText: 'Promeni',
+                            customClass: 'message-box-reversed',
+                        }
+                    ).then(()=> {
+                        this.changePassword({ password: this.passInput })
+                        .then(()=> {
+                            this.$message({
+                                type: 'success',
+                                message: 'Lozinka je uspešno promenjena.'
+                            })
+                            this.$emit('change')
+                        }).catch(()=>{
+                            this.$message({
+                                type: 'error',
+                                message: `Promena lozinke neuspešna.`,
+                            })  
                         })
-                        this.$emit('change')
-                    }).catch(()=>{
-                        this.$message({
-                            type: 'error',
-                            message: `Promena lozinke neuspešna.`,
-                        })  
+                    }).finally(()=> {
+                        this.changePasswordRequestInProgress = false
                     })
+                    
 
                 } else {
                     this.$message({
@@ -148,7 +181,7 @@
                     })
                 }
             },
-            ...mapActions('Admin/Admin', ['changeName']),
+            ...mapActions('Admin/Admin', ['changeName', 'changePassword']),
         },
     }
 </script>

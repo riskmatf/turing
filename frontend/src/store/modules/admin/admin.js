@@ -19,8 +19,11 @@ export default {
             state.adminData = null
             state.isAdminLoggedIn = false
         },
-        newDisplayName(state, { displayName }){
+        newDisplayName(state, { displayName }) {
             state.adminData.displayName = displayName
+        },
+        newPassword(state, { password }) {
+            state.adminData.password = password
         },
     },
     actions: {
@@ -61,8 +64,14 @@ export default {
                 throw _.get(e, 'response.data.message', 'Failed changing name')
             }
         },
-        async changePassword() {
-
+        async changePassword({ commit, state }, {password}) {
+            try {
+                let username = state.adminData.username
+                await Vue.$http.put(`/api/v1/admin/${username}/password`, {password})
+                commit('newPassword', { password })
+            } catch (e) {
+                throw _.get(e, 'response.data.message', 'Failed changing password')
+            }
         },
     },
 }
