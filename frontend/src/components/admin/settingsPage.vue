@@ -3,18 +3,18 @@
         <page-header>
             <breadcrumbs :paths="breadcrumbData" class="breadcrumbs"/>
         </page-header>
-        <div v-if="request.status === 'success'" class="location-container">
+        <div class="location-container">
             <el-card class="content-container">
                 <el-collapse>
                     <el-collapse-item title="Promena imena">
                         <div class="collapse-container">
                             <div class="marginer">Unesite novo ime:</div>
-                            <el-input placeholder="Novo ime" size="mini" class="input" v-model="nameInput"/> 
-                            <el-button 
-                                size="mini" 
-                                class="styler" 
-                                @click="handleChangeName"
-                                :disabled="isChangedNameButtonDisabled"
+                            <el-input placeholder="Novo ime" size="mini" class="input" v-model="nameInput"/>
+                            <el-button
+                                    size="mini"
+                                    class="styler"
+                                    @click="handleChangeName"
+                                    :disabled="isChangedNameButtonDisabled"
                             >
                                 Promeni ime
                             </el-button>
@@ -23,41 +23,33 @@
                     <el-collapse-item title="Promena lozinke">
                         <div class="collapse-container" autocomplete="off">
                             <div class="marginer">Unesite novu lozinku:</div>
-                            <el-input 
-                                placeholder="Nova lozinka" 
-                                size="mini" 
-                                class="input" 
-                                v-model="passInput"
-                                show-password
-                            /> 
+                            <el-input
+                                    placeholder="Nova lozinka"
+                                    size="mini"
+                                    class="input"
+                                    v-model="passInput"
+                                    show-password
+                            />
                             <div class="marginer">Potvrdite novu lozinku:</div>
-                            <el-input 
-                                placeholder="Potvrda lozinke" 
-                                size="mini" 
-                                class="input" 
-                                v-model="repeatInput"
-                                show-password
-                            /> 
-                            <el-button 
-                                size="mini" 
-                                class="styler"
-                                @click="handleChangePassword"
-                                :disabled="isChangedPasswordButtonDisabled"
+                            <el-input
+                                    placeholder="Potvrda lozinke"
+                                    size="mini"
+                                    class="input"
+                                    v-model="repeatInput"
+                                    show-password
+                            />
+                            <el-button
+                                    size="mini"
+                                    class="styler"
+                                    @click="handleChangePassword"
+                                    :disabled="isChangedPasswordButtonDisabled"
                             >
                                 Promeni lozinku
-                            </el-button>                  
+                            </el-button>
                         </div>
                     </el-collapse-item>
                 </el-collapse>
             </el-card>
-        </div>
-        <template v-else-if="request.status === 'loading'">
-            <div class="loading">
-                Učitavanje...
-            </div> 
-        </template>
-        <div v-else-if="request.status === 'error'" class="text-danger">
-            Greška: {{ request.message }}
         </div>
     </div>
 </template>
@@ -92,7 +84,7 @@
 <script>
     import Breadcrumbs from '@/components/_common/breadcrumbs/breadcrumbs'
     import PageHeader from '@/components/_common/pageHeader'
-    import { mapState, mapActions } from 'vuex'
+    import { mapActions } from 'vuex'
 
 
     export default {
@@ -101,7 +93,6 @@
             PageHeader,
         },
         computed: {
-            ...mapState('Admin/Classroom/AllClassrooms', ['request']),
             breadcrumbData() {
                 return [
                         { name: 'početna', to: {name: 'adminHomePage'}},
