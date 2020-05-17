@@ -19,6 +19,9 @@ export default {
             state.adminData = null
             state.isAdminLoggedIn = false
         },
+        newDisplayName(state, { displayName }){
+            state.adminData.displayName = displayName
+        },
     },
     actions: {
         async whoami({ commit }) {
@@ -48,6 +51,18 @@ export default {
             } catch (e) {
                 throw _.get(e, 'response.data.message', 'Failed logout')
             }
+        },
+        async changeName({ commit, state }, { displayName }) {
+            try {
+                let username = state.adminData.username
+                await Vue.$http.put(`/api/v1/admin/${username}/displayName`, { displayName })
+                commit('newDisplayName', { displayName })
+            } catch (e) {
+                throw _.get(e, 'response.data.message', 'Failed changing name')
+            }
+        },
+        async changePassword() {
+
         },
     },
 }

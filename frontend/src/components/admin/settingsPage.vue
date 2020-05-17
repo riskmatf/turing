@@ -9,17 +9,30 @@
                     <el-collapse-item title="Promena imena">
                         <div class="collapse-container">
                             <div class="marginer">Unesite novo ime:</div>
-                            <el-input placeholder="Novo ime" size="mini" class="input"></el-input> 
-                            <el-button size="mini" class="styler">Promeni ime</el-button>
+                            <el-input placeholder="Novo ime" size="mini" class="input" v-model="nameInput"/> 
+                            <el-button 
+                                size="mini" 
+                                class="styler" 
+                                @click="handleChangeName"
+                                :disabled="isDisabled"
+                            >
+                                Promeni ime
+                            </el-button>
                         </div>
                     </el-collapse-item>
                     <el-collapse-item title="Promena lozinke">
                         <div class="collapse-container">
                             <div class="marginer">Unesite novu lozinku:</div>
-                            <el-input placeholder="Nova lozinka" size="mini" class="input"></el-input> 
+                            <el-input placeholder="Nova lozinka" size="mini" class="input" v-model="passInput"/> 
                             <div class="marginer">Potvrdite novu lozinku:</div>
-                            <el-input placeholder="Potvrda lozinke" size="mini" class="input"></el-input> 
-                            <el-button size="mini" class="styler">Promeni lozinku</el-button>                  
+                            <el-input placeholder="Potvrda lozinke" size="mini" class="input" v-model="repeatInput"/> 
+                            <el-button 
+                                size="mini" 
+                                class="styler"
+                                @click="handleChangePassword"
+                            >
+                                Promeni lozinku
+                            </el-button>                  
                         </div>
                     </el-collapse-item>
                 </el-collapse>
@@ -66,7 +79,7 @@
 <script>
     import Breadcrumbs from '@/components/_common/breadcrumbs/breadcrumbs'
     import PageHeader from '@/components/_common/pageHeader'
-    import { mapState } from 'vuex'
+    import { mapState, mapActions } from 'vuex'
 
 
     export default {
@@ -82,6 +95,60 @@
                         { name: 'podešavanja', to: { name: 'adminClassroomListPage' } }
                        ]
             },
-        }
+        },
+        data() {
+            return {
+                nameInput: '',
+                passInput: '',
+                repeatInput: '',
+                isDisabled: false,
+            }
+        },
+        methods: {
+            handleChangeName() {
+                this.isDisabled = true
+                this.changeName({ displayName: this.nameInput })
+                .then(()=> {
+                    this.$message({
+                        type: 'success',
+                        message: 'Ime je uspešno promenjeno.'
+                    })
+                    this.$emit('change')
+                }).catch(()=>{
+                    this.$message({
+                        type: 'error',
+                        message: `Promena imena neuspešna.`,
+                    })
+                }).finally(()=>{
+                        this.isDisabled = false
+                    }
+                )
+            },
+            handleChangePassword() {
+                if (this.passInput === this.repeatInput){
+                    
+                    this.changePassword({ })
+                    .then(()=> {
+                        this.$message({
+                            type: 'success',
+                            message: 'Lozinka je uspešno promenjena.'
+                        })
+                        this.$emit('change')
+                    }).catch(()=>{
+                        this.$message({
+                            type: 'error',
+                            message: `Promena lozinke neuspešna.`,
+                        })  
+                    })
+
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: `Lozinke se ne poklapaju.`,
+                    })
+                }
+            },
+            ...mapActions('Admin/Admin', ['changeName']),
+        },
     }
 </script>
