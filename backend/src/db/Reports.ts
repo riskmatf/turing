@@ -135,17 +135,12 @@ export class ReportsRepository extends AbstractRepository<Report>
 		return this.repository.delete({ classroomName });
 	}
 	public async getGeneralReports(classroomName: string, fixed: boolean = false){
-		const reports = await this.repository.find({
-			where:{
-				classroomName,
-				isGeneral: true,
-				fixed
-			},
-			order:{
-				urgent: "DESC",
-				timestamp: "DESC",
-			}
-		});
+		const reports = await this.repository.createQueryBuilder("reports")
+			.where("classroomName = :cname AND isGeneral = true AND fixed = :fixed", {cname: classroomName, fixed})
+			.orderBy("reports.urgent", "DESC")
+			.addOrderBy("reports.timestamp", "DESC")
+			.getMany();
+
 		const mappedReports: IReportOverview[] = reports.map(rep=>{
 			return {
 				reportId: rep.reportId,
