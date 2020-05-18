@@ -78,5 +78,8 @@ export default {
                 throw _.get(e, 'response.data.message', 'Failed changing password')
             }
         },
+        async addNewAdmin() {
+
+        },
     },
 }
