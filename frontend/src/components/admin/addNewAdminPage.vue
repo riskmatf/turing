@@ -11,13 +11,15 @@
                     <el-input
                         placeholder="Ime"
                         size="mini" 
-                        v-model="nameInput"   
+                        v-model="nameInput"
+                        @keyup.native.enter="handleAddNewAdmin"
                     />
                     <div class="marginer"> Unesite korisničko ime: </div>
                     <el-input
                         placeholder="Korisničko ime"
                         size="mini"
                         v-model="usernameInput"
+                        @keyup.native.enter="handleAddNewAdmin"
                     />
                     <div class="marginer"> Unesite lozinku: </div>
                     <form autocomplete="off">
@@ -26,6 +28,7 @@
                             size="mini"
                             v-model="passInput"
                             show-password
+                            @keyup.native.enter="handleAddNewAdmin"
                         />
                     </form>
                     <div class="marginer"> Ponovite lozinku: </div>
@@ -35,9 +38,17 @@
                             size="mini"   
                             v-model="repeatInput"
                             show-password
+                            @keyup.native.enter="handleAddNewAdmin"
                         />
                     </form>
-                    <el-button size="mini" class="styler" @click="handleAddNewAdmin"> Dodaj admina </el-button>
+                    <el-button 
+                        size="mini" 
+                        class="styler" 
+                        @click="handleAddNewAdmin"
+                        :disabled="isAddNewAdminButtonDisabled"
+                    > 
+                        Dodaj admina 
+                    </el-button>
                 </div>
             </el-card>
         </div>
@@ -86,6 +97,13 @@
                         { name: 'dodaj admina', to: { name: 'adminClassroomListPage' } }
                        ]
             },
+            isAddNewAdminButtonDisabled(){
+                return this.addNewAdminRequestInProgress || 
+                    this.nameInput.trim().length === 0 || 
+                    this.usernameInput.trim().length === 0 ||
+                    this.passInput.trim().length === 0 || 
+                    this.repeatInput.trim().length === 0
+            },
         },
         data() {
             return {
@@ -93,12 +111,46 @@
                 usernameInput: '',
                 passInput: '',
                 repeatInput: '',
+                addNewAdminRequestInProgress: false,
             }
         },
         methods: {
             handleAddNewAdmin() {
+                if(this.isAddNewAdminButtonDisabled) {
+                    return
+                }
                 if (this.passInput === this.repeatInput) {
-                    console.log(this.nameInput)
+                    this.changePasswordRequestInProgress = true
+
+                    this.$confirm(` Ime: ${ this.nameInput },
+                                    Korisničko ime: ${ this.usernameInput }`, 
+                                    'Potvrda novog admina',
+                        {
+                            cancelButtonText: 'Otkaži',
+                            confirmButtonText: 'Potvrdi',
+                            customClass: 'message-box-reversed',
+                        }
+                    ).then(()=>{
+
+                            this.addNewAdmin({ 
+                                username: this.usernameInput,
+                                displayName: this.nameInput,
+                                password: this.passInput
+                            })
+                            .then(()=> {
+                                this.$message({
+                                    type: 'success',
+                                    message: 'Novi admin je uspešno dodat.'
+                                })
+                            }).catch(()=>{
+                                this.$message({
+                                    type: 'error',
+                                    message: `Dodavanje novog admina neuspešno.`,
+                                })  
+                            }).finally(()=> {
+                                this.changePasswordRequestInProgress = false
+                            })
+                    })
                 } else {
                     this.$message({
                         type: 'error',

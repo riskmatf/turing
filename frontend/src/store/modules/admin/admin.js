@@ -25,6 +25,11 @@ export default {
         newPassword(state, { password }) {
             state.adminData.password = password
         },
+        newAdmin(state, {username, displayName, password}) {
+            state.adminData.username = username
+            state.adminData.displayName = displayName
+            state.adminData.password = password
+        },
     },
     actions: {
         async whoami({ commit }) {
@@ -73,8 +78,13 @@ export default {
                 throw _.get(e, 'response.data.message', 'Failed changing password')
             }
         },
-        async addNewAdmin() {
-
+        async addNewAdmin({ commit }, { username, displayName, password }) {
+            try {
+                await Vue.$http.post(`/api/v1/admin/signup`, { username, displayName, password})
+                commit('newAdmin', {username, displayName, password})
+            } catch (e) {
+                throw _.get(e, 'response.data.message', 'Failed adding new admin')
+            }
         },
     },
 }
