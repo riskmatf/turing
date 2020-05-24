@@ -92,7 +92,10 @@ export class ReportsRepository extends AbstractRepository<Report>
 				"reports.classroomName = classrooms.name")
 			.where(params.whereString, params.whereParams)
 			.getCount();
-		return Math.floor(numberOfReports/PAGE_SIZE);
+		if(numberOfReports === 0){
+			return 0;
+		}
+		return Math.floor((numberOfReports-1)/PAGE_SIZE);
 	}
 	public async solveReport(reportId: number){
 		const report = await this.repository.findOne(reportId);
