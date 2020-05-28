@@ -41,7 +41,7 @@ adminReportsRouter.put("/:id/comment", async (req, resp)=>{
         resp.status(400).send({message: "Loš id"});
         return;
     }
-    if(!req.body.hasOwnProperty("comment")){
+    if(!req.body.hasOwnProperty("comment") || req.body.comment === ""){
         resp.status(400).send({message: "Nedostaje komentar!"});
         return;
     }
