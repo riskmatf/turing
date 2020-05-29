@@ -24,11 +24,12 @@
 
         <div class="column">
             <span class="close-button" @click="isOpen = false">X</span>
-            <el-input v-model="searchText" size="mini" placeholder="Pretraga..." ref="inputElement"/>
+            <el-input v-model="searchText" size="mini" placeholder="Pretraga..." ref="inputElement" v-if="searchable"/>
+            <div class="clear-all-container" v-if="clearable">
+                <span v-if="multiSelect" @click="deselectAllItems">Clear all</span>
+                <span v-else @click="clearSingleSelection">Clear</span>
+            </div>
             <div v-if="multiSelect">
-                <div class="clear-all-container">
-                    <span @click="deselectAllItems">Clear all</span>
-                </div>
                 <el-divider class="divider"/>
                 <template v-if="selectedLabel.length !== 0">
                     <div
@@ -144,6 +145,8 @@
             dropdownClass: {},
             selectedItemsClass: {},
             multiSelect: Boolean,
+            searchable: Boolean,
+            clearable: Boolean,
         },
         data() {
             return { searchText: '', isOpen: false }
@@ -219,15 +222,25 @@
                 }
             },
             deselectAllItems() {
-                if (this.multiSelect) {
+                if (this.multiSelect && this.model.length !== 0) {
                     this.model = []
                 }
             },
+            clearSingleSelection() {
+                if (!this.multiSelect && this.model !== null) {
+                    this.model = null
+                    this.isOpen = false
+                }
+            }
         },
         watch: {
             isOpen() {
                 if (this.isOpen && !_.isNil(this.$refs.inputElement)) {
                     this.$nextTick(() => this.$refs.inputElement.focus())
+                }
+
+                if (!this.isOpen) {
+                    this.$emit('close')
                 }
             }
         }

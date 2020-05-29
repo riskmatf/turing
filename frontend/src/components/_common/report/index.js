@@ -8,6 +8,9 @@ import ReportAdminDisplayName from './adminDisplayName'
 import ReportAdminComment from './adminComment'
 import ReportComputerLocation from './computerLocation'
 import ReportUrgentSwitch from './urgentSwitch'
+import ReportSolvedIndicator from './reportSolvedIndicator'
+import ReportSolveButton from './solveButton'
+import ReportDeleteButton from './deleteButton'
 
 export {
     ReportId,
@@ -20,4 +23,7 @@ export {
     ReportAdminComment,
     ReportComputerLocation,
     ReportUrgentSwitch,
+    ReportSolvedIndicator,
+    ReportSolveButton,
+    ReportDeleteButton,
 }

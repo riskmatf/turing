@@ -5,6 +5,7 @@
         :get-label="getLabel"
         placeholder="Odaberite učionicu"
         dropdown-class="breadcrumb-dropdown"
+        searchable
     />
 </template>
 

@@ -8,7 +8,12 @@ export default {
         isAdminLoggedIn: false,
     },
     getters: {
-
+        adminDisplayName(state) {
+            if (state.isAdminLoggedIn) {
+                return state.adminData.displayName
+            }
+            return null
+        },
     },
     mutations: {
         setAdminLoggedInState(state, { adminData, isAdminLoggedIn }) {
