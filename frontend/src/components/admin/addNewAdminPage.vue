@@ -116,6 +116,8 @@
         },
         methods: {
             handleAddNewAdmin() {
+                console.log(this.passInput)
+                console.log(this.repeatInput)
                 if(this.isAddNewAdminButtonDisabled) {
                     return
                 }
