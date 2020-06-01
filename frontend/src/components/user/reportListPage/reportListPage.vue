@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <template v-if="requestStatus === 'success'">
-            <page-header class="page-header">
+            <page-header class="pager-header">
                 <breadcrumbs
                         :paths="breadcrumbData"
                         class="breadcrumbs"

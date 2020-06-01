@@ -27,6 +27,7 @@
         display: grid
         grid-template-rows: auto 1fr
         overflow-y: auto
+        grid-row-gap: 10px
         .controls
             display: grid
             grid-template-columns: repeat(5, max-content)
