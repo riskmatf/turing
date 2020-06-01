@@ -26,6 +26,7 @@ export default {
         },
         newDisplayName(state, { displayName }) {
             state.adminData.displayName = displayName
+            console.log(displayName)
         },
         newPassword(state, { password }) {
             state.adminData.password = password
