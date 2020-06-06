@@ -11,13 +11,13 @@ accountManagementRouter.put("/password", (req, res)=>{
         res.status(400).send({message:"BAD REQUEST! MISSING PASSWORD"});
         return;
     }
-    adminRepo.changePassword(req.params.username, req.body.password)
+    adminRepo.changePassword(req.username, req.body.password)
         .then(user=>{
             if(user){
                 res.send({message: "SUCCESS"});
             }
             else{
-                console.error(`ERROR TRYING TO CHANGE PASSWORD FOR USER ${req.params.username}.
+                console.error(`ERROR TRYING TO CHANGE PASSWORD FOR USER ${req.username}.
                                 SESSION DATA: ${JSON.stringify(req.session)}`);
                 res.status(400).send({message:"UNKNOWN ERROR! CONTACT ADMINISTRATOR"});
             }
@@ -35,13 +35,13 @@ accountManagementRouter.put('/displayName', (req, res)=>{
         return;
     }
     const adminRepo = getCustomRepository(AdminRepository);
-    adminRepo.changeDisplayName(req.params.username, req.body.displayName)
+    adminRepo.changeDisplayName(req.username, req.body.displayName)
         .then(user=>{
             if(user){
                 res.send({message: "SUCCESS"});
             }
             else{
-                console.error(`ERROR TRYING TO CHANGE DISPLAY NAME FOR USER ${req.params.username}.
+                console.error(`ERROR TRYING TO CHANGE DISPLAY NAME FOR USER ${req.username}.
                                 SESSION DATA: ${JSON.stringify(req.session)}`);
                 res.status(400).send({message:"UNKNOWN ERROR! CONTACT ADMINISTRATOR"});
             }
