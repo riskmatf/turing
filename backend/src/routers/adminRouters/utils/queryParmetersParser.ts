@@ -72,6 +72,15 @@ export function getQueryParameters(req: Request) {
         params.whereParams.computerId = cId;
         whereStrings.push(" reports.computerId = :computerId");
     }
+    if(query.isGeneral){
+        try{
+            params.whereParams.isGeneral = parseBoolean(query.isGeneral as string);
+            whereStrings.push(" reports.isGeneral = :isGeneral ");
+        }catch (err) {
+            console.log("ERROR PARSING BOOLEAN");
+            return undefined;
+        }
+    }
     if(whereStrings.length > 0){
         params.whereString += whereStrings.join(" AND ");
     }

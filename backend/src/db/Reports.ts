@@ -26,6 +26,7 @@ export interface IReportForSending{
 
 export interface IFilter{
     whereParams: {
+		isGeneral?: boolean,
 		locations?: string[];
 		classrooms?: string[];
 		urgent?: boolean;
