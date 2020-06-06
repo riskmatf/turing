@@ -5,7 +5,7 @@
                 Početna
             </el-menu-item>
 
-            <el-menu-item index="02">
+            <el-menu-item index="02" :route="{ name: 'reportsFilterPage' }">
                 Kvarovi
             </el-menu-item>
 
@@ -22,7 +22,7 @@
                     </div>
                 </el-menu-item>
 
-                <el-menu-item index="04-2">
+                <el-menu-item index="04-2" :route=" { name: 'addNewAdminPage' } ">
                     <div>
                         <i class="el-icon-user"></i>
                         <span>Dodaj novog admina</span>

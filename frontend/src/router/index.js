@@ -18,7 +18,9 @@ import {
     ClassroomPage as AdminClassroomPage,
     ReportListPage as AdminReportListPage,
     SettingsPage,
+    AddNewAdminPage,
     LoginPage,
+    ReportsFilterPage,
 } from '@/components/admin'
 
 Vue.use(VueRouter)
@@ -60,6 +62,8 @@ const routes = [
                         ]
                     },
                     { path: 'settings', name: 'adminSettingsPage', component: SettingsPage, meta: { index: '04-1' }},
+                    { path: 'addAdmin', name: 'addNewAdminPage', component: AddNewAdminPage, meta: { index: '04-2' }},
+                    { path: 'reports', name: 'reportsFilterPage', component: ReportsFilterPage, meta: { index: '02' }},
                     { path: '*', name: 'adminNotFound', component: NotFoundPage },
                 ]
             },

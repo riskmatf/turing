@@ -44,6 +44,7 @@
                 },
                 set(val) {
                     this.$emit('input', val)
+                    this.$emit('change')
                 }
             },
             currentSelectedReportId() {

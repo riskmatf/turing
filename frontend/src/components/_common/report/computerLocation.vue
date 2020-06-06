@@ -1,6 +1,6 @@
 <template>
     <el-popover v-model="isOpen" popper-class="computer-location-popup" :visible-arrow="false">
-        <div slot="reference" class="el-icon-location-information"></div>
+        <div slot="reference" class="el-icon-location-information button-icon"></div>
         <div class="column">
             <div class="el-icon-close close-button" @click="isOpen=false"></div>
             <schema v-if="isOpen" :schema-url="schemaUrl" :computers="computers" class="center"/>

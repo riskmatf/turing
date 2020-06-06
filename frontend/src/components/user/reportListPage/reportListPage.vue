@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <template v-if="requestStatus === 'success'">
-            <page-header class="page-header">
+            <page-header class="pager-header">
                 <breadcrumbs
                         :paths="breadcrumbData"
                         class="breadcrumbs"
@@ -141,8 +141,6 @@
                             margin-bottom: 10px
     .loader
         padding: 20px
-
-
 </style>
 
 <script>
@@ -308,9 +306,9 @@
             },
             selectReport(report) {
                 if (_.isNil(report)) {
-                    this.$router.replace({})
+                    this.$router.push({reportId: undefined})
                 } else if (report.reportId !== this.selectedReportId){
-                    this.$router.replace({ query: { reportId: report.reportId } })
+                    this.$router.push({ query: { reportId: report.reportId } })
                 }
             },
             reportAdded() {

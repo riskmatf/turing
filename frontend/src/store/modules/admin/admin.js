@@ -8,7 +8,12 @@ export default {
         isAdminLoggedIn: false,
     },
     getters: {
-
+        adminDisplayName(state) {
+            if (state.isAdminLoggedIn) {
+                return state.adminData.displayName
+            }
+            return null
+        },
     },
     mutations: {
         setAdminLoggedInState(state, { adminData, isAdminLoggedIn }) {
@@ -21,8 +26,14 @@ export default {
         },
         newDisplayName(state, { displayName }) {
             state.adminData.displayName = displayName
+            console.log(displayName)
         },
         newPassword(state, { password }) {
+            state.adminData.password = password
+        },
+        newAdmin(state, {username, displayName, password}) {
+            state.adminData.username = username
+            state.adminData.displayName = displayName
             state.adminData.password = password
         },
     },
@@ -71,6 +82,14 @@ export default {
                 commit('newPassword', { password })
             } catch (e) {
                 throw _.get(e, 'response.data.message', 'Failed changing password')
+            }
+        },
+        async addNewAdmin({ commit }, { username, displayName, password }) {
+            try {
+                await Vue.$http.post(`/api/v1/admin/signup`, { username, displayName, password})
+                commit('newAdmin', {username, displayName, password})
+            } catch (e) {
+                throw _.get(e, 'response.data.message', 'Failed adding new admin')
             }
         },
     },

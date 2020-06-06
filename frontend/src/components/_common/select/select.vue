@@ -2,19 +2,58 @@
     <el-popover v-model="isOpen" trigger="click" content="test" :popper-class="classesForPopper" :visible-arrow="false">
         <div slot="reference" class="el-input__inner selected-element" :class="selectedItemsClass">
             <slot name="selectedItem">
-                <span v-if="selectedLabel === ''">{{ placeholder }}</span>
-                <span v-else>{{ selectedLabel }}</span>
+                <template v-if="multiSelect">
+                    <span v-if="selectedLabel.length === 0">{{ placeholder }}</span>
+                    <template v-else>
+                        <el-tag
+                            v-for="{ label } in selectedLabel"
+                            :key="label"
+                            size="mini"
+                            class="tag"
+                        >
+                            {{ label }}
+                        </el-tag>
+                    </template>
+                </template>
+                <template v-else>
+                    <span v-if="selectedLabel === ''">{{ placeholder }}</span>
+                    <span v-else>{{ selectedLabel }}</span>
+                </template>
             </slot>
         </div>
 
         <div class="column">
             <span class="close-button" @click="isOpen = false">X</span>
-            <el-input v-model="searchText" size="mini" placeholder="Pretraga..." ref="inputElement"/>
+            <el-input v-model="searchText" size="mini" placeholder="Pretraga..." ref="inputElement" v-if="searchable"/>
+            <div class="clear-all-container" v-if="clearable">
+                <span v-if="multiSelect" @click="deselectAllItems">Clear all</span>
+                <span v-else @click="clearSingleSelection">Clear</span>
+            </div>
+            <div v-if="multiSelect">
+                <el-divider class="divider"/>
+                <template v-if="selectedLabel.length !== 0">
+                    <div
+                            class="el-select-dropdown__item item selected-item"
+                            v-for="{ label, item } in selectedLabel"
+                            :key="label"
+                    >
+                        <div>
+                            <slot :item="item">
+                                {{ label }}
+                            </slot>
+                        </div>
+                        <i class="fas fa-times" @click="()=>deselectItem(item)"/>
+                    </div>
+                </template>
+                <div v-else>
+                    Select some items
+                </div>
+            </div>
             <el-divider class="divider"/>
             <div class="column items">
                 <div
                     class="el-select-dropdown__item item"
-                    :class="{selected: selectedLabel === item.label}"
+                    :class="{selected: !multiSelect && selectedLabel === item.label}"
                     v-for="item in filteredItems"
                     @click="() => selectItem(item)"
                     :key="item.label"
@@ -31,6 +70,20 @@
 <style lang="sass" scoped>
     @import "./src/assets/styles/breakPoints"
 
+    .tag
+        margin-right: 5px
+    .clear-all-container
+        display: flex
+        flex-direction: row
+        justify-content: flex-end
+        margin-top: 5px
+        cursor: default
+    .selected-item
+        display: flex
+        flex-direction: row
+        justify-content: space-between
+        align-items: center
+        cursor: default
     .selected-element
         padding: 5px
         width: unset
@@ -91,16 +144,19 @@
             placeholder: String,
             dropdownClass: {},
             selectedItemsClass: {},
+            multiSelect: Boolean,
+            searchable: Boolean,
+            clearable: Boolean,
         },
         data() {
             return { searchText: '', isOpen: false }
         },
         computed: {
-            filteredItems() {
-                return _.filter(this.cashedLabels, (item, label) => label.includes(this.searchText))
-            },
             model: {
                 get() {
+                    if (this.multiSelect) {
+                        return _.isNil(this.value) ? [] : this.value
+                    }
                     return this.value
                 },
                 set(val) {
@@ -108,14 +164,39 @@
                 }
             },
             cashedLabels() {
-                return this.items.reduce((previousValue, currentValue) => {
-                    const label = this.getLabel(currentValue)
-                    previousValue[label] = { label: label, item: currentValue}
-                    return previousValue
-                }, {})
+                return this.items.map((currentValue) => {
+                    return { label: this.getLabel(currentValue), item: currentValue }
+                })
             },
             selectedLabel() {
+                if (this.multiSelect) {
+                    return this.model.map((item) => {
+                        return { label: this.getLabel(item), item: item }
+                    })
+                }
                 return this.getLabel(this.model)
+            },
+            selectSet() {
+                if (this.multiSelect) {
+                    return this.selectedLabel.reduce((result, { label }) => {
+                        result.add(label)
+                        return result
+                    }, new Set())
+                }
+                return new Set([this.selectedLabel])
+            },
+            filteredItems() {
+                let result = _(this.cashedLabels)
+                if (this.multiSelect) {
+                    result = result.filter(({ label }) => {
+                        return !this.selectSet.has(label)
+                    })
+                }
+                result = result.filter(({label}) => {
+                    return `${label}`.includes(this.searchText)
+                })
+
+                return result.value()
             },
             classesForPopper() {
                 let ddClass = ''
@@ -128,15 +209,38 @@
         },
         methods: {
             selectItem(item) {
-                this.model = item.item
-                this.isOpen = false
+                if (this.multiSelect) {
+                    this.model = [...this.model, item.item]
+                } else {
+                    this.model = item.item
+                    this.isOpen = false
+                }
+            },
+            deselectItem(item) {
+                if (this.multiSelect) {
+                    this.model = this.model.filter((currentItem) => currentItem !== item)
+                }
+            },
+            deselectAllItems() {
+                if (this.multiSelect && this.model.length !== 0) {
+                    this.model = []
+                }
+            },
+            clearSingleSelection() {
+                if (!this.multiSelect && this.model !== null) {
+                    this.model = null
+                    this.isOpen = false
+                }
             }
         },
         watch: {
             isOpen() {
                 if (this.isOpen && !_.isNil(this.$refs.inputElement)) {
                     this.$nextTick(() => this.$refs.inputElement.focus())
+                }
 
+                if (!this.isOpen) {
+                    this.$emit('close')
                 }
             }
         }

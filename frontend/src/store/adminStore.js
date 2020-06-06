@@ -1,5 +1,6 @@
 import Admin from './modules/admin/admin'
 import Classroom from './modules/admin/classrooms'
+import Report from './modules/admin/reports'
 
 export default {
     namespaced: true,
@@ -12,5 +13,6 @@ export default {
     modules: {
         Admin,
         Classroom,
+        Report,
     }
 }

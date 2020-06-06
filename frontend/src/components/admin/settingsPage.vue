@@ -29,23 +29,27 @@
                     <el-collapse-item title="Promena lozinke">
                         <div class="collapse-container" autocomplete="off">
                             <div class="marginer">Unesite novu lozinku:</div>
-                            <el-input
-                                    placeholder="Nova lozinka"
-                                    size="mini"
-                                    class="input"
-                                    v-model="passInput"
-                                    show-password
-                                    @keyup.native.enter="handleChangePassword"
-                            />
+                            <form autocomplete="off">
+                                <el-input
+                                        placeholder="Nova lozinka"
+                                        size="mini"
+                                        class="input"
+                                        v-model="passInput"
+                                        show-password
+                                        @keyup.native.enter="handleChangePassword"
+                                />
+                            </form>
                             <div class="marginer">Potvrdite novu lozinku:</div>
-                            <el-input
-                                    placeholder="Potvrda lozinke"
-                                    size="mini"
-                                    class="input"
-                                    v-model="repeatInput"
-                                    show-password
-                                    @keyup.native.enter="handleChangePassword"
-                            />
+                            <form autocomplete="off">
+                                <el-input
+                                        placeholder="Potvrda lozinke"
+                                        size="mini"
+                                        class="input"
+                                        v-model="repeatInput"
+                                        show-password
+                                        @keyup.native.enter="handleChangePassword"
+                                />
+                            </form>
                             <el-button
                                     size="mini"
                                     class="styler"
