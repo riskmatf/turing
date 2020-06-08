@@ -8,7 +8,7 @@
             active-text-color="#409EFF"
         >
             <el-menu-item index="0" :route="{ name: targetHomePage }">
-                Turing logo
+                <img src="@/assets/logo.jpeg" style="height: 55px;"/>
             </el-menu-item>
             <div class="spacer"></div>
             <slot name="topBar"/>
@@ -24,7 +24,7 @@
                 @select="handleSelect"
             >
                 <el-menu-item index="0" :route="{ name: targetHomePage }">
-                    Turing logo
+                    <img src="@/assets/logo.jpeg" style="height: 55px;"/>
                 </el-menu-item>
                 <div class="spacer"></div>
                 <el-button size="mini" @click="isOpen = !isOpen">=</el-button>

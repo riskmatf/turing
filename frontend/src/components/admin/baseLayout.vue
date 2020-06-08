@@ -17,21 +17,21 @@
                 <template slot="title">Nalog</template>
                 <el-menu-item index="04-1" :route=" { name: 'adminSettingsPage' } ">
                     <div>
-                        <i class="el-icon-setting"></i>
+                        <i class="fas fa-cog padder"></i>
                         <span>Podešavanja</span>
                     </div>
                 </el-menu-item>
 
                 <el-menu-item index="04-2" :route=" { name: 'addNewAdminPage' } ">
                     <div>
-                        <i class="el-icon-user"></i>
+                        <i class="fas fa-user-plus padder" style="padding-right: 6px"></i>
                         <span>Dodaj novog admina</span>
                     </div>
                 </el-menu-item>
 
                 <el-menu-item @click="logoutUser">
                     <div>
-                        <i class="el-icon-right"></i>                    
+                        <i class="fas fa-sign-out-alt padder"></i>
                         <span>Odjava</span>
                     </div>
                 </el-menu-item>
@@ -49,6 +49,9 @@
     .centerer
         display: flex  
         flex-direction: row
+    .padder
+        padding-right: 10px
+        padding-left: 5px
 </style>
 
 <script>

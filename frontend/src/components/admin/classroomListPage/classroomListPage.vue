@@ -3,7 +3,7 @@
         <page-header>
             <breadcrumbs :paths="breadcrumbData" class="breadcrumbs"/>
             <div class="positioner">
-                <el-button size="mini">Dodaj učionicu</el-button>
+                <el-button size="mini" disabled>Dodaj učionicu</el-button>
             </div>
         </page-header>      
         <div v-if="request.status === 'success'" class="location-container">

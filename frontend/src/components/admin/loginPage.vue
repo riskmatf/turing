@@ -8,7 +8,7 @@
                 class="form-item"
                 type="text"
                 size="large"
-                placeholder="Korisnicko ime"
+                placeholder="Korisničko ime"
                 @keyup.native.enter="loginOnEnter"
             >
                 <i slot="prepend" class="fas fa-user"/>
@@ -18,7 +18,7 @@
                 class="form-item"
                 type="password"
                 size="large"
-                placeholder="Sifra"
+                placeholder="Lozinka"
                 show-password
                 @keyup.native.enter="loginOnEnter"
             >

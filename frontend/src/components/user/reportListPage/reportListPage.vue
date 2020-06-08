@@ -188,13 +188,23 @@
                         currentName: this.classroomId,
                     },
                     {
-                       children: [
-                           { name: 'opšti', to: { name: 'reportListPage', params: { computerId: 'general' } } },
-                           ..._.map(this.classroom.computers, ({ computerId }) => {
-                               return { name: (computerId === 0 ? 'N' : computerId), to: { name: 'reportListPage', params: { computerId: computerId } } }
-                           }),
-                       ],
-                       currentName: this.areGeneralReports ? 'opšti' : (this.computerId === 0 ? 'N' : this.computerId)
+                        children: [
+                            {
+                                name: 'opšti',
+                                display: this.getGeneralDisplayIcon(this.classroom.hasGeneralReports),
+                                to: { name: 'reportListPage', params: { computerId: 'general' } }
+                            },
+                            ..._(this.classroom.computers).filter((computer) => {
+                                return !computer.isBroken
+                            }).map((computer) => {
+                                return {
+                                    name: (computer.computerId === 0 ? 'N' : computer.computerId),
+                                    display: this.getComputerDisplayLabel(computer),
+                                    to: { name: 'reportListPage', params: { computerId: computer.computerId } }
+                                }
+                            }).value(),
+                        ],
+                        currentName: this.areGeneralReports ? 'opšti' : (this.computerId === 0 ? 'N' : this.computerId)
                     }
                 ]
             },
@@ -314,6 +324,36 @@
             reportAdded() {
                 this.isReportModalVisible = false
                 this.getData()
+                this.fetchClassroom({ classroomId: this.classroomId })
+            },
+            getGeneralDisplayIcon(hasReports) {
+                const h = this.$createElement
+                const computerName = h('span', 'opšti')
+                let sign = null
+                if (hasReports) {
+                    sign = h('i', { 'class': 'fas fa-exclamation-triangle text-warning', style: 'padding-left: 5px' })
+                }
+
+                return h(
+                    'div',
+                    [computerName, sign]
+                )
+
+            },
+            getComputerDisplayLabel(computer) {
+                const h = this.$createElement
+                const computerName = h('span', [computer.computerId === 0 ? 'N' : `${computer.computerId}`])
+                let sign = null
+                if (computer.isBroken) {
+                    sign = h('i', { 'class': 'fas fa-exclamation-triangle text-danger', style: 'padding-left: 5px' })
+                } else if (computer.hasReports) {
+                    sign = h('i', { 'class': 'fas fa-exclamation-triangle text-warning', style: 'padding-left: 5px' })
+                }
+
+                return h(
+                    'div',
+                    [computerName, sign]
+                )
             },
         },
         watch: {
@@ -322,8 +362,8 @@
                 handler(currentRoute, prevRoute) {
                     const hasPreviousRoute = !_.isNil(prevRoute)
                     const areRoutesSame = hasPreviousRoute && prevRoute.name === currentRoute.name
-                    const classroomHasChanged = hasPreviousRoute && prevRoute.params.classroomId !== currentRoute.params.classroomId
-                    const computerHasChanged = hasPreviousRoute && prevRoute.params.computerId !== currentRoute.params.computerId
+                    const classroomHasChanged = hasPreviousRoute && `${prevRoute.params.classroomId}` !== `${currentRoute.params.classroomId}`
+                    const computerHasChanged = hasPreviousRoute && `${prevRoute.params.computerId}` !== `${currentRoute.params.computerId}`
                     const classroomOrComputerHasChanged =  classroomHasChanged || computerHasChanged
 
                     if (!hasPreviousRoute || (areRoutesSame && classroomOrComputerHasChanged)) {

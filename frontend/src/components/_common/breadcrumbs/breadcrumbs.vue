@@ -13,7 +13,7 @@
                 {{ lastPath.name }}
             </el-breadcrumb-item>
             <el-breadcrumb-item v-else>
-                <multiple-paths :paths="lastPath.children" :current-label="lastPath.currentName"/>
+                <multiple-paths :paths="lastPath.children" :current-label="lastPath.currentName" is-last/>
             </el-breadcrumb-item>
         </template>
     </el-breadcrumb>

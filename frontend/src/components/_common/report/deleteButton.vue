@@ -1,6 +1,6 @@
 <template>
     <el-button size="mini" :disabled="disabled" type="danger" @click="$emit('click')">
-        Obrisi kvar
+        Obriši kvar
     </el-button>
 </template>
 

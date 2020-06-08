@@ -3,21 +3,23 @@
         <div slot="reference" class="el-input__inner selected-element" :class="selectedItemsClass">
             <slot name="selectedItem">
                 <template v-if="multiSelect">
-                    <span v-if="selectedLabel.length === 0">{{ placeholder }}</span>
+                    <span v-if="selectedItem.length === 0">{{ placeholder }}</span>
                     <template v-else>
                         <el-tag
-                            v-for="{ label } in selectedLabel"
-                            :key="label"
-                            size="mini"
-                            class="tag"
+                                v-for="{ searchLabel, displayLabel } in selectedItem"
+                                :key="searchLabel"
+                                size="mini"
+                                class="tag"
                         >
-                            {{ label }}
+                            <v-node-render :nodes="displayLabel"/>
                         </el-tag>
                     </template>
                 </template>
                 <template v-else>
-                    <span v-if="selectedLabel === ''">{{ placeholder }}</span>
-                    <span v-else>{{ selectedLabel }}</span>
+                    <span v-if="selectedItem.searchLabel === ''">{{ placeholder }}</span>
+                    <span v-else>
+                        <v-node-render :nodes="selectedItem.displayLabel"/>
+                    </span>
                 </template>
             </slot>
         </div>
@@ -26,40 +28,40 @@
             <span class="close-button" @click="isOpen = false">X</span>
             <el-input v-model="searchText" size="mini" placeholder="Pretraga..." ref="inputElement" v-if="searchable"/>
             <div class="clear-all-container" v-if="clearable">
-                <span v-if="multiSelect" @click="deselectAllItems">Clear all</span>
-                <span v-else @click="clearSingleSelection">Clear</span>
+                <span v-if="multiSelect" @click="deselectAllItems">Obriši sve</span>
+                <span v-else @click="clearSingleSelection">Obriši</span>
             </div>
             <div v-if="multiSelect">
                 <el-divider class="divider"/>
-                <template v-if="selectedLabel.length !== 0">
+                <template v-if="selectedItem.length !== 0">
                     <div
                             class="el-select-dropdown__item item selected-item"
-                            v-for="{ label, item } in selectedLabel"
-                            :key="label"
+                            v-for="{ searchLabel, displayLabel, item } in selectedItem"
+                            :key="searchLabel"
                     >
                         <div>
                             <slot :item="item">
-                                {{ label }}
+                                <v-node-render :nodes="displayLabel"/>
                             </slot>
                         </div>
                         <i class="fas fa-times" @click="()=>deselectItem(item)"/>
                     </div>
                 </template>
                 <div v-else>
-                    Select some items
+                    Odaberite opcije
                 </div>
             </div>
             <el-divider class="divider"/>
             <div class="column items">
                 <div
-                    class="el-select-dropdown__item item"
-                    :class="{selected: !multiSelect && selectedLabel === item.label}"
-                    v-for="item in filteredItems"
-                    @click="() => selectItem(item)"
-                    :key="item.label"
+                        class="el-select-dropdown__item item"
+                        :class="{selected: !multiSelect && selectedItem.searchLabel === item.searchLabel}"
+                        v-for="item in filteredItems"
+                        @click="() => selectItem(item)"
+                        :key="item.searchLabel"
                 >
                     <slot :item="item.item">
-                        {{ item.label }}
+                        <v-node-render :nodes="item.displayLabel"/>
                     </slot>
                 </div>
             </div>
@@ -72,33 +74,40 @@
 
     .tag
         margin-right: 5px
+
     .clear-all-container
         display: flex
         flex-direction: row
         justify-content: flex-end
         margin-top: 5px
         cursor: default
+
     .selected-item
         display: flex
         flex-direction: row
         justify-content: space-between
         align-items: center
         cursor: default
+
     .selected-element
         padding: 5px
         width: unset
         line-height: unset
         height: unset
         cursor: default
+
     .items
         overflow-y: auto
+
         .item
             overflow: unset
+
     .column
         display: flex
         flex-direction: column
         flex-grow: 1
         min-height: 0
+
         .close-button
             display: none
             align-self: flex-end
@@ -106,6 +115,7 @@
             margin-bottom: 5px
             @media($mobileBreakPoint)
                 display: inline-block
+
         .divider
             margin: 7px 0
 
@@ -120,27 +130,31 @@
         flex-grow: 1
         @media($mobileBreakPoint)
             width: 100%
-            left: 0!important
-            top: 0!important
+            left: 0 !important
+            top: 0 !important
             height: 100%
             box-sizing: border-box
-            margin-top: 0!important
+            margin-top: 0 !important
 
 </style>
 
 <script>
     import _ from 'lodash'
     import { combineClasses } from '@/utils'
+    import VNodeRender from '@/components/_common/vNodeRender.js'
 
     export default {
         name: 't-select',
         components: {
+            VNodeRender,
         },
         props: {
             value: {},
             items: Array,
             /** (item | null) => string */
-            getLabel: Function,
+            getSearchLabel: Function,
+            /** (item | null) => VNode */
+            getDisplayLabel: Function,
             placeholder: String,
             dropdownClass: {},
             selectedItemsClass: {},
@@ -149,7 +163,7 @@
             clearable: Boolean,
         },
         data() {
-            return { searchText: '', isOpen: false }
+            return {searchText: '', isOpen: false}
         },
         computed: {
             model: {
@@ -163,37 +177,50 @@
                     this.$emit('input', val)
                 }
             },
-            cashedLabels() {
-                return this.items.map((currentValue) => {
-                    return { label: this.getLabel(currentValue), item: currentValue }
+            cashedItems() {
+                return this.items.map((currentItem) => {
+                    return {
+                        searchLabel: this.getSearchLabel(currentItem),
+                        displayLabel: this.getDisplayLabel(currentItem),
+                        item: currentItem,
+                    }
                 })
             },
-            selectedLabel() {
+            selectedItem() {
                 if (this.multiSelect) {
-                    return this.model.map((item) => {
-                        return { label: this.getLabel(item), item: item }
+                    return this.model.map((currentItem) => {
+                        return {
+                            searchLabel: this.getSearchLabel(currentItem),
+                            displayLabel: this.getDisplayLabel(currentItem),
+                            item: currentItem,
+                        }
                     })
                 }
-                return this.getLabel(this.model)
+                return {
+                    searchLabel: this.getSearchLabel(this.model),
+                    displayLabel: this.getDisplayLabel(this.model),
+                    item: this.model,
+                }
             },
             selectSet() {
                 if (this.multiSelect) {
-                    return this.selectedLabel.reduce((result, { label }) => {
-                        result.add(label)
+                    return this.selectedItem.reduce((result, { searchLabel }) => {
+                        result.add(searchLabel)
                         return result
                     }, new Set())
                 }
-                return new Set([this.selectedLabel])
+                return new Set([this.selectedItem])
             },
             filteredItems() {
-                let result = _(this.cashedLabels)
+                let result = _(this.cashedItems)
                 if (this.multiSelect) {
-                    result = result.filter(({ label }) => {
-                        return !this.selectSet.has(label)
+                    result = result.filter(({ searchLabel }) => {
+                        return !this.selectSet.has(searchLabel)
                     })
                 }
-                result = result.filter(({label}) => {
-                    return `${label}`.includes(this.searchText)
+                result = result.filter(({ searchLabel }) => {
+                    searchLabel = `${searchLabel}`.toLowerCase()
+                    return searchLabel.includes(this.searchText.toLowerCase())
                 })
 
                 return result.value()
@@ -215,22 +242,26 @@
                     this.model = item.item
                     this.isOpen = false
                 }
+                this.$emit('change')
             },
             deselectItem(item) {
                 if (this.multiSelect) {
                     this.model = this.model.filter((currentItem) => currentItem !== item)
                 }
+                this.$emit('change')
             },
             deselectAllItems() {
                 if (this.multiSelect && this.model.length !== 0) {
                     this.model = []
                 }
+                this.$emit('change')
             },
             clearSingleSelection() {
                 if (!this.multiSelect && this.model !== null) {
                     this.model = null
                     this.isOpen = false
                 }
+                this.$emit('change')
             }
         },
         watch: {

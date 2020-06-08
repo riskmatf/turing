@@ -16,10 +16,10 @@
         },
         computed: {
             typeSentence() {
-                let res = `Prijavljen kvar #${this.reportId} u učionici ${this.classroomId}, `
+                let res = `Prijavljen kvar #${this.reportId} u učionici ${this.classroomId}`
 
                 if (!this.isGeneral) {
-                    res += `na računaru #${this.computerId}`
+                    res += this.computerId === 0 ? ", na računaru N" :  `, na računaru #${this.computerId}`
                 }
 
                 return res

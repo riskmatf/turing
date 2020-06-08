@@ -1,8 +1,8 @@
 <template>
     <div class="home-container">
-        <h1> Turing logo </h1>
+        <img src="@/assets/logo.jpeg"/>
         <el-card>
-            Dobrodošli na platformu Turing, admine.
+            Dobrodošli na platformu Turing,  <b>{{ adminDisplayName }}</b>.
         </el-card>
     </div>
 </template>
@@ -18,11 +18,15 @@
 
 <script>
     import { Card } from 'element-ui'
+    import { mapGetters } from 'vuex'
 
     export default {
         name: 'homePage',
         components: {
             ElCard: Card,
         },
+        computed: {
+            ...mapGetters('Admin/Admin', ['adminDisplayName'])
+        }
     }
 </script>
