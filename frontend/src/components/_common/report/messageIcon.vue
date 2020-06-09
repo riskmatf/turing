@@ -1,5 +1,5 @@
 <template>
-    <i class="el-icon-chat-line-round" :class="{ 'text-success': hasMessage, 'not-active': !hasMessage }"/>
+    <i class="fas fa-comment" :class="{ 'text-success': hasMessage, 'not-active': !hasMessage }"/>
 </template>
 
 <style lang="sass" scoped>

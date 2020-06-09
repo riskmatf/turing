@@ -5,6 +5,7 @@
             :readonly="readonly"
             type="textarea"
             :autosize="autosize"
+            ref="input"
         />
     </div>
 </template>
@@ -36,6 +37,13 @@
                 },
                 set(value) {
                     this.$emit('input', value)
+                }
+            }
+        },
+        methods: {
+            focus() {
+                if (!_.isNil(this.$refs.input)) {
+                    this.$refs.input.focus()
                 }
             }
         }

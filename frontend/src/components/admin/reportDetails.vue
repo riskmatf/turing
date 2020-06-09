@@ -1,7 +1,7 @@
 <template>
     <div class="content-grid">
         <div class="report-controls">
-            <report-solve-button :disabled="readonly" @click="confirmSolveReport"/>
+            <report-solve-button v-if="!report.fixed" :disabled="readonly" @click="confirmSolveReport"/>
             <report-delete-button :disabled="readonly" @click="confirmDeleteReport"/>
         </div>
         <report-type-sentence
@@ -13,7 +13,7 @@
         <div class="report-indicators-row">
             <report-date :report-date="report.timestamp"/>
             <report-solved-indicator :solved="report.fixed"/>
-            <report-urgent-icon :is-urgent="report.isUrgent"/>
+            <report-urgent-icon :is-urgent="report.urgent"/>
             <report-computer-location
                 :computer-id="report.computerId"
                 :number-of-computers="classroomComputerCount"
@@ -27,8 +27,8 @@
                 <report-admin-display-name :admin-display-name="report.adminDisplayName"/>
                 <div v-if="canEditComment && !isEditModeEnabled" class="far fa-edit" @click="editComment"></div>
                 <template v-else-if="canEditComment && isEditModeEnabled">
-                    <span class="fas fa-check button-icon text-success" @click="updateComment"></span>
-                    <span class="fas fa-times button-icon text-danger" @click="cancelCommentEdit"></span>
+                    <span class="fas fa-save button-icon" @click="updateComment"></span>
+                    <span class="fas fa-window-close button-icon text-danger" @click="cancelCommentEdit"></span>
                 </template>
             </template>
             <template v-else>
@@ -41,6 +41,7 @@
             :readonly="!canEditComment || !isEditModeEnabled"
             v-model="report.adminComment"
             :max-rows="10"
+            ref="adminCommentField"
         />
     </div>
 </template>
@@ -83,6 +84,7 @@
         ReportDeleteButton,
     } from '@/components/_common/report'
     import { mapGetters } from 'vuex'
+    import _ from 'lodash'
 
     export default {
         components: {
@@ -119,6 +121,8 @@
             editComment() {
                 this.isEditModeEnabled = true
                 this.previousComment = this.report.adminComment
+
+                this.$nextTick(this.focusAdminCommentField)
             },
             cancelCommentEdit() {
                 this.isEditModeEnabled = false
@@ -134,7 +138,7 @@
             updateComment() {
                 if (this.report.adminComment.trim() === '') {
                     this.cancelCommentEdit()
-                    this.$message.error('Prazan komentar nije dozvoljen')
+                    this.$message.error('Prazan komentar nije dozvoljen.')
                     return
                 }
                 this.$emit('updateComment')
@@ -147,26 +151,33 @@
                 this.report.adminComment = ""
                 this.isEditModeEnabled = true
                 this.report.canChangeComment = true
+
+                this.$nextTick(this.focusAdminCommentField)
             },
             confirmSolveReport() {
-                this.$confirm('Da li zelite da resite kvar', {
-                    confirmButtonText: 'Da',
-                    cancelButtonText: 'Ne',
+                this.$confirm('Da li želite da popravite kvar', {
+                    confirmButtonText: 'Potvrdi',
+                    cancelButtonText: 'Otkaži',
                     customClass: 'message-box-reversed',
                 }).then(() => {
                     this.$emit('solveReport')
                 })
             },
             confirmDeleteReport() {
-                this.$confirm('Da li zelite da obrisete kvar', {
-                    confirmButtonText: 'Da',
-                    cancelButtonText: 'Ne',
+                this.$confirm('Da li želite da obrišete kvar', {
+                    confirmButtonText: 'Potvrdi',
+                    cancelButtonText: 'Otkaži',
                     customClass: 'message-box-reversed',
                 }).then(() => {
                     this.$emit('deleteReport')
                 })
 
-            }
+            },
+            focusAdminCommentField() {
+                if (!_.isNil(this.$refs.adminCommentField)) {
+                    this.$refs.adminCommentField.focus()
+                }
+            },
         },
     }
 </script>

@@ -84,7 +84,8 @@
             generalInformation() {
                 let message = `Prijavljivanje kvara u učionici ${this.classroomId}`
                 if (!this.isGeneral) {
-                    message += ` za računar ${this.computerId}`
+                    message += ` za računar`
+                    message += this.computerId === 0 ? " N" : ` ${this.computerId}`
                 }
                 return message
             },

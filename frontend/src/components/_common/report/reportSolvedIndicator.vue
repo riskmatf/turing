@@ -1,5 +1,5 @@
 <template>
-    <div class="far fa-check-circle" :class="{ 'text-success': solved, 'not-active': !solved }"></div>
+    <div class="fas fa-check" :class="{ 'text-success': solved, 'not-active': !solved }"></div>
 </template>
 
 <style lang="sass" scoped>

@@ -22,7 +22,7 @@
                         @keyup.native.enter="handleAddNewAdmin"
                     />
                     <div class="marginer"> Unesite lozinku: </div>
-                    <form autocomplete="off">
+                    <form autocomplete="off" @submit="preventSubmit">
                         <el-input
                             placeholder="Lozinka"
                             size="mini"
@@ -32,7 +32,7 @@
                         />
                     </form>
                     <div class="marginer"> Ponovite lozinku: </div>
-                    <form autocomplete="off">
+                    <form autocomplete="off" disabled @submit="preventSubmit">
                         <el-input
                             placeholder="Ponovite lozinku"
                             size="mini"   
@@ -115,18 +115,23 @@
             }
         },
         methods: {
+            ...mapActions('Admin/Admin', ['addNewAdmin']),
             handleAddNewAdmin() {
-                console.log(this.passInput)
-                console.log(this.repeatInput)
                 if(this.isAddNewAdminButtonDisabled) {
                     return
                 }
                 if (this.passInput === this.repeatInput) {
                     this.changePasswordRequestInProgress = true
 
-                    this.$confirm(` Ime: ${ this.nameInput },
-                                    Korisničko ime: ${ this.usernameInput }`, 
-                                    'Potvrda novog admina',
+                    this.$confirm(
+                        this.$createElement(
+                            'div',
+                            [
+                                this.$createElement('div', [`Ime: ${this.nameInput}`]),
+                                this.$createElement('div', [`Korisničko ime: ${this.usernameInput}`])
+                            ]
+                        ),
+                        'Potvrda novog admina',
                         {
                             cancelButtonText: 'Otkaži',
                             confirmButtonText: 'Potvrdi',
@@ -134,7 +139,7 @@
                         }
                     ).then(()=>{
 
-                            this.addNewAdmin({ 
+                            this.addNewAdmin({
                                 username: this.usernameInput,
                                 displayName: this.nameInput,
                                 password: this.passInput
@@ -144,11 +149,11 @@
                                     type: 'success',
                                     message: 'Novi admin je uspešno dodat.'
                                 })
-                            }).catch(()=>{
+                            }).catch((e)=>{
                                 this.$message({
                                     type: 'error',
-                                    message: `Dodavanje novog admina neuspešno.`,
-                                })  
+                                    message: `Dodavanje novog admina neuspešno. ${e}`,
+                                })
                             }).finally(()=> {
                                 this.changePasswordRequestInProgress = false
                             })
@@ -160,7 +165,9 @@
                     })
                 }
             },
-            ...mapActions('Admin/Admin', ['addNewAdmin']),
+            preventSubmit(e) {
+                e.preventDefault()
+            },
         }
     }
 </script>

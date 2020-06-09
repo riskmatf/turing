@@ -86,6 +86,8 @@ export default {
         async fetchReports({ commit }, { filters, page }) {
             const query = encodeUrlParams(filters)
             query.page = page - 1
+            query.computerId = filters.computerId
+            query.isGeneral = filters.isGeneral
 
             commit('setRequest', { request: { status: 'loading' } })
             try {
@@ -94,8 +96,18 @@ export default {
                 return serverResponse.data
             } catch (e) {
                 commit('setRequest', { request: { status: 'error', message: _.get(e, 'response.data.message', 'Failed') } })
-                throw e
+                throw _.get(e, 'response.data.message', 'Failed')
             }
+        },
+        async setComputerBrokenStatus(scope, { classroomId, computerId, brokenStatus }) {
+            try {
+                await Vue.$http.put(`/api/v1/admin/classrooms/${classroomId}/computers/${computerId}`, {
+                    broken: brokenStatus,
+                })
+            } catch (e) {
+                throw _.get(e, 'response.data.message', 'Failed')
+            }
+
         },
     }
 }

@@ -1,5 +1,5 @@
 <template>
-    <i class="el-icon-warning-outline" :class="{ 'text-danger': isUrgent, 'not-active': !isUrgent }"/>
+    <i class="fas fa-exclamation" :class="{ 'text-danger': isUrgent, 'not-active': !isUrgent }"/>
 </template>
 
 <style lang="sass" scoped>

@@ -15,9 +15,6 @@ export const Http = {
 }
 
 
-/**
- * change later whit implementation that handles errors
- */
 class HttpImpl {
 
     constructor(basePath) {
@@ -54,6 +51,10 @@ class HttpImpl {
 
     async delete(url, config) {
         return axios.delete(this._getFullUrl(url), config)
+    }
+
+    async head(url, config) {
+        return axios.head(this._getFullUrl(url), config)
     }
 
 }

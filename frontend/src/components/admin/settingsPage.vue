@@ -29,7 +29,7 @@
                     <el-collapse-item title="Promena lozinke">
                         <div class="collapse-container" autocomplete="off">
                             <div class="marginer">Unesite novu lozinku:</div>
-                            <form autocomplete="off">
+                            <form autocomplete="off" @submit="preventSubmit">
                                 <el-input
                                         placeholder="Nova lozinka"
                                         size="mini"
@@ -40,7 +40,7 @@
                                 />
                             </form>
                             <div class="marginer">Potvrdite novu lozinku:</div>
-                            <form autocomplete="off">
+                            <form autocomplete="off" @submit="preventSubmit">
                                 <el-input
                                         placeholder="Potvrda lozinke"
                                         size="mini"
@@ -115,8 +115,8 @@
                 return this.changeNameRequestInProgress || this.nameInput.trim().length === 0
             },
             isChangedPasswordButtonDisabled() {
-                return this.changePasswordRequestInProgress || 
-                    this.passInput.trim().length === 0 || 
+                return this.changePasswordRequestInProgress ||
+                    this.passInput.trim().length === 0 ||
                     this.repeatInput.trim().length === 0
             },
         },
@@ -130,6 +130,7 @@
             }
         },
         methods: {
+            ...mapActions('Admin/Admin', ['changeName', 'changePassword']),
             handleChangeName() {
                 if(this.isChangedNameButtonDisabled) {
                     return
@@ -152,7 +153,7 @@
                     }
                 )
             },
-            handleChangePassword() { 
+            handleChangePassword() {
                 if(this.isChangedPasswordButtonDisabled) {
                     return
                 }
@@ -176,12 +177,12 @@
                             this.$message({
                                 type: 'error',
                                 message: `Promena lozinke neuspešna.`,
-                            })  
+                            })
                         })
                     }).finally(()=> {
                         this.changePasswordRequestInProgress = false
                     })
-                    
+
 
                 } else {
                     this.$message({
@@ -190,7 +191,9 @@
                     })
                 }
             },
-            ...mapActions('Admin/Admin', ['changeName', 'changePassword']),
+            preventSubmit(e) {
+                e.preventDefault()
+            },
         },
     }
 </script>

@@ -2,13 +2,14 @@
     <div>
         <div class="filters desktop">
             <div class="filter-item" v-if="filterClassrooms">
-                <div>Ucionice:</div>
+                <div>Učionice:</div>
                 <t-select
                     v-model="classroomsModel"
                     multi-select
                     :items="classroomsFilterOptions"
-                    :get-label="getMultiSelectLabel"
-                    placeholder="Select classrooms"
+                    :get-search-label="getMultiSelectLabel"
+                    :get-display-label="getMultiSelectLabel"
+                    placeholder="Odaberite učionice"
                     searchable
                     clearable
                     @close="handleSelectClose"
@@ -20,8 +21,9 @@
                     v-model="locationsModel"
                     multi-select
                     :items="locationsFilterOptions"
-                    :get-label="getMultiSelectLabel"
-                    placeholder="Select locations"
+                    :get-search-label="getMultiSelectLabel"
+                    :get-display-label="getMultiSelectLabel"
+                    placeholder="Odaberite lokacije"
                     searchable
                     clearable
                     @close="handleSelectClose"
@@ -32,8 +34,9 @@
                 <t-select
                         v-model="urgentModel"
                         :items="urgentFilterOptions"
-                        :get-label="getUrgentFilterLabel"
-                        placeholder="Choose..."
+                        :get-search-label="getUrgentFilterLabel"
+                        :get-display-label="getUrgentFilterLabel"
+                        placeholder="Odaberite..."
                         clearable
                         @close="handleSelectClose"
                 />
@@ -43,8 +46,9 @@
                 <t-select
                     v-model="commentModel"
                     :items="commentsFilterOptions"
-                    :get-label="getCommentsFilterLabel"
-                    placeholder="Choose..."
+                    :get-search-label="getCommentsFilterLabel"
+                    :get-display-label="getCommentsFilterLabel"
+                    placeholder="Odaberite..."
                     clearable
                     @close="handleSelectClose"
                 />
@@ -54,8 +58,9 @@
                 <t-select
                         v-model="fixedModel"
                         :items="fixedFilterOptions"
-                        :get-label="getFixedFilterLabel"
-                        placeholder="Choose..."
+                        :get-search-label="getFixedFilterLabel"
+                        :get-display-label="getFixedFilterLabel"
+                        placeholder="Odaberite..."
                         clearable
                         @close="handleSelectClose"
                     />
@@ -66,13 +71,14 @@
             <el-dialog fullscreen :visible.sync="isMobileFilterDialogVisible" @close="handleSelectClose">
                 <div class="filters">
                     <div class="filter-item" v-if="filterClassrooms">
-                        <div>Ucionice:</div>
+                        <div>Učionice:</div>
                         <t-select
                                 v-model="classroomsModel"
                                 multi-select
                                 :items="classroomsFilterOptions"
-                                :get-label="getMultiSelectLabel"
-                                placeholder="Select classrooms"
+                                :get-search-label="getMultiSelectLabel"
+                                :get-displaylabel="getMultiSelectLabel"
+                                placeholder="Odaberite učionice"
                                 searchable
                                 clearable
                         />
@@ -83,8 +89,9 @@
                                 v-model="locationsModel"
                                 multi-select
                                 :items="locationsFilterOptions"
-                                :get-label="getMultiSelectLabel"
-                                placeholder="Select locations"
+                                :get-search-label="getMultiSelectLabel"
+                                :get-display-label="getMultiSelectLabel"
+                                placeholder="Odaberite lokacije"
                                 searchable
                                 clearable
                         />
@@ -94,8 +101,9 @@
                         <t-select
                                 v-model="urgentModel"
                                 :items="urgentFilterOptions"
-                                :get-label="getUrgentFilterLabel"
-                                placeholder="Choose..."
+                                :get-search-label="getUrgentFilterLabel"
+                                :get-display-label="getUrgentFilterLabel"
+                                placeholder="Odaberite..."
                                 clearable
                         />
                     </div>
@@ -104,8 +112,9 @@
                         <t-select
                                 v-model="commentModel"
                                 :items="commentsFilterOptions"
-                                :get-label="getCommentsFilterLabel"
-                                placeholder="Choose..."
+                                :get-search-label="getCommentsFilterLabel"
+                                :get-display-label="getCommentsFilterLabel"
+                                placeholder="Odaberite..."
                                 clearable
                         />
                     </div>
@@ -114,8 +123,9 @@
                         <t-select
                                 v-model="fixedModel"
                                 :items="fixedFilterOptions"
-                                :get-label="getFixedFilterLabel"
-                                placeholder="Choose..."
+                                :get-search-label="getFixedFilterLabel"
+                                :get-display-label="getFixedFilterLabel"
+                                placeholder="Odaberite..."
                                 clearable
                         />
                     </div>

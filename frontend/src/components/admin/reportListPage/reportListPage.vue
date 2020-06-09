@@ -2,7 +2,7 @@
     <div v-if="classroomDataRequestStatus === 'success'" class="content">
         <page-header class="pager-header">
             <breadcrumbs :paths="breadcrumbData"/>
-            <filters
+            <filters class="filter"
                 v-model="filters"
                 filter-comments
                 filter-fixed
@@ -11,8 +11,14 @@
             />
             <div class="row">
                 <div class="name">{{ pageTitle }}</div>
-                <el-button size="mini" @click="isReportModalVisible=true">
+                <el-button size="mini" @click="isReportModalVisible=true" :disabled="requestInProgress">
                     Prijavi kvar
+                </el-button>
+                <el-button v-if="!areGeneralReports" size="mini" @click="confirmBreakComputer" :disabled="requestInProgress">
+                    <span v-if="!isCurrentComputerBroken">
+                        Izbaci računar iz upotrebe
+                    </span>
+                    <span v-else>Vrati računar u upotrebu</span>
                 </el-button>
                 <add-report-modal
                     :visible.sync="isReportModalVisible"
@@ -23,13 +29,13 @@
                 />
             </div>
         </page-header>
-        <left-right-layout>
+        <left-right-layout :left-card-active="currentSelectedReport === null">
             <template v-slot:left>
                 <template v-if="maxPage === null">
                     Ucitavanje... <span class="el-icon-loading"/>
                 </template>
                 <template v-else>
-                    <pager v-model="page" :max-page="maxPage" @change="encodeUrlParams">
+                    <pager v-model="page" :max-page="maxPage" @change="handlePageChange">
                         <template v-if="reportsListRequest.status === 'loading'">
                             Ucitavanje... <span class="el-icon-loading"/>
                         </template>
@@ -79,7 +85,6 @@
                 </template>
             </template>
         </left-right-layout>
-
     </div>
     <div v-else-if="classroomDataRequestStatus === 'loading'">
         Ucitavanje...
@@ -105,15 +110,27 @@
             display: block
             margin-bottom: 10px
     .row
-            display: flex
-            flex-direction: row
-            justify-content: space-between
-            .name
-                align-self: center
-                padding-left: 10px
+        display: flex
+        flex-direction: row
+        justify-content: space-between
+        flex-wrap: wrap
+        @media ($mobileBreakPoint)
+            justify-content: flex-end
+        .name
+            align-self: center
+            padding-left: 10px
+            flex-grow: 1
+            width: auto
+            margin-bottom: unset
+            @media ($mobileBreakPoint)
+                width: 100%
+                margin-bottom: 10px
     .pager-header
-            display: flex
-            flex-direction: column
+        display: flex
+        flex-direction: column
+        .filter
+            padding: 5px
+
 </style>
 
 <script>
@@ -163,11 +180,11 @@
                 reports: 'reports'
             }),  
             ...mapState('Admin/Report/Report', { reportRequest: 'request' }),
-            ...mapGetters('Admin/Report/Report', ['report']), 
+            ...mapGetters('Admin/Report/Report', ['report']),
             breadcrumbData() {
                 return [
                     { name: 'početna', to: { name: 'adminHomePage' } },
-                    { name: 'učionice', to: { name: 'reportsFilterPage' } },
+                    { name: 'učionice', to: { name: 'adminClassroomListPage' } },
                     {
                         children: _.map(this.allClassrooms, ({ name }) => {
                             return { name: name, to: { name: 'adminClassroomPage', params: { classroomId: name } } }
@@ -176,9 +193,17 @@
                     },
                     {
                        children: [
-                           { name: 'opšti', to: { name: 'adminReportListPage', params: { computerId: 'general' } } },
-                           ..._.map(this.classroom.computers, ({ computerId }) => {
-                               return { name: (computerId === 0 ? 'N' : computerId), to: { name: 'adminReportListPage', params: { computerId: computerId } } }
+                           {
+                               name: 'opšti',
+                               display: this.getGeneralDisplayIcon(this.classroom.hasGeneralReports),
+                               to: { name: 'adminReportListPage', params: { computerId: 'general' } }
+                           },
+                           ..._.map(this.classroom.computers, (computer) => {
+                               return {
+                                   name: (computer.computerId === 0 ? 'N' : computer.computerId),
+                                   display: this.getComputerDisplayLabel(computer),
+                                   to: { name: 'adminReportListPage', params: { computerId: computer.computerId } }
+                               }
                            }),
                        ],
                        currentName: this.areGeneralReports ? 'opšti' : (this.computerId === 0 ? 'N' : this.computerId)
@@ -250,11 +275,20 @@
                     numberOfComputers: classroom.numberOfComputers.working + classroom.numberOfComputers.broken,
                 }
             },
+            isCurrentComputerBroken() {
+                const currentComputer = this.classroom.computers.find(({ computerId }) => {
+                    return computerId === this.computerId
+                })
+                if (!_.isNil(currentComputer)) {
+                    return currentComputer.isBroken
+                }
+                return null
+            }
         },
         methods: {
             ...mapActions('Admin/Classroom/Classroom', ['fetchClassroom']),
             ...mapActions('Admin/Classroom/AllClassrooms', ['fetchAllClassrooms']),
-            ...mapActions('Admin/Report/ReportList', ['fetchReports']),
+            ...mapActions('Admin/Report/ReportList', ['fetchReports', 'setComputerBrokenStatus']),
             ...mapActions('Admin/Report/Report', ['fetchReport', 'updateComment', 'solveReport', 'deleteReport']),
             encodeUrlParams() {
                 const query = encodeUrlParams(this.filters)
@@ -286,10 +320,11 @@
             },
             getReports() {
                 this.fetchReports({
-                    filters: { 
-                        ...this.filters, 
-                        classrooms: [ this.classroomId ], 
-                        computes: [this.computerId] 
+                    filters: {
+                        ...this.filters,
+                        classrooms: [ this.classroomId ],
+                        computerId: this.computerId,
+                        isGeneral: this.areGeneralReports,
                     },
                     page: this.page,
                 }).then(({ paging: { maxNumOfPages } }) => {
@@ -303,6 +338,7 @@
                     comment: this.report.adminComment,
                 }).then(() => {
                     this.$message.success('Uspesno promenjen komentar')
+                    this.markHasCommentInList(this.report.reportId)
                 }).catch((e) => {
                     this.$message.error(`Nije uspelo promena komentara ${e}`)
                 }).finally(() => {
@@ -315,12 +351,14 @@
                 this.requestInProgress = true
                 this.solveReport({ reportId: this.report.reportId }).then(() => {
                     this.$message.success('Solved')
+                    this.markSolvedInList(this.report.reportId)
                 }).catch((e) => {
                     this.$message.error(`Failed ${e}`)
                 }).finally(() => {
                     this.fetchReport({ reportId: this.report.reportId }).finally(() => {
                         this.requestInProgress = false
                     })
+                    this.fetchClassroom({ classroomId: this.classroomId })
                 })
             },
             handleDeleteReport() {
@@ -330,19 +368,97 @@
                     this.currentSelectedReportId = null
                     this.encodeUrlParams()
                     this.getReports()
+                    this.fetchClassroom({ classroomId: this.classroomId })
                 }).catch((e) => {
                     this.$message.error(`Failed ${e}`)
                 }).finally(() => {
                     this.requestInProgress = false
                 })
             },
+            handlePageChange() {
+                this.currentSelectedReportId = null
+                this.encodeUrlParams()
+            },
             reportAdded() {
                 this.isReportModalVisible = false
                 this.getReports()
+                this.fetchClassroom({ classroomId: this.classroomId })
+            },
+            markSolvedInList(reportId) {
+                const solvedReport = this.reports.find((report)=> {
+                    return report.reportId === reportId
+                })
+                if (!_.isNil(solvedReport)) {
+                    solvedReport.fixed = true
+                }
+            },
+            markHasCommentInList(reportId) {
+                const commentedReport = this.reports.find((report)=> {
+                    return report.reportId === reportId
+                })
+                if (!_.isNil(commentedReport)) {
+                    commentedReport.hasAdminComment = true
+                }
+            },
+            confirmBreakComputer() {
+                let text = 'Da li želite da izbacite računar iz upotrebe?'
+                if (this.isCurrentComputerBroken) {
+                    text = 'Da li želite da vratite računar u upotrebu'
+                }
+                const confirmText = this.isCurrentComputerBroken ? 'Vrati' : 'Izbaci'
+                const successMessage = this.isCurrentComputerBroken ? 'Vracen' : 'Izbacen'
+                this.$confirm(text, {
+                    cancelButtonText: 'Otkaži',
+                    confirmButtonText: confirmText,
+                    customClass: 'message-box-reversed',
+                }).then(() => {
+                    this.requestInProgress = true
+                    return this.setComputerBrokenStatus({
+                        classroomId: this.classroomId,
+                        computerId: this.computerId,
+                        brokenStatus: !this.isCurrentComputerBroken,
+                    }).then(() => {
+                        this.$message.success(successMessage)
+                        this.fetchClassroom({ classroomId: this.classroomId })
+                    }).catch((e) => {
+                        this.$message.error(`Nije ${successMessage.toLowerCase()}: ${e}`)
+                    }).finally(() => {
+                        this.requestInProgress = false
+                    })
+                })
+            },
+            getComputerDisplayLabel(computer) {
+                const h = this.$createElement
+                const computerName = h('span', [computer.computerId === 0 ? 'N' : `${computer.computerId}`])
+                let sign = null
+                if (computer.isBroken) {
+                    sign = h('i', { 'class': 'fas fa-exclamation-triangle text-danger', style: 'padding-left: 5px' })
+                } else if (computer.hasReports) {
+                    sign = h('i', { 'class': 'fas fa-exclamation-triangle text-warning', style: 'padding-left: 5px' })
+                }
+
+                return h(
+                    'div',
+                    [computerName, sign]
+                )
+            },
+            getGeneralDisplayIcon(hasReports) {
+                const h = this.$createElement
+                const computerName = h('span', 'opšti')
+                let sign = null
+                if (hasReports) {
+                    sign = h('i', { 'class': 'fas fa-exclamation-triangle text-warning', style: 'padding-left: 5px' })
+                }
+
+                return h(
+                    'div',
+                    [computerName, sign]
+                )
+
             },
         },
         created() {
-            this.fetchAllClassrooms(),
+            this.fetchAllClassrooms()
             this.fetchClassroom({ classroomId: this.classroomId })
         },
         watch: {
@@ -351,7 +467,7 @@
                 handler(currentPage, previousPage) {
                     this.decodeUrlParams()
 
-                    const computerHasChanged = 
+                    const computerHasChanged =
                         _.get(currentPage, 'params.computerId', null) !== _.get(previousPage, 'params.computerId', null)
                     const currentQuery = _.get(currentPage, 'query', {})
                     const previousQuery = _.get(previousPage, 'query', {})

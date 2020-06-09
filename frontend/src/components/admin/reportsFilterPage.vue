@@ -20,9 +20,9 @@
                     Ucitavanje... <span class="el-icon-loading"/>
                 </template>
                 <template v-else>
-                    <pager v-model="page" :max-page="maxPage" @change="encodeUrlParams">
+                    <pager v-model="page" :max-page="maxPage" @change="handlePageChange">
                         <template v-if="reportsListRequest.status === 'loading'">
-                            Ucitavanje... <span class="el-icon-loading"/>
+                            Učitavanje... <span class="el-icon-loading"/>
                         </template>
                         <template v-else-if="reportsListRequest.status === 'success'">
                             <report-list
@@ -61,16 +61,16 @@
                         />
                     </template>
                     <template v-else-if="reportRequest.status === 'loading'">
-                        Ucitavanje... <span class="el-icon-loading"/>
+                        Učitavanje... <span class="el-icon-loading"/>
                     </template>
                     <template v-else-if="reportRequest.status === 'error'">
-                        Greska: {{ reportRequest.message }}
+                        Greška: {{ reportRequest.message }}
                     </template>
                 </template>
             </template>
         </left-right-layout>
     </div>
-    <div v-else-if="request.status === 'loading'">Ucitavanje...<span class="el-icon-loading"/></div>
+    <div v-else-if="request.status === 'loading'">Učitavanje...<span class="el-icon-loading"/></div>
     <div v-else-if="request.status === 'error'">{{ request.message }}</div>
 </template>
 
@@ -144,8 +144,8 @@
             },
             breadcrumbData() {
                 return [
-                    {name: 'Pocetna', to: { name: 'adminHomePage' } },
-                    { name: 'Kvarovi', to: { name: 'reportsFilterPage' } }
+                    {name: 'početna', to: { name: 'adminHomePage' } },
+                    { name: 'kvarovi', to: { name: 'reportsFilterPage' } }
                 ]
             },
             maxPage() {
@@ -205,9 +205,10 @@
                     reportId: this.report.reportId,
                     comment: this.report.adminComment,
                 }).then(() => {
-                    this.$message.success('Uspesno promenjen komentar')
+                    this.$message.success('Uspešno promenjen komentar')
+                    this.markHasCommentInList(this.report.reportId)
                 }).catch((e) => {
-                    this.$message.error(`Nije uspelo promena komentara ${e}`)
+                    this.$message.error(`Nije uspela promena komentara ${e}`)
                 }).finally(() => {
                     this.fetchReport({ reportId: this.report.reportId }).finally(() => {
                         this.requestInProgress = false
@@ -217,9 +218,11 @@
             handleSolveReport() {
                 this.requestInProgress = true
                 this.solveReport({ reportId: this.report.reportId }).then(() => {
-                    this.$message.success('Solved')
+                    this.$message.success('Računar je popravljen.')
+                    this.markSolvedInList(this.report.reportId)
+
                 }).catch((e) => {
-                    this.$message.error(`Failed ${e}`)
+                    this.$message.error(`Nije uspelo popravljanje: ${e}`)
                 }).finally(() => {
                     this.fetchReport({ reportId: this.report.reportId }).finally(() => {
                         this.requestInProgress = false
@@ -229,15 +232,19 @@
             handleDeleteReport() {
                 this.requestInProgress = true
                 this.deleteReport({ reportId: this.report.reportId }).then(() => {
-                    this.$message.success('Deleted')
+                    this.$message.success('Kvar je uspešno obrisan.')
                     this.currentSelectedReportId = null
                     this.encodeUrlParams()
                     this.getReports()
                 }).catch((e) => {
-                    this.$message.error(`Failed ${e}`)
+                    this.$message.error(`Nije uspelo brisanje komentara: ${e}`)
                 }).finally(() => {
                     this.requestInProgress = false
                 })
+            },
+            handlePageChange() {
+                this.currentSelectedReportId = null
+                this.encodeUrlParams()
             },
             getReports() {
                 this.fetchReports({
@@ -246,6 +253,22 @@
                 }).then(({ paging: { maxNumOfPages } }) => {
                     this.maxPageCash = maxNumOfPages || 1
                 })
+            },
+            markSolvedInList(reportId) {
+                const solvedReport = this.reports.find((report)=> {
+                    return report.reportId === reportId
+                })
+                if (!_.isNil(solvedReport)) {
+                    solvedReport.fixed = true
+                }
+            },
+            markHasCommentInList(reportId) {
+                const commentedReport = this.reports.find((report)=> {
+                    return report.reportId === reportId
+                })
+                if (!_.isNil(commentedReport)) {
+                    commentedReport.hasAdminComment = true
+                }
             },
         },
         watch: {

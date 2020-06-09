@@ -11,7 +11,7 @@
                         size="mini"
                         @click="generalClick"
                     >
-                    <i class="el-icon-warning-outline" v-if="showGeneralIcon"></i>
+                    <i class="fas fa-exclamation-triangle text-warning" v-if="showGeneralIcon"></i>
                         Opšti kvarovi
                     </el-button>
                 </div>
@@ -149,16 +149,6 @@
             ...mapActions('Admin/Classroom/Classroom', ['fetchClassroom']),
             ...mapActions('Admin/Classroom/AllClassrooms', ["fetchAllClassrooms"]),
             computerClick(computerId) {
-                const computer = this.classroom.computers.find(({ computerId:cId }) => cId === computerId)
-                if (computer !== undefined && computer.isBroken) {
-                    this.$message({
-                        message: `Racunar ${computerId} nije u funkciji`,
-                        type: 'error',
-                        duration: '1500',
-                    })
-                    return
-                }
-
                 this.$router.push({ name: 'adminReportListPage', params: { computerId: computerId } })
             },
             generalClick() {
