@@ -19,7 +19,7 @@ adminClassroomsRouter.put("/:cname/computers/:cid",async (req, resp)=>{
         resp.send({message: "Uspeh!"});
     }
     else{
-        resp.status(400).send({message:"Nije moguce naci dati racunar!"});
+        resp.status(400).send({message:"Nije moguće naći dati računar!"});
     }
 });
 
@@ -35,7 +35,7 @@ adminClassroomsRouter.delete("/:cName", (req, res)=>{
         }
     }) .catch(err=>{
             console.log(err);
-            res.status(500).send({message:"Neuspelo brisanje ucionice"});
+            res.status(500).send({message:"Neuspelo brisanje učionice"});
         })
 });
 

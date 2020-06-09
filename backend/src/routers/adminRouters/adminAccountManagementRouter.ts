@@ -8,30 +8,30 @@ const accountManagementRouter = express.Router();
 accountManagementRouter.put("/password", (req, res)=>{
     const adminRepo = getCustomRepository(AdminRepository);
     if(!req.body.password){
-        res.status(400).send({message:"BAD REQUEST! MISSING PASSWORD"});
+        res.status(400).send({message:"LOŠ ZAHTEV! NEDOSTAJE ŠIFRA!"});
         return;
     }
     adminRepo.changePassword(req.username, req.body.password)
         .then(user=>{
             if(user){
-                res.send({message: "SUCCESS"});
+                res.send({message: "USPEŠNA AKCIJA!"});
             }
             else{
                 console.error(`ERROR TRYING TO CHANGE PASSWORD FOR USER ${req.username}.
                                 SESSION DATA: ${JSON.stringify(req.session)}`);
-                res.status(400).send({message:"UNKNOWN ERROR! CONTACT ADMINISTRATOR"});
+                res.status(400).send({message:"Nepoznata greška! Kontaktirajte administratora!"});
             }
         })
         .catch(err=>{
             console.error(err);
-            res.status(400).send({message:"UNKNOWN ERROR! CONTACT ADMINISTRATOR"});
+            res.status(400).send({message:"Nepoznata greška! Kontaktirajte administratora!"});
         });
 });
 
 
 accountManagementRouter.put('/displayName', (req, res)=>{
     if(!req.body.displayName){
-        res.status(400).send({message:"BAD REQUEST! MISSING DISPLAY NAME!"});
+        res.status(400).send({message:"Loš zahtev! Fali displayName!"});
         return;
     }
     const adminRepo = getCustomRepository(AdminRepository);
@@ -43,12 +43,12 @@ accountManagementRouter.put('/displayName', (req, res)=>{
             else{
                 console.error(`ERROR TRYING TO CHANGE DISPLAY NAME FOR USER ${req.username}.
                                 SESSION DATA: ${JSON.stringify(req.session)}`);
-                res.status(400).send({message:"UNKNOWN ERROR! CONTACT ADMINISTRATOR"});
+                res.status(400).send({message:"Nepoznata greška! Kontaktirajte administratora!"});
             }
         })
         .catch(err=>{
             console.error(err);
-            res.status(400).send({message:"UNKNOWN ERROR! CONTACT ADMINISTRATOR"});
+            res.status(400).send({message:"Nepoznata greška! Kontaktirajte administratora!"});
         });
 });
 

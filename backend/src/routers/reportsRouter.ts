@@ -9,7 +9,7 @@ const reportsRouter = express.Router();
 reportsRouter.get("/", (req, resp)=>{
 	let computerId: number | undefined;
 	if(!req.query.hasOwnProperty("classroomName")){
-		resp.status(400).send({message: `Missing required param classroomName`});
+		resp.status(400).send({message: `Fali obavezni parametar classroomName`});
 		return;
 	}
 	const classroomName : string = req.query.classroomName.toString();
@@ -24,7 +24,7 @@ reportsRouter.get("/", (req, resp)=>{
 				if(reports)
 					resp.send(reports);
 				else{
-					resp.status(404).send({message:"Given computer/classroom does not exist"});
+					resp.status(404).send({message:"Dati računar/učionica ne postoji!"});
 				}
 			})
 			.catch(err=>{serverError(err, resp)});
@@ -51,7 +51,7 @@ reportsRouter.get("/:id", (req, resp)=>{
 							resp.send(report);
 						}
 						else{
-							resp.status(404).send({message: "Report not found"});
+							resp.status(404).send({message: "Izveštaj nije pronađen!"});
 						}
 					});
 });
@@ -63,13 +63,13 @@ reportsRouter.post("/", (req, resp)=>{
 
 	for(const param of requiredParams){
 		if(!req.body.hasOwnProperty(param)){
-			resp.status(400).send(`Missing required param ${param}`);
+			resp.status(400).send(`Fali obavezni parametar  ${param}`);
 			return;
 		}
 	}
 	if(req.body.isGeneral === false){
 		if(!req.body.hasOwnProperty("computerId")){
-			resp.status(400).send(`Missing required param computerId`);
+			resp.status(400).send(`Fali obavezni parametar computerId`);
 			return;
 		}
 	}
@@ -77,7 +77,7 @@ reportsRouter.post("/", (req, resp)=>{
 	if(!req.body.isGeneral){
 		const computerId = +req.body.computerId;
 		if(isNaN(computerId)){
-			resp.status(400).send(`ComputerId is NaN`);
+			resp.status(400).send(`ComputerId nije broj!`);
 			return;
 		}
 		promise = repo.addComputerReport({
@@ -101,7 +101,7 @@ reportsRouter.post("/", (req, resp)=>{
 		// TODO: send email
 		if(res !== undefined)
 		{
-			resp.send({message:"Report successfully added"});
+			resp.send({message:"Izeštaj uspešno dodat."});
 		}
 		else{
 			resp.status(400).send( {message:"Loši parametri! Neuspelo dodavanje izveštaja."});

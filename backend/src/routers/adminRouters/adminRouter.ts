@@ -22,7 +22,7 @@ adminRouter.use(authRouter);
 // middleware for protecting routes
 adminRouter.use( (req, res, next)=>{
     if(!req.session || !req.session.username){
-        res.status(401).send({message: "NOT LOGGED IN"});
+        res.status(401).send({message: "Niste ulogovani!"});
         return;
     }
     else{
@@ -47,7 +47,7 @@ adminRouter.post('/signup', (req, res)=>{
     const requiredParams = ["username", "displayName", "password"];
     for(const param of requiredParams){
         if(!req.body[param]){
-            res.status(400).send({message: `MISSING REQUIRED PARAM: ${param}`});
+            res.status(400).send({message: `Nedostaje obavezni parametar: ${param}`});
             return;
         }
     }
@@ -55,19 +55,19 @@ adminRouter.post('/signup', (req, res)=>{
     adminRepo.addUser(req.body.username, req.body.password, req.body.displayName)
         .then((user)=>{
             if(user)
-                res.send({message: "USER ADDED"});
+                res.send({message: "Korisnik dodat"});
             else{
-                res.status(400).send({message: "USER EXISTS"});
+                res.status(400).send({message: "Korisnik već postoji"});
             }
             return;
         })
         .catch(err=>{
             console.error(JSON.stringify(err));
             if(err.errno && err.errno === 1062){
-                res.status(400).send({message: "Display name already exists"});
+                res.status(400).send({message: "displayName već postoji"});
             }
             else{
-                res.status(500).send({message: "SIGNUP FAILED. CONTACT ADMIN."});
+                res.status(500).send({message: "Pravljenje naloga nije uspelo zbog nepoznate greške! Kontaktirajte administratora!"});
             }
         })
 });
@@ -85,7 +85,7 @@ adminRouter.head('/displayName', (req, res)=>{
             })
             .catch(err=>{
                 console.error(JSON.stringify(err));
-                res.status(500).send({message: "Nepoznata greska na serveru. Obratite se administratoru"});
+                res.status(500).send({message: "Nepoznata greška na serveru. Obratite se administratoru"});
             })
     }
 });
@@ -107,7 +107,7 @@ adminRouter.head('/username', (req, res)=>{
             })
             .catch(err=>{
                 console.error(JSON.stringify(err));
-                res.status(500).send({message: "Nepoznata greska na serveru. Obratite se administratoru"});
+                res.status(500).send({message: "Nepoznata greška na serveru. Obratite se administratoru"});
             })
     }
 });
@@ -115,20 +115,20 @@ adminRouter.head('/username', (req, res)=>{
 // this has to go here because it uses req.params ant that cant go without a route
 adminRouter.use('/:username', (req, res, next)=>{
     if(!req.body){
-        res.status(400).send({message: "MISSING REQ BODY!"});
+        res.status(400).send({message: "Fali telo(body) zahteva!"});
         return;
     }
     if(req.session){
         if(req.session.username !== req.params.username){
             console.error(`${req.session.username} logged but ${req.params.username} received`);
-            res.status(401).send({message: "CANT PERFORM ACTION FOR DIFFERENT USER"});
+            res.status(401).send({message: "Ne možete izvršiti akciju za drugog korisnika!"});
             return;
         }
         next();
     }
     else{
         console.error(`SESSION IS NOT DEFINED FOR URL ${req.url}`);
-        res.status(400).send({message:"Session is not defined! Log in to perform action!"});
+        res.status(400).send({message:"Ulogujte se da bi odradili akciju!"});
     }
 });
 

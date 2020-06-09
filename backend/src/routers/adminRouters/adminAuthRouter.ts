@@ -42,7 +42,7 @@ function checkLogin(username: string, password: string, successCallback: (userna
 
 authRouter.post("/login", (req, resp)=>{
     if(req.session && req.session.username){
-        resp.status(400).send({message: "ALREADY LOGGED IN"});
+        resp.status(400).send({message: "Već ste ulogovani!"});
         return;
     }
     checkLogin(req.body.username, req.body.password,
@@ -55,7 +55,7 @@ authRouter.post("/login", (req, resp)=>{
             // setting data in session to mark user as logged in
             req.session.username = username;
             req.session.displayName = displayName;
-            resp.send({message: "SUCCESS"});
+            resp.send({message: "Uspešna akcija!"});
         },
         (msg: string)=>{
             resp.status(401).send({message: msg});
@@ -65,12 +65,12 @@ authRouter.post("/login", (req, resp)=>{
 authRouter.post("/logout", (req, resp)=>{
     if(req.session && req.session.username) {
         req.session.destroy(() => {
-            resp.send({message:"Uspeh!"});
+            resp.send({message:"Uspešna akcija!"});
         });
     }
     // not logged in, can't logout but no need for different message
     else{
-        resp.send({message: "Uspeh!"});
+        resp.send({message: "Uspešna akcija!"});
     }
 });
 export default authRouter;

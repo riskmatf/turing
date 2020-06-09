@@ -23,5 +23,5 @@ export {apiRouter};
 
 export function serverError(error : any, response: Response){
 	console.log(error);
-	response.status(500).send({message:"UNKNOWN SERVER ERROR"});
+	response.status(500).send({message:"Nepoznata greška na serveru!"});
 }

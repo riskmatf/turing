@@ -10,13 +10,13 @@ const adminReportsRouter = express.Router();
 adminReportsRouter.get("/:id", (req, resp)=>{
     const repId = +req.params.id;
     if(isNaN(repId)){
-        resp.status(400).send({message: "Los id!"});
+        resp.status(400).send({message: "Loš id!"});
         return;
     }
     const repo = getCustomRepository(ReportsRepository);
     repo.getReportById(repId, req.username).then(report=>{
         if(report === undefined){
-            resp.status(400).send({message: "Nije moguce naći traženi izveštaj!"});
+            resp.status(400).send({message: "Nije moguće naći traženi izveštaj!"});
             return;
         }
         resp.send(report);
