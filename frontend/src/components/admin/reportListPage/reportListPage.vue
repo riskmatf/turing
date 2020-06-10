@@ -350,10 +350,10 @@
             handleSolveReport() {
                 this.requestInProgress = true
                 this.solveReport({ reportId: this.report.reportId }).then(() => {
-                    this.$message.success('Solved')
+                    this.$message.success('Rešen kvar')
                     this.markSolvedInList(this.report.reportId)
                 }).catch((e) => {
-                    this.$message.error(`Failed ${e}`)
+                    this.$message.error(`Neuspelo rešavanje kvara: ${e}`)
                 }).finally(() => {
                     this.fetchReport({ reportId: this.report.reportId }).finally(() => {
                         this.requestInProgress = false
@@ -364,13 +364,13 @@
             handleDeleteReport() {
                 this.requestInProgress = true
                 this.deleteReport({ reportId: this.report.reportId }).then(() => {
-                    this.$message.success('Deleted')
+                    this.$message.success('Obrisan kvar')
                     this.currentSelectedReportId = null
                     this.encodeUrlParams()
                     this.getReports()
                     this.fetchClassroom({ classroomId: this.classroomId })
                 }).catch((e) => {
-                    this.$message.error(`Failed ${e}`)
+                    this.$message.error(`Neuspelo brisanje kvara: ${e}`)
                 }).finally(() => {
                     this.requestInProgress = false
                 })
