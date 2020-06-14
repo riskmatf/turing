@@ -9,3 +9,6 @@ server/src/auth/authConfig.ts
 backend/bin
 backend/turing_db.sql
 backend/ormconfig.json
+/backend/src/front/
+/backend/turing_full.sql
+/frontend/.env

@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "build_copy": "vue-cli-service build && cp -r dist/* ../backend/src/front"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
