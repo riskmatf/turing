@@ -11,7 +11,11 @@ accountManagementRouter.put("/password", (req, res)=>{
         res.status(400).send({message:"LOŠ ZAHTEV! NEDOSTAJE ŠIFRA!"});
         return;
     }
-    adminRepo.changePassword(req.username, req.body.password)
+    if(!req.body.currentPassword){
+        res.status(400).send({message:"LOŠ ZAHTEV! NEDOSTAJE TRENUTNA ŠIFRA!"});
+        return;
+    }
+    adminRepo.changePassword(req.username, req.body.password, req.body.currentPassword)
         .then(user=>{
             if(user){
                 res.send({message: "USPEŠNA AKCIJA!"});
@@ -23,8 +27,14 @@ accountManagementRouter.put("/password", (req, res)=>{
             }
         })
         .catch(err=>{
-            console.error(err);
-            res.status(400).send({message:"Nepoznata greška! Kontaktirajte administratora!"});
+            // todo aj malo bolje ovo keve ti
+            if(err.message.indexOf("trenutna") > -1){
+                res.status(401).send({message: err.message});
+            }
+            else{
+                console.error(err);
+                res.status(400).send({message:"Nepoznata greška! Kontaktirajte administratora!"});
+            }
         });
 });
 

@@ -30,8 +30,8 @@ export default {
             let targetClassroom = classroomListData.find((classroom) => classroom.name === classroomId)
 
             if (targetClassroom === undefined) {
-                commit('setRequest', { request: { status: 'error', message: 'No classroom found' } })
-                throw new Error('No classroom found')
+                commit('setRequest', { request: { status: 'error', message: 'Nije pronađena učionica!'} })
+                throw new Error('Nije pronađena učionica!');
             }
 
             try {

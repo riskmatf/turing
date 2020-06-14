@@ -23,10 +23,13 @@ export class AdminRepository extends AbstractRepository<Admin>
         return this.repository.save(newAdmin);
     }
 
-    public async changePassword(username: string, newPassword: string){
+    public async changePassword(username: string, newPassword: string, currentPassword: string){
         const user = await this.findByUsername(username);
         if(!user){
             return undefined;
+        }
+        if(user.password !== Md5.hashStr(currentPassword).toString()){
+            throw new Error("Loša trenutna šifra!");
         }
         user.password = Md5.hashStr(newPassword).toString();
         return this.repository.save(user);
