@@ -10,6 +10,18 @@ export default {
         setRequest(state, { request }) {
             state.request = request
         },
+        updateComputers(state, { computers, hasGeneralReports }) {
+            if (state.request.status === 'success') {
+                state.request = {
+                    ...state.request,
+                    response: {
+                        ...state.request.response,
+                        computers: computers,
+                        hasGeneralReports: hasGeneralReports
+                    }
+                }
+            }
+        },
     },
     actions: {
         async fetchClassroom({ rootState, commit, dispatch }, { classroomId }) {
@@ -51,7 +63,18 @@ export default {
                 commit('setRequest', { request: { status: 'error', message: _.get(e, 'message', 'Filed') } })
                 throw e
             }
-        }
+        },
+        async updateClassroomComputers({ commit }, { classroomId }) {
+            try {
+                const response = await Vue.$http.get(`/api/v1/classrooms/${classroomId}`)
+                commit('updateComputers', {
+                    computers: response.data.computers,
+                    hasGeneralReports: response.data.hasGeneralReports,
+                })
+            } catch (e) {
+                throw _.get(e, 'response.message', 'Failed')
+            }
+        },
     },
     getters: {
         classroom(state) {

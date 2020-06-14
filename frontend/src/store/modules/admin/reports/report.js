@@ -55,6 +55,19 @@ export default {
                 throw _.get(e, 'response.data.message', 'Failed')
             }
         },
+        async addGeneralReport(scope, report) {
+            try {
+                const response = await Vue.$http.post('/api/v1/reports', {
+                    classroomName: report.classroomId,
+                    urgent: report.isUrgent,
+                    isGeneral: true,
+                    description: report.description,
+                })
+                return response.data
+            } catch (e) {
+                throw _.get(e, 'response.data.message', 'Failed')
+            }
+        },
         updateComment(scope, { reportId, comment }) {
             try {
                 return Vue.$http.put(`/api/v1/admin/reports/${reportId}/comment`, {

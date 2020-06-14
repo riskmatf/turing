@@ -273,6 +273,22 @@
                 if (!this.isOpen) {
                     this.$emit('close')
                 }
+            },
+            cashedItems() {
+                if (this.multiSelect) {
+                    this.model = this.cashedItems.filter(({searchLabel}) => {
+                        return this.selectedItem.includes(searchLabel)
+                    })
+                } else {
+                    const refreshedModel = this.cashedItems.find(({ searchLabel }) => {
+                        return this.selectedItem.searchLabel === searchLabel
+                    })
+                    if (!_.isNil(refreshedModel)) {
+                        this.model = refreshedModel.item
+                    } else {
+                        this.model = null
+                    }
+                }
             }
         }
     }

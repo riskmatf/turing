@@ -286,7 +286,7 @@
             }
         },
         methods: {
-            ...mapActions('Admin/Classroom/Classroom', ['fetchClassroom']),
+            ...mapActions('Admin/Classroom/Classroom', ['fetchClassroom', 'updateClassroomComputers']),
             ...mapActions('Admin/Classroom/AllClassrooms', ['fetchAllClassrooms']),
             ...mapActions('Admin/Report/ReportList', ['fetchReports', 'setComputerBrokenStatus']),
             ...mapActions('Admin/Report/Report', ['fetchReport', 'updateComment', 'solveReport', 'deleteReport']),
@@ -352,13 +352,13 @@
                 this.solveReport({ reportId: this.report.reportId }).then(() => {
                     this.$message.success('Rešen kvar')
                     this.markSolvedInList(this.report.reportId)
+                    return this.updateClassroomComputers({ classroomId: this.classroomId })
                 }).catch((e) => {
                     this.$message.error(`Neuspelo rešavanje kvara: ${e}`)
                 }).finally(() => {
                     this.fetchReport({ reportId: this.report.reportId }).finally(() => {
                         this.requestInProgress = false
                     })
-                    this.fetchClassroom({ classroomId: this.classroomId })
                 })
             },
             handleDeleteReport() {
@@ -368,7 +368,7 @@
                     this.currentSelectedReportId = null
                     this.encodeUrlParams()
                     this.getReports()
-                    this.fetchClassroom({ classroomId: this.classroomId })
+                    this.updateClassroomComputers({ classroomId: this.classroomId })
                 }).catch((e) => {
                     this.$message.error(`Neuspelo brisanje kvara: ${e}`)
                 }).finally(() => {
@@ -382,7 +382,7 @@
             reportAdded() {
                 this.isReportModalVisible = false
                 this.getReports()
-                this.fetchClassroom({ classroomId: this.classroomId })
+                this.updateClassroomComputers({ classroomId: this.classroomId })
             },
             markSolvedInList(reportId) {
                 const solvedReport = this.reports.find((report)=> {
@@ -419,7 +419,7 @@
                         brokenStatus: !this.isCurrentComputerBroken,
                     }).then(() => {
                         this.$message.success(successMessage)
-                        this.fetchClassroom({ classroomId: this.classroomId })
+                        this.updateClassroomComputers({ classroomId: this.classroomId })
                     }).catch((e) => {
                         this.$message.error(`Nije ${successMessage.toLowerCase()}: ${e}`)
                     }).finally(() => {
