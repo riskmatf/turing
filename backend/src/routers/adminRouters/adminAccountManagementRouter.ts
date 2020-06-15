@@ -44,6 +44,10 @@ accountManagementRouter.put('/displayName', (req, res)=>{
         res.status(400).send({message:"Loš zahtev! Fali displayName!"});
         return;
     }
+    if(req.body.displayName.length > 20){
+        res.status(400).send({message: "Predugačko ime!"});
+        return;
+    }
     const adminRepo = getCustomRepository(AdminRepository);
     adminRepo.changeDisplayName(req.username, req.body.displayName)
         .then(user=>{

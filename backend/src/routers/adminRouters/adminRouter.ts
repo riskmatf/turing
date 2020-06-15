@@ -51,6 +51,15 @@ adminRouter.post('/signup', (req, res)=>{
             return;
         }
     }
+
+    if(req.body.displayName.length > 20){
+        res.status(400).send({message: "Predugačko ime!"});
+        return;
+    }
+    if(req.body.username.length > 20){
+        res.status(400).send({message: "Predugačko korisničko ime!"});
+        return;
+    }
     const adminRepo = getCustomRepository(AdminRepository);
     adminRepo.addUser(req.body.username, req.body.password, req.body.displayName)
         .then((user)=>{
