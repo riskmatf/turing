@@ -16,6 +16,10 @@ reportsRouter.get("/", (req, resp)=>{
 	if(req.query.hasOwnProperty("computerId")){
 		computerId = +req.query.computerId;
 	}
+	if(computerId !== undefined && isNaN(computerId)){
+		resp.status(400).send({message:"Dati Id nije broj!"});
+		return;
+	}
 	// get reports from computer
 	if(computerId !== undefined){
 		const repo = getCustomRepository(ComputersRepository);
