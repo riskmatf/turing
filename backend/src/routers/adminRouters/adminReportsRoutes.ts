@@ -45,6 +45,10 @@ adminReportsRouter.put("/:id/comment", async (req, resp)=>{
         resp.status(400).send({message: "Nedostaje komentar!"});
         return;
     }
+    if(req.body.comment.length > 1000){
+        resp.status(400).send({message: "Komentar je predugačak!"});
+        return;
+    }
     const res = await repo.setComment(repId, req.body.comment, req.username);
     if(res === false){
         resp.status(403).send({message: "Ne možete promeniti komentar koji je postavio neko drugi!"});

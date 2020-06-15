@@ -27,7 +27,6 @@ accountManagementRouter.put("/password", (req, res)=>{
             }
         })
         .catch(err=>{
-            // todo aj malo bolje ovo keve ti
             if(err.message.indexOf("trenutna") > -1){
                 res.status(401).send({message: err.message});
             }

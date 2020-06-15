@@ -71,6 +71,10 @@ reportsRouter.post("/", (req, resp)=>{
 			return;
 		}
 	}
+	if(req.body.description.length > 1000){
+		resp.status(400).send(`Predugačak opis!`);
+		return;
+	}
 	if(req.body.isGeneral === false){
 		if(!req.body.hasOwnProperty("computerId")){
 			resp.status(400).send(`Fali obavezni parametar computerId`);
