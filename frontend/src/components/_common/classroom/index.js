@@ -3,7 +3,7 @@ import ClassroomName from './name'
 import ClassroomImage from './image'
 
 export {
-    ClassroomCompCount,
-    ClassroomName,
-    ClassroomImage,
+	ClassroomCompCount,
+	ClassroomName,
+	ClassroomImage,
 }

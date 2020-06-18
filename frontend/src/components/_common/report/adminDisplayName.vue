@@ -1,5 +1,5 @@
 <template>
-    <div> Admin: {{ adminDisplayName }} </div>
+	<div> Admin: {{ adminDisplayName }} </div>
 </template>
 
 <style lang="sass" scoped>
@@ -7,9 +7,9 @@
 </style>
 
 <script>
-    export default {
-        props: {
-            adminDisplayName: String,
-        }
-    }
+	export default {
+		props: {
+			adminDisplayName: String,
+		}
+	}
 </script>

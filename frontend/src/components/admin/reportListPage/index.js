@@ -1,5 +1,5 @@
 import ReportListPage from './reportListPage'
 
 export {
-    ReportListPage,
+	ReportListPage,
 }

@@ -6,8 +6,8 @@ import Admin from './adminStore'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-    modules: {
-        Admin,
-        User,
-    }
+	modules: {
+		Admin,
+		User,
+	}
 })

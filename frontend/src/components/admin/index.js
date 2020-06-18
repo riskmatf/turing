@@ -9,13 +9,13 @@ import { ReportListPage } from './reportListPage'
 import ReportsFilterPage from './reportsFilterPage'
 
 export {
-    LoginPage,
-    BaseLayout,
-    HomePage,
-    ClassroomListPage,
-    ClassroomPage,
-    ReportListPage,
-    SettingsPage,
-    AddNewAdminPage,
-    ReportsFilterPage,
+	LoginPage,
+	BaseLayout,
+	HomePage,
+	ClassroomListPage,
+	ClassroomPage,
+	ReportListPage,
+	SettingsPage,
+	AddNewAdminPage,
+	ReportsFilterPage,
 }

@@ -8,11 +8,11 @@ import NotFoundPage from '@/components/_common/notFoundPage'
 
 
 export {
-    BaseLayout,
-    HomePage,
-    ClassroomListPage,
-    ClassroomPage,
-    TutorialPage,
-    ReportListPage,
-    NotFoundPage,
+	BaseLayout,
+	HomePage,
+	ClassroomListPage,
+	ClassroomPage,
+	TutorialPage,
+	ReportListPage,
+	NotFoundPage,
 }

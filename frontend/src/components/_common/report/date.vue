@@ -1,5 +1,5 @@
 <template>
-    <div>{{ localDateFormat }}</div>
+	<div>{{ localDateFormat }}</div>
 </template>
 
 <style lang="sass" scoped>
@@ -8,16 +8,16 @@
 
 <script>
 
-    export default {
-        props: {
-            reportDate: Number,
-        },
-        computed: {
-            localDateFormat() {
-                const date = new Date(this.reportDate*1000)
+	export default {
+		props: {
+			reportDate: Number,
+		},
+		computed: {
+			localDateFormat() {
+				const date = new Date(this.reportDate*1000)
 
-                return `${date.getDate()}.${date.getMonth()+1}.${date.getFullYear()}.`
-            }
-        }
-    }
+				return `${date.getDate()}.${date.getMonth()+1}.${date.getFullYear()}.`
+			}
+		}
+	}
 </script>

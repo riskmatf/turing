@@ -1,280 +1,302 @@
 <template>
-    <div>
-        <div class="filters desktop">
-            <div class="filter-item" v-if="filterClassrooms">
-                <div>Učionice:</div>
-                <t-select
-                    v-model="classroomsModel"
-                    multi-select
-                    :items="classroomsFilterOptions"
-                    :get-search-label="getMultiSelectLabel"
-                    :get-display-label="getMultiSelectLabel"
-                    placeholder="Odaberite učionice"
-                    searchable
-                    clearable
-                    @close="handleSelectClose"
-                />
-            </div>
-            <div class="filter-item" v-if="filterLocations">
-                <div>Lokacije:</div>
-                <t-select
-                    v-model="locationsModel"
-                    multi-select
-                    :items="locationsFilterOptions"
-                    :get-search-label="getMultiSelectLabel"
-                    :get-display-label="getMultiSelectLabel"
-                    placeholder="Odaberite lokacije"
-                    searchable
-                    clearable
-                    @close="handleSelectClose"
-                />
-            </div>
-            <div class="filter-item" v-if="filterUrgent">
-                <div>Da li je kvar hitan?</div>
-                <t-select
-                        v-model="urgentModel"
-                        :items="urgentFilterOptions"
-                        :get-search-label="getUrgentFilterLabel"
-                        :get-display-label="getUrgentFilterLabel"
-                        placeholder="Odaberite..."
-                        clearable
-                        @close="handleSelectClose"
-                />
-            </div>
-            <div class="filter-item" v-if="filterComments">
-                <div>Da li postoji komentar?</div>
-                <t-select
-                    v-model="commentModel"
-                    :items="commentsFilterOptions"
-                    :get-search-label="getCommentsFilterLabel"
-                    :get-display-label="getCommentsFilterLabel"
-                    placeholder="Odaberite..."
-                    clearable
-                    @close="handleSelectClose"
-                />
-            </div>
-            <div class="filter-item" v-if="filterFixed">
-                <div>Da li je kvar popravljen?</div>
-                <t-select
-                        v-model="fixedModel"
-                        :items="fixedFilterOptions"
-                        :get-search-label="getFixedFilterLabel"
-                        :get-display-label="getFixedFilterLabel"
-                        placeholder="Odaberite..."
-                        clearable
-                        @close="handleSelectClose"
-                    />
-            </div>
-        </div>
-        <div class="mobile">
-            <el-button size="mini" @click="isMobileFilterDialogVisible = true">Filteri</el-button>
-            <el-dialog fullscreen :visible.sync="isMobileFilterDialogVisible" @close="handleSelectClose">
-                <div class="filters">
-                    <div class="filter-item" v-if="filterClassrooms">
-                        <div>Učionice:</div>
-                        <t-select
-                                v-model="classroomsModel"
-                                multi-select
-                                :items="classroomsFilterOptions"
-                                :get-search-label="getMultiSelectLabel"
-                                :get-displaylabel="getMultiSelectLabel"
-                                placeholder="Odaberite učionice"
-                                searchable
-                                clearable
-                        />
-                    </div>
-                    <div class="filter-item" v-if="filterLocations">
-                        <div>Lokacije:</div>
-                        <t-select
-                                v-model="locationsModel"
-                                multi-select
-                                :items="locationsFilterOptions"
-                                :get-search-label="getMultiSelectLabel"
-                                :get-display-label="getMultiSelectLabel"
-                                placeholder="Odaberite lokacije"
-                                searchable
-                                clearable
-                        />
-                    </div>
-                    <div class="filter-item" v-if="filterUrgent">
-                        <div>Da li je kvar hitan?</div>
-                        <t-select
-                                v-model="urgentModel"
-                                :items="urgentFilterOptions"
-                                :get-search-label="getUrgentFilterLabel"
-                                :get-display-label="getUrgentFilterLabel"
-                                placeholder="Odaberite..."
-                                clearable
-                        />
-                    </div>
-                    <div class="filter-item" v-if="filterComments">
-                        <div>Da li postoji komentar?</div>
-                        <t-select
-                                v-model="commentModel"
-                                :items="commentsFilterOptions"
-                                :get-search-label="getCommentsFilterLabel"
-                                :get-display-label="getCommentsFilterLabel"
-                                placeholder="Odaberite..."
-                                clearable
-                        />
-                    </div>
-                    <div class="filter-item" v-if="filterFixed">
-                        <div>Da li je kvar popravljen?</div>
-                        <t-select
-                                v-model="fixedModel"
-                                :items="fixedFilterOptions"
-                                :get-search-label="getFixedFilterLabel"
-                                :get-display-label="getFixedFilterLabel"
-                                placeholder="Odaberite..."
-                                clearable
-                        />
-                    </div>
-                </div>
-            </el-dialog>
-        </div>
-    </div>
-
+	<div>
+		<div class="filters desktop">
+			<div class="filter-item" v-if="filterClassrooms">
+				<div>Učionice:</div>
+				<t-select
+					v-model="classroomsModel"
+					multi-select
+					:items="classroomsFilterOptions"
+					:get-search-label="getMultiSelectLabel"
+					:get-display-label="getMultiSelectLabel"
+					placeholder="Odaberite učionice"
+					searchable
+					clearable
+					@close="handleSelectClose"
+				/>
+			</div>
+			<div class="filter-item" v-if="filterLocations">
+				<div>Lokacije:</div>
+				<t-select
+					v-model="locationsModel"
+					multi-select
+					:items="locationsFilterOptions"
+					:get-search-label="getMultiSelectLabel"
+					:get-display-label="getMultiSelectLabel"
+					placeholder="Odaberite lokacije"
+					searchable
+					clearable
+					@close="handleSelectClose"
+				/>
+			</div>
+			<div class="filter-item" v-if="filterUrgent">
+				<div>Da li je kvar hitan?</div>
+				<t-select
+						v-model="urgentModel"
+						:items="urgentFilterOptions"
+						:get-search-label="getUrgentFilterLabel"
+						:get-display-label="getUrgentFilterLabel"
+						placeholder="Odaberite..."
+						clearable
+						@close="handleSelectClose"
+				/>
+			</div>
+			<div class="filter-item" v-if="filterComments">
+				<div>Da li postoji komentar?</div>
+				<t-select
+					v-model="commentModel"
+					:items="commentsFilterOptions"
+					:get-search-label="getCommentsFilterLabel"
+					:get-display-label="getCommentsFilterLabel"
+					placeholder="Odaberite..."
+					clearable
+					@close="handleSelectClose"
+				/>
+			</div>
+			<div class="filter-item" v-if="filterFixed">
+				<div>Da li je kvar popravljen?</div>
+				<t-select
+						v-model="fixedModel"
+						:items="fixedFilterOptions"
+						:get-search-label="getFixedFilterLabel"
+						:get-display-label="getFixedFilterLabel"
+						placeholder="Odaberite..."
+						clearable
+						@close="handleSelectClose"
+					/>
+			</div>
+			<div>
+				<el-button size="mini" @click="resetFilters">
+					Poništi sve filtere
+				</el-button>
+			</div>
+		</div>
+		<div class="mobile">
+			<el-button size="mini" @click="isMobileFilterDialogVisible = true">Filteri</el-button>
+			<el-dialog fullscreen :visible.sync="isMobileFilterDialogVisible" :show-close="false" @close="handleSelectClose">
+				<div class="filters">
+					<div class="filter-item" v-if="filterClassrooms">
+						<div>Učionice:</div>
+						<t-select
+								v-model="classroomsModel"
+								multi-select
+								:items="classroomsFilterOptions"
+								:get-search-label="getMultiSelectLabel"
+								:get-display-label="getMultiSelectLabel"
+								placeholder="Odaberite učionice"
+								searchable
+								clearable
+						/>
+					</div>
+					<div class="filter-item" v-if="filterLocations">
+						<div>Lokacije:</div>
+						<t-select
+								v-model="locationsModel"
+								multi-select
+								:items="locationsFilterOptions"
+								:get-search-label="getMultiSelectLabel"
+								:get-display-label="getMultiSelectLabel"
+								placeholder="Odaberite lokacije"
+								searchable
+								clearable
+						/>
+					</div>
+					<div class="filter-item" v-if="filterUrgent">
+						<div>Da li je kvar hitan?</div>
+						<t-select
+								v-model="urgentModel"
+								:items="urgentFilterOptions"
+								:get-search-label="getUrgentFilterLabel"
+								:get-display-label="getUrgentFilterLabel"
+								placeholder="Odaberite..."
+								clearable
+						/>
+					</div>
+					<div class="filter-item" v-if="filterComments">
+						<div>Da li postoji komentar?</div>
+						<t-select
+								v-model="commentModel"
+								:items="commentsFilterOptions"
+								:get-search-label="getCommentsFilterLabel"
+								:get-display-label="getCommentsFilterLabel"
+								placeholder="Odaberite..."
+								clearable
+						/>
+					</div>
+					<div class="filter-item" v-if="filterFixed">
+						<div>Da li je kvar popravljen?</div>
+						<t-select
+								v-model="fixedModel"
+								:items="fixedFilterOptions"
+								:get-search-label="getFixedFilterLabel"
+								:get-display-label="getFixedFilterLabel"
+								placeholder="Odaberite..."
+								clearable
+						/>
+					</div>
+					<div>
+						<el-button size="mini" @click="applyFiltersAndClose" type="primary">
+							Primeni filtere
+						</el-button>
+						<el-button size="mini" @click="resetFiltersMobile">
+							Poništi sve filtere
+						</el-button>
+					</div>
+				</div>
+			</el-dialog>
+		</div>
+	</div>
 </template>
 
 <style lang="sass" scoped>
-    @import 'src/assets/styles/breakPoints'
+	@import 'src/assets/styles/breakPoints'
 
-    .filters
-        width: 100%
-        overflow-x: auto
-        display: grid
-        grid-template-columns: repeat(5, minmax(min-content, max-content))
-        grid-column-gap: 20px
-        @media($mobileBreakPoint)
-            grid-template-columns: unset
-            grid-template-rows: repeat(5, 1fr)
-            grid-row-gap: 20px
-        &.desktop
-            display: grid
-            @media($mobileBreakPoint)
-                display: none
-        .filter-item
-            display: grid
-            grid-template-rows: repeat(2, auto)
-    .mobile
-        width: 100%
-        overflow-x: auto
-        display: none
-        @media ($mobileBreakPoint)
-            display: block
+	.filters
+		width: 100%
+		overflow-x: auto
+		display: grid
+		grid-template-columns: repeat(6, minmax(min-content, max-content))
+		grid-column-gap: 20px
+		@media($mobileBreakPoint)
+			grid-template-columns: unset
+			grid-template-rows: repeat(6, 1fr)
+			grid-row-gap: 20px
+		&.desktop
+			display: grid
+			@media($mobileBreakPoint)
+				display: none
+		.filter-item
+			display: grid
+			grid-template-rows: repeat(2, auto)
+	.mobile
+		width: 100%
+		overflow-x: auto
+		display: none
+		@media ($mobileBreakPoint)
+			display: block
 </style>
 
 <script>
-    import { TSelect } from '@/components/_common/select'
-    import _ from 'lodash'
+	import { TSelect } from '@/components/_common/select'
+	import _ from 'lodash'
 
-    export default {
-        components: {
-            TSelect,
-        },
-        props: {
-            value: Object,
-            filterClassrooms: Boolean,
-            filterLocations: Boolean,
-            filterComments: Boolean,
-            filterFixed: Boolean,
-            filterUrgent: Boolean,
-            classroomsFilterOptions: Array,
-            locationsFilterOptions: Array,
-        },
-        data() {
-            return {
-                hasChanges: false,
-                isMobileFilterDialogVisible: false,
-            }
-        },
-        computed: {
-            model: {
-                get() {
-                    return this.value || {}
-                },
-                set(value) {
-                    this.hasChanges = true
-                    this.$emit('input', value)
-                    this.$emit('change')
-                }
-            },
-            classroomsModel: {
-                get() {
-                    return this.model.classrooms || []
-                },
-                set(value) {
-                    this.model = { ...this.model, classrooms: value }
-                },
-            },
-            locationsModel: {
-                get() {
-                    return this.model.locations || []
-                },
-                set(value) {
-                    this.model = { ...this.model, locations: value }
-                }
-            },
-            commentModel: {
-                get() {
-                    if (_.isNil(this.model.comments)) return null
-                    return this.model.comments
-                },
-                set(value) {
-                    this.model = { ...this.model, comments: value }
-                }
-            },
-            fixedModel: {
-                get() {
-                    if (_.isNil(this.model.fixed)) return null
-                    return this.model.fixed
-                },
-                set(value) {
-                    this.model = { ...this.model, fixed: value }
-                }
-            },
-            urgentModel: {
-                get() {
-                    if (_.isNil(this.model.urgent)) return null
-                    return this.model.urgent
-                },
-                set(value) {
-                    this.model = { ...this.model, urgent: value }
-                }
-            },
-            commentsFilterOptions() {
-                return [true, false]
-            },
-            fixedFilterOptions() {
-                return [true, false]
-            },
-            urgentFilterOptions() {
-                return [true, false]
-            },
-        },
-        methods: {
-            getMultiSelectLabel(filterOption) {
-                return filterOption
-            },
-            getCommentsFilterLabel(filterOption) {
-                if (filterOption === null) return ''
-                return filterOption ? 'Postoji' : 'Ne postoji'
-            },
-            getUrgentFilterLabel(filterOption) {
-                if (filterOption === null) return ''
-                return filterOption ? 'Jeste hitan' : 'Nije hitan'
-            },
-            getFixedFilterLabel(filterOption) {
-                if (filterOption === null) return ''
-                return filterOption ? 'Jeste popravljen' : 'Nije popravljen'
-            },
-            handleSelectClose() {
-                if (this.hasChanges) {
-                    this.$emit('updateFilters')
-                }
-                this.hasChanges = false
-            },
-        },
+	export default {
+		components: {
+			TSelect,
+		},
+		props: {
+			value: Object,
+			filterClassrooms: Boolean,
+			filterLocations: Boolean,
+			filterComments: Boolean,
+			filterFixed: Boolean,
+			filterUrgent: Boolean,
+			classroomsFilterOptions: Array,
+			locationsFilterOptions: Array,
+		},
+		data() {
+			return {
+				hasChanges: false,
+				isMobileFilterDialogVisible: false,
+			}
+		},
+		computed: {
+			model: {
+				get() {
+					return this.value || {}
+				},
+				set(value) {
+					this.hasChanges = true
+					this.$emit('input', value)
+					this.$emit('change')
+				}
+			},
+			classroomsModel: {
+				get() {
+					return this.model.classrooms || []
+				},
+				set(value) {
+					this.model = { ...this.model, classrooms: value }
+				},
+			},
+			locationsModel: {
+				get() {
+					return this.model.locations || []
+				},
+				set(value) {
+					this.model = { ...this.model, locations: value }
+				}
+			},
+			commentModel: {
+				get() {
+					if (_.isNil(this.model.comments)) return null
+					return this.model.comments
+				},
+				set(value) {
+					this.model = { ...this.model, comments: value }
+				}
+			},
+			fixedModel: {
+				get() {
+					if (_.isNil(this.model.fixed)) return null
+					return this.model.fixed
+				},
+				set(value) {
+					this.model = { ...this.model, fixed: value }
+				}
+			},
+			urgentModel: {
+				get() {
+					if (_.isNil(this.model.urgent)) return null
+					return this.model.urgent
+				},
+				set(value) {
+					this.model = { ...this.model, urgent: value }
+				}
+			},
+			commentsFilterOptions() {
+				return [true, false]
+			},
+			fixedFilterOptions() {
+				return [true, false]
+			},
+			urgentFilterOptions() {
+				return [true, false]
+			},
+		},
+		methods: {
+			getMultiSelectLabel(filterOption) {
+				return filterOption
+			},
+			getCommentsFilterLabel(filterOption) {
+				if (filterOption === null) return ''
+				return filterOption ? 'Postoji' : 'Ne postoji'
+			},
+			getUrgentFilterLabel(filterOption) {
+				if (filterOption === null) return ''
+				return filterOption ? 'Jeste hitan' : 'Nije hitan'
+			},
+			getFixedFilterLabel(filterOption) {
+				if (filterOption === null) return ''
+				return filterOption ? 'Jeste popravljen' : 'Nije popravljen'
+			},
+			handleSelectClose() {
+				if (this.hasChanges) {
+					this.$emit('updateFilters')
+				}
+				this.hasChanges = false
+			},
+			resetFilters() {
+				this.model = {}
+				this.$emit('updateFilters')
+			},
+			resetFiltersMobile() {
+				this.model = {}
+			},
+			applyFiltersAndClose() {
+				this.isMobileFilterDialogVisible = false
+			},
+		},
 
-    }
+	}
 </script>
