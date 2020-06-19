@@ -26,7 +26,6 @@ export default {
 		},
 		newDisplayName(state, { displayName }) {
 			state.adminData.displayName = displayName
-			console.log(displayName)
 		},
 		newPassword(state, { password }) {
 			state.adminData.password = password
@@ -87,10 +86,9 @@ export default {
 				throw _.get(e, 'response.data.message', 'Failed changing password')
 			}
 		},
-		async addNewAdmin({ commit }, { username, displayName, password }) {
+		async addNewAdmin( scope, { username, displayName, password }) {
 			try {
 				await Vue.$http.post(`/api/v1/admin/signup`, { username, displayName, password})
-				commit('newAdmin', {username, displayName, password})
 			} catch (e) {
 				throw _.get(e, 'response.data.message', 'Failed adding new admin')
 			}
