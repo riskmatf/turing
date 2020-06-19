@@ -8,5 +8,5 @@ fi
 
 cd ./frontend
 npm run build_copy
-cd ./backend
+cd ../backend
 npm run start
