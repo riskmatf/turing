@@ -1,0 +1,26 @@
+{	
+   "type": "mysql",	
+   "host": "localhost",	
+   "port": 3306,	
+   "username": "yourUsername",
+   "password": "YourPass",
+   "database": "turing",	
+   "synchronize": false,	
+   "logging": "none",
+   "logger": "advanced-console",
+   "charset": "utf8mb4_unicode_ci",
+   "entities": [	
+      "./entities/*.ts"	
+   ],	
+   "migrations": [	
+      "./migration/*.ts"	
+   ],	
+   "subscribers": [	
+      "src/subscriber/**/*.ts"	
+   ],	
+   "cli": {	
+      "entitiesDir": "./entity",	
+      "migrationsDir": "./migration",	
+      "subscribersDir": "./subscriber"	
+   }	
+} 
