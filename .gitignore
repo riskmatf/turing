@@ -3,7 +3,6 @@ test
 .idea
 deploy/
 node_modules
-package-lock.json
 server/src/auth/authConfig.ts
 .vscode
 backend/bin
