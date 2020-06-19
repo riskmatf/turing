@@ -1,0 +1,11 @@
+test
+*/.idea
+.idea
+deploy/
+node_modules
+server/src/auth/authConfig.ts
+.vscode
+backend/bin
+backend/turing_db.sql
+/backend/src/front/
+/frontend/.env
