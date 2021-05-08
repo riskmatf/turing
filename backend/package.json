@@ -32,7 +32,7 @@
     "mysql": "^2.18.1",
     "qs": "^6.9.3",
     "ts-md5": "^1.2.7",
-    "typeorm": "^0.2.24"
+    "typeorm": "^0.2.25"
   },
   "nodemonConfig": {
     "ignore": [
